@@ -1,7 +1,169 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="" />
+    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/konsultacijos.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/laravel-plugin.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.styleci.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_SQL/konsultacijos (3).sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Client.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Console/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Consultation.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Exceptions/Handler.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Exports/ConsultationDeleteExport.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Exports/ConsultationExport.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/ConfirmPasswordController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/ForgotPasswordController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/ResetPasswordController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/VerificationController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/Controller.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/HomeController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/MailController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/PostController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/SearchController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/Authenticate.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/CheckForMaintenanceMode.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/EncryptCookies.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/RedirectIfAuthenticated.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/TrimStrings.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/TrustProxies.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/VerifyCsrfToken.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Mail/ConsultationDeleteMail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Mail/ConsultationMail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Mail/ConsultationMonth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Providers/AppServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Providers/AuthServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Providers/BroadcastServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Providers/EventServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Theme.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/artisan" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bootstrap/cache/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/auth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/broadcasting.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/cache.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/filesystems.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/hashing.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/logging.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/queue.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/services.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/session.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/view.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/factories/UserFactory.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_000000_create_users_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2014_10_12_100000_create_password_resets_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_08_19_000000_create_failed_jobs_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_16_151529_create_consultations_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_16_151739_create_clients_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_23_170156_add_county_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_29_095705_create_themes_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_29_120615_add_min_max_old_column_to_themes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_29_183258_delete_constraint_from_themes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_29_184456_add_nullable_to_min_old_max_old_in_themes.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_29_185541_change_old_min_max_in_themes_to_int.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_30_143754_change_type_of_consultation_date_to_datetime_in_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_30_154558_change_type_of_theme_in_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_30_154931_change_name_of_theme_to_theme_id_in_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_10_31_151254_add_is_sent_column_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_04_145242_change_consultant_to_user_in_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_10_110242_add_time_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_10_110950_change_consultation_date_to_date_type_in_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_10_195436_add_is_paid_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_10_201348_add_paid_date_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_10_201901_add_nullable_is_paid_to_consultations.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/2019_11_11_133247_add_user_id_to_clients.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/phpunit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/.htaccess" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/css/select2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/favicon.ico" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/index.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/formValidation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/js/select2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/mix-manifest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/robots.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/web.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/readme.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/js/app.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/js/custom.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/js/formValidation.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/lang/en/auth.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/lang/en/pagination.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/lang/en/passwords.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/lang/en/validation.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sass/_custom.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sass/_variables.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/sass/app.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/passwords/confirm.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/passwords/email.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/passwords/reset.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/register.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/auth/verify.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/clients/create.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/clients/edit.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/clients/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/consultations/create.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/consultations/edit.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/emails/consultations/email.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/home.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/inc/footer.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/inc/header.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/inc/messages.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/inc/search.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/channels.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/console.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/app/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/app/public/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/cache/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/cache/data/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/sessions/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/testing/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/framework/views/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/storage/logs/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/CreatesApplication.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Feature/ExampleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/TestCase.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/Unit/ExampleTest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webpack.mix.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -325,6 +487,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="E:/Apps/Local sites/autominute-clone/app/public" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -421,12 +584,12 @@
       <workItem from="1573475471947" duration="6567000" />
       <workItem from="1573565311026" duration="7474000" />
       <workItem from="1573641189624" duration="9681000" />
-      <workItem from="1573813972079" duration="1765000" />
+      <workItem from="1573813972079" duration="2028000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="264735000" />
+    <option name="totallyTimeSpent" value="264998000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
