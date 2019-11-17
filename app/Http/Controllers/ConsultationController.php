@@ -107,16 +107,17 @@ class ConsultationController extends Controller
             Mail::to('test@test.com')->send(new ConsultationMail($new_data, $changes));
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir išsiųsta!';
             $consultation->is_sent = 1;
-
+            return Excel::download(new ConsultationExport($new_data, $changes),'konsultacijos.xlsx');
 
         } else {
             $success_message = 'Nauja konsultacija sėkmingai sukurta!';
             $consultation->is_sent = 0;
+
         }
         $consultation->save();
         //Remove for production
         //Only for TESTING PURPOSES
-        return Excel::download(new ConsultationExport($new_data, $changes),'konsultacijos.xlsx');
+
         return redirect('/konsultacijos')->with('success', $success_message);
     }
 
