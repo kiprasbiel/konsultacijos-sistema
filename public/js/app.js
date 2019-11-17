@@ -36847,5078 +36847,6 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ "./node_modules/semantic-ui-dropdown/dropdown.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/semantic-ui-dropdown/dropdown.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * # Semantic UI 2.4.1 - Dropdown
- * http://github.com/semantic-org/semantic-ui/
- *
- *
- * Released under the MIT license
- * http://opensource.org/licenses/MIT
- *
- */
-
-;(function ($, window, document, undefined) {
-
-'use strict';
-
-window = (typeof window != 'undefined' && window.Math == Math)
-  ? window
-  : (typeof self != 'undefined' && self.Math == Math)
-    ? self
-    : Function('return this')()
-;
-
-$.fn.dropdown = function(parameters) {
-  var
-    $allModules    = $(this),
-    $document      = $(document),
-
-    moduleSelector = $allModules.selector || '',
-
-    hasTouch       = ('ontouchstart' in document.documentElement),
-    time           = new Date().getTime(),
-    performance    = [],
-
-    query          = arguments[0],
-    methodInvoked  = (typeof query == 'string'),
-    queryArguments = [].slice.call(arguments, 1),
-    returnedValue
-  ;
-
-  $allModules
-    .each(function(elementIndex) {
-      var
-        settings          = ( $.isPlainObject(parameters) )
-          ? $.extend(true, {}, $.fn.dropdown.settings, parameters)
-          : $.extend({}, $.fn.dropdown.settings),
-
-        className       = settings.className,
-        message         = settings.message,
-        fields          = settings.fields,
-        keys            = settings.keys,
-        metadata        = settings.metadata,
-        namespace       = settings.namespace,
-        regExp          = settings.regExp,
-        selector        = settings.selector,
-        error           = settings.error,
-        templates       = settings.templates,
-
-        eventNamespace  = '.' + namespace,
-        moduleNamespace = 'module-' + namespace,
-
-        $module         = $(this),
-        $context        = $(settings.context),
-        $text           = $module.find(selector.text),
-        $search         = $module.find(selector.search),
-        $sizer          = $module.find(selector.sizer),
-        $input          = $module.find(selector.input),
-        $icon           = $module.find(selector.icon),
-
-        $combo = ($module.prev().find(selector.text).length > 0)
-          ? $module.prev().find(selector.text)
-          : $module.prev(),
-
-        $menu           = $module.children(selector.menu),
-        $item           = $menu.find(selector.item),
-
-        activated       = false,
-        itemActivated   = false,
-        internalChange  = false,
-        element         = this,
-        instance        = $module.data(moduleNamespace),
-
-        initialLoad,
-        pageLostFocus,
-        willRefocus,
-        elementNamespace,
-        id,
-        selectObserver,
-        menuObserver,
-        module
-      ;
-
-      module = {
-
-        initialize: function() {
-          module.debug('Initializing dropdown', settings);
-
-          if( module.is.alreadySetup() ) {
-            module.setup.reference();
-          }
-          else {
-
-            module.setup.layout();
-
-            if(settings.values) {
-              module.change.values(settings.values);
-            }
-
-            module.refreshData();
-
-            module.save.defaults();
-            module.restore.selected();
-
-            module.create.id();
-            module.bind.events();
-
-            module.observeChanges();
-            module.instantiate();
-          }
-
-        },
-
-        instantiate: function() {
-          module.verbose('Storing instance of dropdown', module);
-          instance = module;
-          $module
-            .data(moduleNamespace, module)
-          ;
-        },
-
-        destroy: function() {
-          module.verbose('Destroying previous dropdown', $module);
-          module.remove.tabbable();
-          $module
-            .off(eventNamespace)
-            .removeData(moduleNamespace)
-          ;
-          $menu
-            .off(eventNamespace)
-          ;
-          $document
-            .off(elementNamespace)
-          ;
-          module.disconnect.menuObserver();
-          module.disconnect.selectObserver();
-        },
-
-        observeChanges: function() {
-          if('MutationObserver' in window) {
-            selectObserver = new MutationObserver(module.event.select.mutation);
-            menuObserver   = new MutationObserver(module.event.menu.mutation);
-            module.debug('Setting up mutation observer', selectObserver, menuObserver);
-            module.observe.select();
-            module.observe.menu();
-          }
-        },
-
-        disconnect: {
-          menuObserver: function() {
-            if(menuObserver) {
-              menuObserver.disconnect();
-            }
-          },
-          selectObserver: function() {
-            if(selectObserver) {
-              selectObserver.disconnect();
-            }
-          }
-        },
-        observe: {
-          select: function() {
-            if(module.has.input()) {
-              selectObserver.observe($module[0], {
-                childList : true,
-                subtree   : true
-              });
-            }
-          },
-          menu: function() {
-            if(module.has.menu()) {
-              menuObserver.observe($menu[0], {
-                childList : true,
-                subtree   : true
-              });
-            }
-          }
-        },
-
-        create: {
-          id: function() {
-            id = (Math.random().toString(16) + '000000000').substr(2, 8);
-            elementNamespace = '.' + id;
-            module.verbose('Creating unique id for element', id);
-          },
-          userChoice: function(values) {
-            var
-              $userChoices,
-              $userChoice,
-              isUserValue,
-              html
-            ;
-            values = values || module.get.userValues();
-            if(!values) {
-              return false;
-            }
-            values = $.isArray(values)
-              ? values
-              : [values]
-            ;
-            $.each(values, function(index, value) {
-              if(module.get.item(value) === false) {
-                html         = settings.templates.addition( module.add.variables(message.addResult, value) );
-                $userChoice  = $('<div />')
-                  .html(html)
-                  .attr('data-' + metadata.value, value)
-                  .attr('data-' + metadata.text, value)
-                  .addClass(className.addition)
-                  .addClass(className.item)
-                ;
-                if(settings.hideAdditions) {
-                  $userChoice.addClass(className.hidden);
-                }
-                $userChoices = ($userChoices === undefined)
-                  ? $userChoice
-                  : $userChoices.add($userChoice)
-                ;
-                module.verbose('Creating user choices for value', value, $userChoice);
-              }
-            });
-            return $userChoices;
-          },
-          userLabels: function(value) {
-            var
-              userValues = module.get.userValues()
-            ;
-            if(userValues) {
-              module.debug('Adding user labels', userValues);
-              $.each(userValues, function(index, value) {
-                module.verbose('Adding custom user value');
-                module.add.label(value, value);
-              });
-            }
-          },
-          menu: function() {
-            $menu = $('<div />')
-              .addClass(className.menu)
-              .appendTo($module)
-            ;
-          },
-          sizer: function() {
-            $sizer = $('<span />')
-              .addClass(className.sizer)
-              .insertAfter($search)
-            ;
-          }
-        },
-
-        search: function(query) {
-          query = (query !== undefined)
-            ? query
-            : module.get.query()
-          ;
-          module.verbose('Searching for query', query);
-          if(module.has.minCharacters(query)) {
-            module.filter(query);
-          }
-          else {
-            module.hide();
-          }
-        },
-
-        select: {
-          firstUnfiltered: function() {
-            module.verbose('Selecting first non-filtered element');
-            module.remove.selectedItem();
-            $item
-              .not(selector.unselectable)
-              .not(selector.addition + selector.hidden)
-                .eq(0)
-                .addClass(className.selected)
-            ;
-          },
-          nextAvailable: function($selected) {
-            $selected = $selected.eq(0);
-            var
-              $nextAvailable = $selected.nextAll(selector.item).not(selector.unselectable).eq(0),
-              $prevAvailable = $selected.prevAll(selector.item).not(selector.unselectable).eq(0),
-              hasNext        = ($nextAvailable.length > 0)
-            ;
-            if(hasNext) {
-              module.verbose('Moving selection to', $nextAvailable);
-              $nextAvailable.addClass(className.selected);
-            }
-            else {
-              module.verbose('Moving selection to', $prevAvailable);
-              $prevAvailable.addClass(className.selected);
-            }
-          }
-        },
-
-        setup: {
-          api: function() {
-            var
-              apiSettings = {
-                debug   : settings.debug,
-                urlData : {
-                  value : module.get.value(),
-                  query : module.get.query()
-                },
-                on    : false
-              }
-            ;
-            module.verbose('First request, initializing API');
-            $module
-              .api(apiSettings)
-            ;
-          },
-          layout: function() {
-            if( $module.is('select') ) {
-              module.setup.select();
-              module.setup.returnedObject();
-            }
-            if( !module.has.menu() ) {
-              module.create.menu();
-            }
-            if( module.is.search() && !module.has.search() ) {
-              module.verbose('Adding search input');
-              $search = $('<input />')
-                .addClass(className.search)
-                .prop('autocomplete', 'off')
-                .insertBefore($text)
-              ;
-            }
-            if( module.is.multiple() && module.is.searchSelection() && !module.has.sizer()) {
-              module.create.sizer();
-            }
-            if(settings.allowTab) {
-              module.set.tabbable();
-            }
-          },
-          select: function() {
-            var
-              selectValues  = module.get.selectValues()
-            ;
-            module.debug('Dropdown initialized on a select', selectValues);
-            if( $module.is('select') ) {
-              $input = $module;
-            }
-            // see if select is placed correctly already
-            if($input.parent(selector.dropdown).length > 0) {
-              module.debug('UI dropdown already exists. Creating dropdown menu only');
-              $module = $input.closest(selector.dropdown);
-              if( !module.has.menu() ) {
-                module.create.menu();
-              }
-              $menu = $module.children(selector.menu);
-              module.setup.menu(selectValues);
-            }
-            else {
-              module.debug('Creating entire dropdown from select');
-              $module = $('<div />')
-                .attr('class', $input.attr('class') )
-                .addClass(className.selection)
-                .addClass(className.dropdown)
-                .html( templates.dropdown(selectValues) )
-                .insertBefore($input)
-              ;
-              if($input.hasClass(className.multiple) && $input.prop('multiple') === false) {
-                module.error(error.missingMultiple);
-                $input.prop('multiple', true);
-              }
-              if($input.is('[multiple]')) {
-                module.set.multiple();
-              }
-              if ($input.prop('disabled')) {
-                module.debug('Disabling dropdown');
-                $module.addClass(className.disabled);
-              }
-              $input
-                .removeAttr('class')
-                .detach()
-                .prependTo($module)
-              ;
-            }
-            module.refresh();
-          },
-          menu: function(values) {
-            $menu.html( templates.menu(values, fields));
-            $item = $menu.find(selector.item);
-          },
-          reference: function() {
-            module.debug('Dropdown behavior was called on select, replacing with closest dropdown');
-            // replace module reference
-            $module  = $module.parent(selector.dropdown);
-            instance = $module.data(moduleNamespace);
-            element  = $module.get(0);
-            module.refresh();
-            module.setup.returnedObject();
-          },
-          returnedObject: function() {
-            var
-              $firstModules = $allModules.slice(0, elementIndex),
-              $lastModules  = $allModules.slice(elementIndex + 1)
-            ;
-            // adjust all modules to use correct reference
-            $allModules = $firstModules.add($module).add($lastModules);
-          }
-        },
-
-        refresh: function() {
-          module.refreshSelectors();
-          module.refreshData();
-        },
-
-        refreshItems: function() {
-          $item = $menu.find(selector.item);
-        },
-
-        refreshSelectors: function() {
-          module.verbose('Refreshing selector cache');
-          $text   = $module.find(selector.text);
-          $search = $module.find(selector.search);
-          $input  = $module.find(selector.input);
-          $icon   = $module.find(selector.icon);
-          $combo  = ($module.prev().find(selector.text).length > 0)
-            ? $module.prev().find(selector.text)
-            : $module.prev()
-          ;
-          $menu    = $module.children(selector.menu);
-          $item    = $menu.find(selector.item);
-        },
-
-        refreshData: function() {
-          module.verbose('Refreshing cached metadata');
-          $item
-            .removeData(metadata.text)
-            .removeData(metadata.value)
-          ;
-        },
-
-        clearData: function() {
-          module.verbose('Clearing metadata');
-          $item
-            .removeData(metadata.text)
-            .removeData(metadata.value)
-          ;
-          $module
-            .removeData(metadata.defaultText)
-            .removeData(metadata.defaultValue)
-            .removeData(metadata.placeholderText)
-          ;
-        },
-
-        toggle: function() {
-          module.verbose('Toggling menu visibility');
-          if( !module.is.active() ) {
-            module.show();
-          }
-          else {
-            module.hide();
-          }
-        },
-
-        show: function(callback) {
-          callback = $.isFunction(callback)
-            ? callback
-            : function(){}
-          ;
-          if(!module.can.show() && module.is.remote()) {
-            module.debug('No API results retrieved, searching before show');
-            module.queryRemote(module.get.query(), module.show);
-          }
-          if( module.can.show() && !module.is.active() ) {
-            module.debug('Showing dropdown');
-            if(module.has.message() && !(module.has.maxSelections() || module.has.allResultsFiltered()) ) {
-              module.remove.message();
-            }
-            if(module.is.allFiltered()) {
-              return true;
-            }
-            if(settings.onShow.call(element) !== false) {
-              module.animate.show(function() {
-                if( module.can.click() ) {
-                  module.bind.intent();
-                }
-                if(module.has.menuSearch()) {
-                  module.focusSearch();
-                }
-                module.set.visible();
-                callback.call(element);
-              });
-            }
-          }
-        },
-
-        hide: function(callback) {
-          callback = $.isFunction(callback)
-            ? callback
-            : function(){}
-          ;
-          if( module.is.active() && !module.is.animatingOutward() ) {
-            module.debug('Hiding dropdown');
-            if(settings.onHide.call(element) !== false) {
-              module.animate.hide(function() {
-                module.remove.visible();
-                callback.call(element);
-              });
-            }
-          }
-        },
-
-        hideOthers: function() {
-          module.verbose('Finding other dropdowns to hide');
-          $allModules
-            .not($module)
-              .has(selector.menu + '.' + className.visible)
-                .dropdown('hide')
-          ;
-        },
-
-        hideMenu: function() {
-          module.verbose('Hiding menu  instantaneously');
-          module.remove.active();
-          module.remove.visible();
-          $menu.transition('hide');
-        },
-
-        hideSubMenus: function() {
-          var
-            $subMenus = $menu.children(selector.item).find(selector.menu)
-          ;
-          module.verbose('Hiding sub menus', $subMenus);
-          $subMenus.transition('hide');
-        },
-
-        bind: {
-          events: function() {
-            if(hasTouch) {
-              module.bind.touchEvents();
-            }
-            module.bind.keyboardEvents();
-            module.bind.inputEvents();
-            module.bind.mouseEvents();
-          },
-          touchEvents: function() {
-            module.debug('Touch device detected binding additional touch events');
-            if( module.is.searchSelection() ) {
-              // do nothing special yet
-            }
-            else if( module.is.single() ) {
-              $module
-                .on('touchstart' + eventNamespace, module.event.test.toggle)
-              ;
-            }
-            $menu
-              .on('touchstart' + eventNamespace, selector.item, module.event.item.mouseenter)
-            ;
-          },
-          keyboardEvents: function() {
-            module.verbose('Binding keyboard events');
-            $module
-              .on('keydown' + eventNamespace, module.event.keydown)
-            ;
-            if( module.has.search() ) {
-              $module
-                .on(module.get.inputEvent() + eventNamespace, selector.search, module.event.input)
-              ;
-            }
-            if( module.is.multiple() ) {
-              $document
-                .on('keydown' + elementNamespace, module.event.document.keydown)
-              ;
-            }
-          },
-          inputEvents: function() {
-            module.verbose('Binding input change events');
-            $module
-              .on('change' + eventNamespace, selector.input, module.event.change)
-            ;
-          },
-          mouseEvents: function() {
-            module.verbose('Binding mouse events');
-            if(module.is.multiple()) {
-              $module
-                .on('click'   + eventNamespace, selector.label,  module.event.label.click)
-                .on('click'   + eventNamespace, selector.remove, module.event.remove.click)
-              ;
-            }
-            if( module.is.searchSelection() ) {
-              $module
-                .on('mousedown' + eventNamespace, module.event.mousedown)
-                .on('mouseup'   + eventNamespace, module.event.mouseup)
-                .on('mousedown' + eventNamespace, selector.menu,   module.event.menu.mousedown)
-                .on('mouseup'   + eventNamespace, selector.menu,   module.event.menu.mouseup)
-                .on('click'     + eventNamespace, selector.icon,   module.event.icon.click)
-                .on('focus'     + eventNamespace, selector.search, module.event.search.focus)
-                .on('click'     + eventNamespace, selector.search, module.event.search.focus)
-                .on('blur'      + eventNamespace, selector.search, module.event.search.blur)
-                .on('click'     + eventNamespace, selector.text,   module.event.text.focus)
-              ;
-              if(module.is.multiple()) {
-                $module
-                  .on('click' + eventNamespace, module.event.click)
-                ;
-              }
-            }
-            else {
-              if(settings.on == 'click') {
-                $module
-                  .on('click' + eventNamespace, module.event.test.toggle)
-                ;
-              }
-              else if(settings.on == 'hover') {
-                $module
-                  .on('mouseenter' + eventNamespace, module.delay.show)
-                  .on('mouseleave' + eventNamespace, module.delay.hide)
-                ;
-              }
-              else {
-                $module
-                  .on(settings.on + eventNamespace, module.toggle)
-                ;
-              }
-              $module
-                .on('click' + eventNamespace, selector.icon, module.event.icon.click)
-                .on('mousedown' + eventNamespace, module.event.mousedown)
-                .on('mouseup'   + eventNamespace, module.event.mouseup)
-                .on('focus'     + eventNamespace, module.event.focus)
-              ;
-              if(module.has.menuSearch() ) {
-                $module
-                  .on('blur' + eventNamespace, selector.search, module.event.search.blur)
-                ;
-              }
-              else {
-                $module
-                  .on('blur' + eventNamespace, module.event.blur)
-                ;
-              }
-            }
-            $menu
-              .on('mouseenter' + eventNamespace, selector.item, module.event.item.mouseenter)
-              .on('mouseleave' + eventNamespace, selector.item, module.event.item.mouseleave)
-              .on('click'      + eventNamespace, selector.item, module.event.item.click)
-            ;
-          },
-          intent: function() {
-            module.verbose('Binding hide intent event to document');
-            if(hasTouch) {
-              $document
-                .on('touchstart' + elementNamespace, module.event.test.touch)
-                .on('touchmove'  + elementNamespace, module.event.test.touch)
-              ;
-            }
-            $document
-              .on('click' + elementNamespace, module.event.test.hide)
-            ;
-          }
-        },
-
-        unbind: {
-          intent: function() {
-            module.verbose('Removing hide intent event from document');
-            if(hasTouch) {
-              $document
-                .off('touchstart' + elementNamespace)
-                .off('touchmove' + elementNamespace)
-              ;
-            }
-            $document
-              .off('click' + elementNamespace)
-            ;
-          }
-        },
-
-        filter: function(query) {
-          var
-            searchTerm = (query !== undefined)
-              ? query
-              : module.get.query(),
-            afterFiltered = function() {
-              if(module.is.multiple()) {
-                module.filterActive();
-              }
-              if(query || (!query && module.get.activeItem().length == 0)) {
-                module.select.firstUnfiltered();
-              }
-              if( module.has.allResultsFiltered() ) {
-                if( settings.onNoResults.call(element, searchTerm) ) {
-                  if(settings.allowAdditions) {
-                    if(settings.hideAdditions) {
-                      module.verbose('User addition with no menu, setting empty style');
-                      module.set.empty();
-                      module.hideMenu();
-                    }
-                  }
-                  else {
-                    module.verbose('All items filtered, showing message', searchTerm);
-                    module.add.message(message.noResults);
-                  }
-                }
-                else {
-                  module.verbose('All items filtered, hiding dropdown', searchTerm);
-                  module.hideMenu();
-                }
-              }
-              else {
-                module.remove.empty();
-                module.remove.message();
-              }
-              if(settings.allowAdditions) {
-                module.add.userSuggestion(query);
-              }
-              if(module.is.searchSelection() && module.can.show() && module.is.focusedOnSearch() ) {
-                module.show();
-              }
-            }
-          ;
-          if(settings.useLabels && module.has.maxSelections()) {
-            return;
-          }
-          if(settings.apiSettings) {
-            if( module.can.useAPI() ) {
-              module.queryRemote(searchTerm, function() {
-                if(settings.filterRemoteData) {
-                  module.filterItems(searchTerm);
-                }
-                afterFiltered();
-              });
-            }
-            else {
-              module.error(error.noAPI);
-            }
-          }
-          else {
-            module.filterItems(searchTerm);
-            afterFiltered();
-          }
-        },
-
-        queryRemote: function(query, callback) {
-          var
-            apiSettings = {
-              errorDuration : false,
-              cache         : 'local',
-              throttle      : settings.throttle,
-              urlData       : {
-                query: query
-              },
-              onError: function() {
-                module.add.message(message.serverError);
-                callback();
-              },
-              onFailure: function() {
-                module.add.message(message.serverError);
-                callback();
-              },
-              onSuccess : function(response) {
-                var
-                  values          = response[fields.remoteValues],
-                  hasRemoteValues = ($.isArray(values) && values.length > 0)
-                ;
-                if(hasRemoteValues) {
-                  module.remove.message();
-                  module.setup.menu({
-                    values: response[fields.remoteValues]
-                  });
-                }
-                else {
-                  module.add.message(message.noResults);
-                }
-                callback();
-              }
-            }
-          ;
-          if( !$module.api('get request') ) {
-            module.setup.api();
-          }
-          apiSettings = $.extend(true, {}, apiSettings, settings.apiSettings);
-          $module
-            .api('setting', apiSettings)
-            .api('query')
-          ;
-        },
-
-        filterItems: function(query) {
-          var
-            searchTerm = (query !== undefined)
-              ? query
-              : module.get.query(),
-            results          =  null,
-            escapedTerm      = module.escape.string(searchTerm),
-            beginsWithRegExp = new RegExp('^' + escapedTerm, 'igm')
-          ;
-          // avoid loop if we're matching nothing
-          if( module.has.query() ) {
-            results = [];
-
-            module.verbose('Searching for matching values', searchTerm);
-            $item
-              .each(function(){
-                var
-                  $choice = $(this),
-                  text,
-                  value
-                ;
-                if(settings.match == 'both' || settings.match == 'text') {
-                  text = String(module.get.choiceText($choice, false));
-                  if(text.search(beginsWithRegExp) !== -1) {
-                    results.push(this);
-                    return true;
-                  }
-                  else if (settings.fullTextSearch === 'exact' && module.exactSearch(searchTerm, text)) {
-                    results.push(this);
-                    return true;
-                  }
-                  else if (settings.fullTextSearch === true && module.fuzzySearch(searchTerm, text)) {
-                    results.push(this);
-                    return true;
-                  }
-                }
-                if(settings.match == 'both' || settings.match == 'value') {
-                  value = String(module.get.choiceValue($choice, text));
-                  if(value.search(beginsWithRegExp) !== -1) {
-                    results.push(this);
-                    return true;
-                  }
-                  else if (settings.fullTextSearch === 'exact' && module.exactSearch(searchTerm, value)) {
-                    results.push(this);
-                    return true;
-                  }
-                  else if (settings.fullTextSearch === true && module.fuzzySearch(searchTerm, value)) {
-                    results.push(this);
-                    return true;
-                  }
-                }
-              })
-            ;
-          }
-          module.debug('Showing only matched items', searchTerm);
-          module.remove.filteredItem();
-          if(results) {
-            $item
-              .not(results)
-              .addClass(className.filtered)
-            ;
-          }
-        },
-
-        fuzzySearch: function(query, term) {
-          var
-            termLength  = term.length,
-            queryLength = query.length
-          ;
-          query = query.toLowerCase();
-          term  = term.toLowerCase();
-          if(queryLength > termLength) {
-            return false;
-          }
-          if(queryLength === termLength) {
-            return (query === term);
-          }
-          search: for (var characterIndex = 0, nextCharacterIndex = 0; characterIndex < queryLength; characterIndex++) {
-            var
-              queryCharacter = query.charCodeAt(characterIndex)
-            ;
-            while(nextCharacterIndex < termLength) {
-              if(term.charCodeAt(nextCharacterIndex++) === queryCharacter) {
-                continue search;
-              }
-            }
-            return false;
-          }
-          return true;
-        },
-        exactSearch: function (query, term) {
-          query = query.toLowerCase();
-          term  = term.toLowerCase();
-          if(term.indexOf(query) > -1) {
-             return true;
-          }
-          return false;
-        },
-        filterActive: function() {
-          if(settings.useLabels) {
-            $item.filter('.' + className.active)
-              .addClass(className.filtered)
-            ;
-          }
-        },
-
-        focusSearch: function(skipHandler) {
-          if( module.has.search() && !module.is.focusedOnSearch() ) {
-            if(skipHandler) {
-              $module.off('focus' + eventNamespace, selector.search);
-              $search.focus();
-              $module.on('focus'  + eventNamespace, selector.search, module.event.search.focus);
-            }
-            else {
-              $search.focus();
-            }
-          }
-        },
-
-        forceSelection: function() {
-          var
-            $currentlySelected = $item.not(className.filtered).filter('.' + className.selected).eq(0),
-            $activeItem        = $item.not(className.filtered).filter('.' + className.active).eq(0),
-            $selectedItem      = ($currentlySelected.length > 0)
-              ? $currentlySelected
-              : $activeItem,
-            hasSelected = ($selectedItem.length > 0)
-          ;
-          if(hasSelected && !module.is.multiple()) {
-            module.debug('Forcing partial selection to selected item', $selectedItem);
-            module.event.item.click.call($selectedItem, {}, true);
-            return;
-          }
-          else {
-            if(settings.allowAdditions) {
-              module.set.selected(module.get.query());
-              module.remove.searchTerm();
-            }
-            else {
-              module.remove.searchTerm();
-            }
-          }
-        },
-
-        change: {
-          values: function(values) {
-            if(!settings.allowAdditions) {
-              module.clear();
-            }
-            module.debug('Creating dropdown with specified values', values);
-            module.setup.menu({values: values});
-            $.each(values, function(index, item) {
-              if(item.selected == true) {
-                module.debug('Setting initial selection to', item.value);
-                module.set.selected(item.value);
-                return true;
-              }
-            });
-          }
-        },
-
-        event: {
-          change: function() {
-            if(!internalChange) {
-              module.debug('Input changed, updating selection');
-              module.set.selected();
-            }
-          },
-          focus: function() {
-            if(settings.showOnFocus && !activated && module.is.hidden() && !pageLostFocus) {
-              module.show();
-            }
-          },
-          blur: function(event) {
-            pageLostFocus = (document.activeElement === this);
-            if(!activated && !pageLostFocus) {
-              module.remove.activeLabel();
-              module.hide();
-            }
-          },
-          mousedown: function() {
-            if(module.is.searchSelection()) {
-              // prevent menu hiding on immediate re-focus
-              willRefocus = true;
-            }
-            else {
-              // prevents focus callback from occurring on mousedown
-              activated = true;
-            }
-          },
-          mouseup: function() {
-            if(module.is.searchSelection()) {
-              // prevent menu hiding on immediate re-focus
-              willRefocus = false;
-            }
-            else {
-              activated = false;
-            }
-          },
-          click: function(event) {
-            var
-              $target = $(event.target)
-            ;
-            // focus search
-            if($target.is($module)) {
-              if(!module.is.focusedOnSearch()) {
-                module.focusSearch();
-              }
-              else {
-                module.show();
-              }
-            }
-          },
-          search: {
-            focus: function() {
-              activated = true;
-              if(module.is.multiple()) {
-                module.remove.activeLabel();
-              }
-              if(settings.showOnFocus) {
-                module.search();
-              }
-            },
-            blur: function(event) {
-              pageLostFocus = (document.activeElement === this);
-              if(module.is.searchSelection() && !willRefocus) {
-                if(!itemActivated && !pageLostFocus) {
-                  if(settings.forceSelection) {
-                    module.forceSelection();
-                  }
-                  module.hide();
-                }
-              }
-              willRefocus = false;
-            }
-          },
-          icon: {
-            click: function(event) {
-              if($icon.hasClass(className.clear)) {
-                module.clear();
-              }
-              else if (module.can.click()) {
-                module.toggle();
-              }
-            }
-          },
-          text: {
-            focus: function(event) {
-              activated = true;
-              module.focusSearch();
-            }
-          },
-          input: function(event) {
-            if(module.is.multiple() || module.is.searchSelection()) {
-              module.set.filtered();
-            }
-            clearTimeout(module.timer);
-            module.timer = setTimeout(module.search, settings.delay.search);
-          },
-          label: {
-            click: function(event) {
-              var
-                $label        = $(this),
-                $labels       = $module.find(selector.label),
-                $activeLabels = $labels.filter('.' + className.active),
-                $nextActive   = $label.nextAll('.' + className.active),
-                $prevActive   = $label.prevAll('.' + className.active),
-                $range = ($nextActive.length > 0)
-                  ? $label.nextUntil($nextActive).add($activeLabels).add($label)
-                  : $label.prevUntil($prevActive).add($activeLabels).add($label)
-              ;
-              if(event.shiftKey) {
-                $activeLabels.removeClass(className.active);
-                $range.addClass(className.active);
-              }
-              else if(event.ctrlKey) {
-                $label.toggleClass(className.active);
-              }
-              else {
-                $activeLabels.removeClass(className.active);
-                $label.addClass(className.active);
-              }
-              settings.onLabelSelect.apply(this, $labels.filter('.' + className.active));
-            }
-          },
-          remove: {
-            click: function() {
-              var
-                $label = $(this).parent()
-              ;
-              if( $label.hasClass(className.active) ) {
-                // remove all selected labels
-                module.remove.activeLabels();
-              }
-              else {
-                // remove this label only
-                module.remove.activeLabels( $label );
-              }
-            }
-          },
-          test: {
-            toggle: function(event) {
-              var
-                toggleBehavior = (module.is.multiple())
-                  ? module.show
-                  : module.toggle
-              ;
-              if(module.is.bubbledLabelClick(event) || module.is.bubbledIconClick(event)) {
-                return;
-              }
-              if( module.determine.eventOnElement(event, toggleBehavior) ) {
-                event.preventDefault();
-              }
-            },
-            touch: function(event) {
-              module.determine.eventOnElement(event, function() {
-                if(event.type == 'touchstart') {
-                  module.timer = setTimeout(function() {
-                    module.hide();
-                  }, settings.delay.touch);
-                }
-                else if(event.type == 'touchmove') {
-                  clearTimeout(module.timer);
-                }
-              });
-              event.stopPropagation();
-            },
-            hide: function(event) {
-              module.determine.eventInModule(event, module.hide);
-            }
-          },
-          select: {
-            mutation: function(mutations) {
-              module.debug('<select> modified, recreating menu');
-              var
-                isSelectMutation = false
-              ;
-              $.each(mutations, function(index, mutation) {
-                if($(mutation.target).is('select') || $(mutation.addedNodes).is('select')) {
-                  isSelectMutation = true;
-                  return true;
-                }
-              });
-              if(isSelectMutation) {
-                module.disconnect.selectObserver();
-                module.refresh();
-                module.setup.select();
-                module.set.selected();
-                module.observe.select();
-              }
-            }
-          },
-          menu: {
-            mutation: function(mutations) {
-              var
-                mutation   = mutations[0],
-                $addedNode = mutation.addedNodes
-                  ? $(mutation.addedNodes[0])
-                  : $(false),
-                $removedNode = mutation.removedNodes
-                  ? $(mutation.removedNodes[0])
-                  : $(false),
-                $changedNodes  = $addedNode.add($removedNode),
-                isUserAddition = $changedNodes.is(selector.addition) || $changedNodes.closest(selector.addition).length > 0,
-                isMessage      = $changedNodes.is(selector.message)  || $changedNodes.closest(selector.message).length > 0
-              ;
-              if(isUserAddition || isMessage) {
-                module.debug('Updating item selector cache');
-                module.refreshItems();
-              }
-              else {
-                module.debug('Menu modified, updating selector cache');
-                module.refresh();
-              }
-            },
-            mousedown: function() {
-              itemActivated = true;
-            },
-            mouseup: function() {
-              itemActivated = false;
-            }
-          },
-          item: {
-            mouseenter: function(event) {
-              var
-                $target        = $(event.target),
-                $item          = $(this),
-                $subMenu       = $item.children(selector.menu),
-                $otherMenus    = $item.siblings(selector.item).children(selector.menu),
-                hasSubMenu     = ($subMenu.length > 0),
-                isBubbledEvent = ($subMenu.find($target).length > 0)
-              ;
-              if( !isBubbledEvent && hasSubMenu ) {
-                clearTimeout(module.itemTimer);
-                module.itemTimer = setTimeout(function() {
-                  module.verbose('Showing sub-menu', $subMenu);
-                  $.each($otherMenus, function() {
-                    module.animate.hide(false, $(this));
-                  });
-                  module.animate.show(false, $subMenu);
-                }, settings.delay.show);
-                event.preventDefault();
-              }
-            },
-            mouseleave: function(event) {
-              var
-                $subMenu = $(this).children(selector.menu)
-              ;
-              if($subMenu.length > 0) {
-                clearTimeout(module.itemTimer);
-                module.itemTimer = setTimeout(function() {
-                  module.verbose('Hiding sub-menu', $subMenu);
-                  module.animate.hide(false, $subMenu);
-                }, settings.delay.hide);
-              }
-            },
-            click: function (event, skipRefocus) {
-              var
-                $choice        = $(this),
-                $target        = (event)
-                  ? $(event.target)
-                  : $(''),
-                $subMenu       = $choice.find(selector.menu),
-                text           = module.get.choiceText($choice),
-                value          = module.get.choiceValue($choice, text),
-                hasSubMenu     = ($subMenu.length > 0),
-                isBubbledEvent = ($subMenu.find($target).length > 0)
-              ;
-              // prevents IE11 bug where menu receives focus even though `tabindex=-1`
-              if(module.has.menuSearch()) {
-                $(document.activeElement).blur();
-              }
-              if(!isBubbledEvent && (!hasSubMenu || settings.allowCategorySelection)) {
-                if(module.is.searchSelection()) {
-                  if(settings.allowAdditions) {
-                    module.remove.userAddition();
-                  }
-                  module.remove.searchTerm();
-                  if(!module.is.focusedOnSearch() && !(skipRefocus == true)) {
-                    module.focusSearch(true);
-                  }
-                }
-                if(!settings.useLabels) {
-                  module.remove.filteredItem();
-                  module.set.scrollPosition($choice);
-                }
-                module.determine.selectAction.call(this, text, value);
-              }
-            }
-          },
-
-          document: {
-            // label selection should occur even when element has no focus
-            keydown: function(event) {
-              var
-                pressedKey    = event.which,
-                isShortcutKey = module.is.inObject(pressedKey, keys)
-              ;
-              if(isShortcutKey) {
-                var
-                  $label            = $module.find(selector.label),
-                  $activeLabel      = $label.filter('.' + className.active),
-                  activeValue       = $activeLabel.data(metadata.value),
-                  labelIndex        = $label.index($activeLabel),
-                  labelCount        = $label.length,
-                  hasActiveLabel    = ($activeLabel.length > 0),
-                  hasMultipleActive = ($activeLabel.length > 1),
-                  isFirstLabel      = (labelIndex === 0),
-                  isLastLabel       = (labelIndex + 1 == labelCount),
-                  isSearch          = module.is.searchSelection(),
-                  isFocusedOnSearch = module.is.focusedOnSearch(),
-                  isFocused         = module.is.focused(),
-                  caretAtStart      = (isFocusedOnSearch && module.get.caretPosition() === 0),
-                  $nextLabel
-                ;
-                if(isSearch && !hasActiveLabel && !isFocusedOnSearch) {
-                  return;
-                }
-
-                if(pressedKey == keys.leftArrow) {
-                  // activate previous label
-                  if((isFocused || caretAtStart) && !hasActiveLabel) {
-                    module.verbose('Selecting previous label');
-                    $label.last().addClass(className.active);
-                  }
-                  else if(hasActiveLabel) {
-                    if(!event.shiftKey) {
-                      module.verbose('Selecting previous label');
-                      $label.removeClass(className.active);
-                    }
-                    else {
-                      module.verbose('Adding previous label to selection');
-                    }
-                    if(isFirstLabel && !hasMultipleActive) {
-                      $activeLabel.addClass(className.active);
-                    }
-                    else {
-                      $activeLabel.prev(selector.siblingLabel)
-                        .addClass(className.active)
-                        .end()
-                      ;
-                    }
-                    event.preventDefault();
-                  }
-                }
-                else if(pressedKey == keys.rightArrow) {
-                  // activate first label
-                  if(isFocused && !hasActiveLabel) {
-                    $label.first().addClass(className.active);
-                  }
-                  // activate next label
-                  if(hasActiveLabel) {
-                    if(!event.shiftKey) {
-                      module.verbose('Selecting next label');
-                      $label.removeClass(className.active);
-                    }
-                    else {
-                      module.verbose('Adding next label to selection');
-                    }
-                    if(isLastLabel) {
-                      if(isSearch) {
-                        if(!isFocusedOnSearch) {
-                          module.focusSearch();
-                        }
-                        else {
-                          $label.removeClass(className.active);
-                        }
-                      }
-                      else if(hasMultipleActive) {
-                        $activeLabel.next(selector.siblingLabel).addClass(className.active);
-                      }
-                      else {
-                        $activeLabel.addClass(className.active);
-                      }
-                    }
-                    else {
-                      $activeLabel.next(selector.siblingLabel).addClass(className.active);
-                    }
-                    event.preventDefault();
-                  }
-                }
-                else if(pressedKey == keys.deleteKey || pressedKey == keys.backspace) {
-                  if(hasActiveLabel) {
-                    module.verbose('Removing active labels');
-                    if(isLastLabel) {
-                      if(isSearch && !isFocusedOnSearch) {
-                        module.focusSearch();
-                      }
-                    }
-                    $activeLabel.last().next(selector.siblingLabel).addClass(className.active);
-                    module.remove.activeLabels($activeLabel);
-                    event.preventDefault();
-                  }
-                  else if(caretAtStart && !hasActiveLabel && pressedKey == keys.backspace) {
-                    module.verbose('Removing last label on input backspace');
-                    $activeLabel = $label.last().addClass(className.active);
-                    module.remove.activeLabels($activeLabel);
-                  }
-                }
-                else {
-                  $activeLabel.removeClass(className.active);
-                }
-              }
-            }
-          },
-
-          keydown: function(event) {
-            var
-              pressedKey    = event.which,
-              isShortcutKey = module.is.inObject(pressedKey, keys)
-            ;
-            if(isShortcutKey) {
-              var
-                $currentlySelected = $item.not(selector.unselectable).filter('.' + className.selected).eq(0),
-                $activeItem        = $menu.children('.' + className.active).eq(0),
-                $selectedItem      = ($currentlySelected.length > 0)
-                  ? $currentlySelected
-                  : $activeItem,
-                $visibleItems = ($selectedItem.length > 0)
-                  ? $selectedItem.siblings(':not(.' + className.filtered +')').addBack()
-                  : $menu.children(':not(.' + className.filtered +')'),
-                $subMenu              = $selectedItem.children(selector.menu),
-                $parentMenu           = $selectedItem.closest(selector.menu),
-                inVisibleMenu         = ($parentMenu.hasClass(className.visible) || $parentMenu.hasClass(className.animating) || $parentMenu.parent(selector.menu).length > 0),
-                hasSubMenu            = ($subMenu.length> 0),
-                hasSelectedItem       = ($selectedItem.length > 0),
-                selectedIsSelectable  = ($selectedItem.not(selector.unselectable).length > 0),
-                delimiterPressed      = (pressedKey == keys.delimiter && settings.allowAdditions && module.is.multiple()),
-                isAdditionWithoutMenu = (settings.allowAdditions && settings.hideAdditions && (pressedKey == keys.enter || delimiterPressed) && selectedIsSelectable),
-                $nextItem,
-                isSubMenuItem,
-                newIndex
-              ;
-              // allow selection with menu closed
-              if(isAdditionWithoutMenu) {
-                module.verbose('Selecting item from keyboard shortcut', $selectedItem);
-                module.event.item.click.call($selectedItem, event);
-                if(module.is.searchSelection()) {
-                  module.remove.searchTerm();
-                }
-              }
-
-              // visible menu keyboard shortcuts
-              if( module.is.visible() ) {
-
-                // enter (select or open sub-menu)
-                if(pressedKey == keys.enter || delimiterPressed) {
-                  if(pressedKey == keys.enter && hasSelectedItem && hasSubMenu && !settings.allowCategorySelection) {
-                    module.verbose('Pressed enter on unselectable category, opening sub menu');
-                    pressedKey = keys.rightArrow;
-                  }
-                  else if(selectedIsSelectable) {
-                    module.verbose('Selecting item from keyboard shortcut', $selectedItem);
-                    module.event.item.click.call($selectedItem, event);
-                    if(module.is.searchSelection()) {
-                      module.remove.searchTerm();
-                    }
-                  }
-                  event.preventDefault();
-                }
-
-                // sub-menu actions
-                if(hasSelectedItem) {
-
-                  if(pressedKey == keys.leftArrow) {
-
-                    isSubMenuItem = ($parentMenu[0] !== $menu[0]);
-
-                    if(isSubMenuItem) {
-                      module.verbose('Left key pressed, closing sub-menu');
-                      module.animate.hide(false, $parentMenu);
-                      $selectedItem
-                        .removeClass(className.selected)
-                      ;
-                      $parentMenu
-                        .closest(selector.item)
-                          .addClass(className.selected)
-                      ;
-                      event.preventDefault();
-                    }
-                  }
-
-                  // right arrow (show sub-menu)
-                  if(pressedKey == keys.rightArrow) {
-                    if(hasSubMenu) {
-                      module.verbose('Right key pressed, opening sub-menu');
-                      module.animate.show(false, $subMenu);
-                      $selectedItem
-                        .removeClass(className.selected)
-                      ;
-                      $subMenu
-                        .find(selector.item).eq(0)
-                          .addClass(className.selected)
-                      ;
-                      event.preventDefault();
-                    }
-                  }
-                }
-
-                // up arrow (traverse menu up)
-                if(pressedKey == keys.upArrow) {
-                  $nextItem = (hasSelectedItem && inVisibleMenu)
-                    ? $selectedItem.prevAll(selector.item + ':not(' + selector.unselectable + ')').eq(0)
-                    : $item.eq(0)
-                  ;
-                  if($visibleItems.index( $nextItem ) < 0) {
-                    module.verbose('Up key pressed but reached top of current menu');
-                    event.preventDefault();
-                    return;
-                  }
-                  else {
-                    module.verbose('Up key pressed, changing active item');
-                    $selectedItem
-                      .removeClass(className.selected)
-                    ;
-                    $nextItem
-                      .addClass(className.selected)
-                    ;
-                    module.set.scrollPosition($nextItem);
-                    if(settings.selectOnKeydown && module.is.single()) {
-                      module.set.selectedItem($nextItem);
-                    }
-                  }
-                  event.preventDefault();
-                }
-
-                // down arrow (traverse menu down)
-                if(pressedKey == keys.downArrow) {
-                  $nextItem = (hasSelectedItem && inVisibleMenu)
-                    ? $nextItem = $selectedItem.nextAll(selector.item + ':not(' + selector.unselectable + ')').eq(0)
-                    : $item.eq(0)
-                  ;
-                  if($nextItem.length === 0) {
-                    module.verbose('Down key pressed but reached bottom of current menu');
-                    event.preventDefault();
-                    return;
-                  }
-                  else {
-                    module.verbose('Down key pressed, changing active item');
-                    $item
-                      .removeClass(className.selected)
-                    ;
-                    $nextItem
-                      .addClass(className.selected)
-                    ;
-                    module.set.scrollPosition($nextItem);
-                    if(settings.selectOnKeydown && module.is.single()) {
-                      module.set.selectedItem($nextItem);
-                    }
-                  }
-                  event.preventDefault();
-                }
-
-                // page down (show next page)
-                if(pressedKey == keys.pageUp) {
-                  module.scrollPage('up');
-                  event.preventDefault();
-                }
-                if(pressedKey == keys.pageDown) {
-                  module.scrollPage('down');
-                  event.preventDefault();
-                }
-
-                // escape (close menu)
-                if(pressedKey == keys.escape) {
-                  module.verbose('Escape key pressed, closing dropdown');
-                  module.hide();
-                }
-
-              }
-              else {
-                // delimiter key
-                if(delimiterPressed) {
-                  event.preventDefault();
-                }
-                // down arrow (open menu)
-                if(pressedKey == keys.downArrow && !module.is.visible()) {
-                  module.verbose('Down key pressed, showing dropdown');
-                  module.show();
-                  event.preventDefault();
-                }
-              }
-            }
-            else {
-              if( !module.has.search() ) {
-                module.set.selectedLetter( String.fromCharCode(pressedKey) );
-              }
-            }
-          }
-        },
-
-        trigger: {
-          change: function() {
-            var
-              events       = document.createEvent('HTMLEvents'),
-              inputElement = $input[0]
-            ;
-            if(inputElement) {
-              module.verbose('Triggering native change event');
-              events.initEvent('change', true, false);
-              inputElement.dispatchEvent(events);
-            }
-          }
-        },
-
-        determine: {
-          selectAction: function(text, value) {
-            module.verbose('Determining action', settings.action);
-            if( $.isFunction( module.action[settings.action] ) ) {
-              module.verbose('Triggering preset action', settings.action, text, value);
-              module.action[ settings.action ].call(element, text, value, this);
-            }
-            else if( $.isFunction(settings.action) ) {
-              module.verbose('Triggering user action', settings.action, text, value);
-              settings.action.call(element, text, value, this);
-            }
-            else {
-              module.error(error.action, settings.action);
-            }
-          },
-          eventInModule: function(event, callback) {
-            var
-              $target    = $(event.target),
-              inDocument = ($target.closest(document.documentElement).length > 0),
-              inModule   = ($target.closest($module).length > 0)
-            ;
-            callback = $.isFunction(callback)
-              ? callback
-              : function(){}
-            ;
-            if(inDocument && !inModule) {
-              module.verbose('Triggering event', callback);
-              callback();
-              return true;
-            }
-            else {
-              module.verbose('Event occurred in dropdown, canceling callback');
-              return false;
-            }
-          },
-          eventOnElement: function(event, callback) {
-            var
-              $target      = $(event.target),
-              $label       = $target.closest(selector.siblingLabel),
-              inVisibleDOM = document.body.contains(event.target),
-              notOnLabel   = ($module.find($label).length === 0),
-              notInMenu    = ($target.closest($menu).length === 0)
-            ;
-            callback = $.isFunction(callback)
-              ? callback
-              : function(){}
-            ;
-            if(inVisibleDOM && notOnLabel && notInMenu) {
-              module.verbose('Triggering event', callback);
-              callback();
-              return true;
-            }
-            else {
-              module.verbose('Event occurred in dropdown menu, canceling callback');
-              return false;
-            }
-          }
-        },
-
-        action: {
-
-          nothing: function() {},
-
-          activate: function(text, value, element) {
-            value = (value !== undefined)
-              ? value
-              : text
-            ;
-            if( module.can.activate( $(element) ) ) {
-              module.set.selected(value, $(element));
-              if(module.is.multiple() && !module.is.allFiltered()) {
-                return;
-              }
-              else {
-                module.hideAndClear();
-              }
-            }
-          },
-
-          select: function(text, value, element) {
-            value = (value !== undefined)
-              ? value
-              : text
-            ;
-            if( module.can.activate( $(element) ) ) {
-              module.set.value(value, text, $(element));
-              if(module.is.multiple() && !module.is.allFiltered()) {
-                return;
-              }
-              else {
-                module.hideAndClear();
-              }
-            }
-          },
-
-          combo: function(text, value, element) {
-            value = (value !== undefined)
-              ? value
-              : text
-            ;
-            module.set.selected(value, $(element));
-            module.hideAndClear();
-          },
-
-          hide: function(text, value, element) {
-            module.set.value(value, text, $(element));
-            module.hideAndClear();
-          }
-
-        },
-
-        get: {
-          id: function() {
-            return id;
-          },
-          defaultText: function() {
-            return $module.data(metadata.defaultText);
-          },
-          defaultValue: function() {
-            return $module.data(metadata.defaultValue);
-          },
-          placeholderText: function() {
-            if(settings.placeholder != 'auto' && typeof settings.placeholder == 'string') {
-              return settings.placeholder;
-            }
-            return $module.data(metadata.placeholderText) || '';
-          },
-          text: function() {
-            return $text.text();
-          },
-          query: function() {
-            return $.trim($search.val());
-          },
-          searchWidth: function(value) {
-            value = (value !== undefined)
-              ? value
-              : $search.val()
-            ;
-            $sizer.text(value);
-            // prevent rounding issues
-            return Math.ceil( $sizer.width() + 1);
-          },
-          selectionCount: function() {
-            var
-              values = module.get.values(),
-              count
-            ;
-            count = ( module.is.multiple() )
-              ? $.isArray(values)
-                ? values.length
-                : 0
-              : (module.get.value() !== '')
-                ? 1
-                : 0
-            ;
-            return count;
-          },
-          transition: function($subMenu) {
-            return (settings.transition == 'auto')
-              ? module.is.upward($subMenu)
-                ? 'slide up'
-                : 'slide down'
-              : settings.transition
-            ;
-          },
-          userValues: function() {
-            var
-              values = module.get.values()
-            ;
-            if(!values) {
-              return false;
-            }
-            values = $.isArray(values)
-              ? values
-              : [values]
-            ;
-            return $.grep(values, function(value) {
-              return (module.get.item(value) === false);
-            });
-          },
-          uniqueArray: function(array) {
-            return $.grep(array, function (value, index) {
-                return $.inArray(value, array) === index;
-            });
-          },
-          caretPosition: function() {
-            var
-              input = $search.get(0),
-              range,
-              rangeLength
-            ;
-            if('selectionStart' in input) {
-              return input.selectionStart;
-            }
-            else if (document.selection) {
-              input.focus();
-              range       = document.selection.createRange();
-              rangeLength = range.text.length;
-              range.moveStart('character', -input.value.length);
-              return range.text.length - rangeLength;
-            }
-          },
-          value: function() {
-            var
-              value = ($input.length > 0)
-                ? $input.val()
-                : $module.data(metadata.value),
-              isEmptyMultiselect = ($.isArray(value) && value.length === 1 && value[0] === '')
-            ;
-            // prevents placeholder element from being selected when multiple
-            return (value === undefined || isEmptyMultiselect)
-              ? ''
-              : value
-            ;
-          },
-          values: function() {
-            var
-              value = module.get.value()
-            ;
-            if(value === '') {
-              return '';
-            }
-            return ( !module.has.selectInput() && module.is.multiple() )
-              ? (typeof value == 'string') // delimited string
-                ? value.split(settings.delimiter)
-                : ''
-              : value
-            ;
-          },
-          remoteValues: function() {
-            var
-              values = module.get.values(),
-              remoteValues = false
-            ;
-            if(values) {
-              if(typeof values == 'string') {
-                values = [values];
-              }
-              $.each(values, function(index, value) {
-                var
-                  name = module.read.remoteData(value)
-                ;
-                module.verbose('Restoring value from session data', name, value);
-                if(name) {
-                  if(!remoteValues) {
-                    remoteValues = {};
-                  }
-                  remoteValues[value] = name;
-                }
-              });
-            }
-            return remoteValues;
-          },
-          choiceText: function($choice, preserveHTML) {
-            preserveHTML = (preserveHTML !== undefined)
-              ? preserveHTML
-              : settings.preserveHTML
-            ;
-            if($choice) {
-              if($choice.find(selector.menu).length > 0) {
-                module.verbose('Retrieving text of element with sub-menu');
-                $choice = $choice.clone();
-                $choice.find(selector.menu).remove();
-                $choice.find(selector.menuIcon).remove();
-              }
-              return ($choice.data(metadata.text) !== undefined)
-                ? $choice.data(metadata.text)
-                : (preserveHTML)
-                  ? $.trim($choice.html())
-                  : $.trim($choice.text())
-              ;
-            }
-          },
-          choiceValue: function($choice, choiceText) {
-            choiceText = choiceText || module.get.choiceText($choice);
-            if(!$choice) {
-              return false;
-            }
-            return ($choice.data(metadata.value) !== undefined)
-              ? String( $choice.data(metadata.value) )
-              : (typeof choiceText === 'string')
-                ? $.trim(choiceText.toLowerCase())
-                : String(choiceText)
-            ;
-          },
-          inputEvent: function() {
-            var
-              input = $search[0]
-            ;
-            if(input) {
-              return (input.oninput !== undefined)
-                ? 'input'
-                : (input.onpropertychange !== undefined)
-                  ? 'propertychange'
-                  : 'keyup'
-              ;
-            }
-            return false;
-          },
-          selectValues: function() {
-            var
-              select = {}
-            ;
-            select.values = [];
-            $module
-              .find('option')
-                .each(function() {
-                  var
-                    $option  = $(this),
-                    name     = $option.html(),
-                    disabled = $option.attr('disabled'),
-                    value    = ( $option.attr('value') !== undefined )
-                      ? $option.attr('value')
-                      : name
-                  ;
-                  if(settings.placeholder === 'auto' && value === '') {
-                    select.placeholder = name;
-                  }
-                  else {
-                    select.values.push({
-                      name     : name,
-                      value    : value,
-                      disabled : disabled
-                    });
-                  }
-                })
-            ;
-            if(settings.placeholder && settings.placeholder !== 'auto') {
-              module.debug('Setting placeholder value to', settings.placeholder);
-              select.placeholder = settings.placeholder;
-            }
-            if(settings.sortSelect) {
-              select.values.sort(function(a, b) {
-                return (a.name > b.name)
-                  ? 1
-                  : -1
-                ;
-              });
-              module.debug('Retrieved and sorted values from select', select);
-            }
-            else {
-              module.debug('Retrieved values from select', select);
-            }
-            return select;
-          },
-          activeItem: function() {
-            return $item.filter('.'  + className.active);
-          },
-          selectedItem: function() {
-            var
-              $selectedItem = $item.not(selector.unselectable).filter('.'  + className.selected)
-            ;
-            return ($selectedItem.length > 0)
-              ? $selectedItem
-              : $item.eq(0)
-            ;
-          },
-          itemWithAdditions: function(value) {
-            var
-              $items       = module.get.item(value),
-              $userItems   = module.create.userChoice(value),
-              hasUserItems = ($userItems && $userItems.length > 0)
-            ;
-            if(hasUserItems) {
-              $items = ($items.length > 0)
-                ? $items.add($userItems)
-                : $userItems
-              ;
-            }
-            return $items;
-          },
-          item: function(value, strict) {
-            var
-              $selectedItem = false,
-              shouldSearch,
-              isMultiple
-            ;
-            value = (value !== undefined)
-              ? value
-              : ( module.get.values() !== undefined)
-                ? module.get.values()
-                : module.get.text()
-            ;
-            shouldSearch = (isMultiple)
-              ? (value.length > 0)
-              : (value !== undefined && value !== null)
-            ;
-            isMultiple = (module.is.multiple() && $.isArray(value));
-            strict     = (value === '' || value === 0)
-              ? true
-              : strict || false
-            ;
-            if(shouldSearch) {
-              $item
-                .each(function() {
-                  var
-                    $choice       = $(this),
-                    optionText    = module.get.choiceText($choice),
-                    optionValue   = module.get.choiceValue($choice, optionText)
-                  ;
-                  // safe early exit
-                  if(optionValue === null || optionValue === undefined) {
-                    return;
-                  }
-                  if(isMultiple) {
-                    if($.inArray( String(optionValue), value) !== -1 || $.inArray(optionText, value) !== -1) {
-                      $selectedItem = ($selectedItem)
-                        ? $selectedItem.add($choice)
-                        : $choice
-                      ;
-                    }
-                  }
-                  else if(strict) {
-                    module.verbose('Ambiguous dropdown value using strict type check', $choice, value);
-                    if( optionValue === value || optionText === value) {
-                      $selectedItem = $choice;
-                      return true;
-                    }
-                  }
-                  else {
-                    if( String(optionValue) == String(value) || optionText == value) {
-                      module.verbose('Found select item by value', optionValue, value);
-                      $selectedItem = $choice;
-                      return true;
-                    }
-                  }
-                })
-              ;
-            }
-            return $selectedItem;
-          }
-        },
-
-        check: {
-          maxSelections: function(selectionCount) {
-            if(settings.maxSelections) {
-              selectionCount = (selectionCount !== undefined)
-                ? selectionCount
-                : module.get.selectionCount()
-              ;
-              if(selectionCount >= settings.maxSelections) {
-                module.debug('Maximum selection count reached');
-                if(settings.useLabels) {
-                  $item.addClass(className.filtered);
-                  module.add.message(message.maxSelections);
-                }
-                return true;
-              }
-              else {
-                module.verbose('No longer at maximum selection count');
-                module.remove.message();
-                module.remove.filteredItem();
-                if(module.is.searchSelection()) {
-                  module.filterItems();
-                }
-                return false;
-              }
-            }
-            return true;
-          }
-        },
-
-        restore: {
-          defaults: function() {
-            module.clear();
-            module.restore.defaultText();
-            module.restore.defaultValue();
-          },
-          defaultText: function() {
-            var
-              defaultText     = module.get.defaultText(),
-              placeholderText = module.get.placeholderText
-            ;
-            if(defaultText === placeholderText) {
-              module.debug('Restoring default placeholder text', defaultText);
-              module.set.placeholderText(defaultText);
-            }
-            else {
-              module.debug('Restoring default text', defaultText);
-              module.set.text(defaultText);
-            }
-          },
-          placeholderText: function() {
-            module.set.placeholderText();
-          },
-          defaultValue: function() {
-            var
-              defaultValue = module.get.defaultValue()
-            ;
-            if(defaultValue !== undefined) {
-              module.debug('Restoring default value', defaultValue);
-              if(defaultValue !== '') {
-                module.set.value(defaultValue);
-                module.set.selected();
-              }
-              else {
-                module.remove.activeItem();
-                module.remove.selectedItem();
-              }
-            }
-          },
-          labels: function() {
-            if(settings.allowAdditions) {
-              if(!settings.useLabels) {
-                module.error(error.labels);
-                settings.useLabels = true;
-              }
-              module.debug('Restoring selected values');
-              module.create.userLabels();
-            }
-            module.check.maxSelections();
-          },
-          selected: function() {
-            module.restore.values();
-            if(module.is.multiple()) {
-              module.debug('Restoring previously selected values and labels');
-              module.restore.labels();
-            }
-            else {
-              module.debug('Restoring previously selected values');
-            }
-          },
-          values: function() {
-            // prevents callbacks from occurring on initial load
-            module.set.initialLoad();
-            if(settings.apiSettings && settings.saveRemoteData && module.get.remoteValues()) {
-              module.restore.remoteValues();
-            }
-            else {
-              module.set.selected();
-            }
-            module.remove.initialLoad();
-          },
-          remoteValues: function() {
-            var
-              values = module.get.remoteValues()
-            ;
-            module.debug('Recreating selected from session data', values);
-            if(values) {
-              if( module.is.single() ) {
-                $.each(values, function(value, name) {
-                  module.set.text(name);
-                });
-              }
-              else {
-                $.each(values, function(value, name) {
-                  module.add.label(value, name);
-                });
-              }
-            }
-          }
-        },
-
-        read: {
-          remoteData: function(value) {
-            var
-              name
-            ;
-            if(window.Storage === undefined) {
-              module.error(error.noStorage);
-              return;
-            }
-            name = sessionStorage.getItem(value);
-            return (name !== undefined)
-              ? name
-              : false
-            ;
-          }
-        },
-
-        save: {
-          defaults: function() {
-            module.save.defaultText();
-            module.save.placeholderText();
-            module.save.defaultValue();
-          },
-          defaultValue: function() {
-            var
-              value = module.get.value()
-            ;
-            module.verbose('Saving default value as', value);
-            $module.data(metadata.defaultValue, value);
-          },
-          defaultText: function() {
-            var
-              text = module.get.text()
-            ;
-            module.verbose('Saving default text as', text);
-            $module.data(metadata.defaultText, text);
-          },
-          placeholderText: function() {
-            var
-              text
-            ;
-            if(settings.placeholder !== false && $text.hasClass(className.placeholder)) {
-              text = module.get.text();
-              module.verbose('Saving placeholder text as', text);
-              $module.data(metadata.placeholderText, text);
-            }
-          },
-          remoteData: function(name, value) {
-            if(window.Storage === undefined) {
-              module.error(error.noStorage);
-              return;
-            }
-            module.verbose('Saving remote data to session storage', value, name);
-            sessionStorage.setItem(value, name);
-          }
-        },
-
-        clear: function() {
-          if(module.is.multiple() && settings.useLabels) {
-            module.remove.labels();
-          }
-          else {
-            module.remove.activeItem();
-            module.remove.selectedItem();
-          }
-          module.set.placeholderText();
-          module.clearValue();
-        },
-
-        clearValue: function() {
-          module.set.value('');
-        },
-
-        scrollPage: function(direction, $selectedItem) {
-          var
-            $currentItem  = $selectedItem || module.get.selectedItem(),
-            $menu         = $currentItem.closest(selector.menu),
-            menuHeight    = $menu.outerHeight(),
-            currentScroll = $menu.scrollTop(),
-            itemHeight    = $item.eq(0).outerHeight(),
-            itemsPerPage  = Math.floor(menuHeight / itemHeight),
-            maxScroll     = $menu.prop('scrollHeight'),
-            newScroll     = (direction == 'up')
-              ? currentScroll - (itemHeight * itemsPerPage)
-              : currentScroll + (itemHeight * itemsPerPage),
-            $selectableItem = $item.not(selector.unselectable),
-            isWithinRange,
-            $nextSelectedItem,
-            elementIndex
-          ;
-          elementIndex      = (direction == 'up')
-            ? $selectableItem.index($currentItem) - itemsPerPage
-            : $selectableItem.index($currentItem) + itemsPerPage
-          ;
-          isWithinRange = (direction == 'up')
-            ? (elementIndex >= 0)
-            : (elementIndex < $selectableItem.length)
-          ;
-          $nextSelectedItem = (isWithinRange)
-            ? $selectableItem.eq(elementIndex)
-            : (direction == 'up')
-              ? $selectableItem.first()
-              : $selectableItem.last()
-          ;
-          if($nextSelectedItem.length > 0) {
-            module.debug('Scrolling page', direction, $nextSelectedItem);
-            $currentItem
-              .removeClass(className.selected)
-            ;
-            $nextSelectedItem
-              .addClass(className.selected)
-            ;
-            if(settings.selectOnKeydown && module.is.single()) {
-              module.set.selectedItem($nextSelectedItem);
-            }
-            $menu
-              .scrollTop(newScroll)
-            ;
-          }
-        },
-
-        set: {
-          filtered: function() {
-            var
-              isMultiple       = module.is.multiple(),
-              isSearch         = module.is.searchSelection(),
-              isSearchMultiple = (isMultiple && isSearch),
-              searchValue      = (isSearch)
-                ? module.get.query()
-                : '',
-              hasSearchValue   = (typeof searchValue === 'string' && searchValue.length > 0),
-              searchWidth      = module.get.searchWidth(),
-              valueIsSet       = searchValue !== ''
-            ;
-            if(isMultiple && hasSearchValue) {
-              module.verbose('Adjusting input width', searchWidth, settings.glyphWidth);
-              $search.css('width', searchWidth);
-            }
-            if(hasSearchValue || (isSearchMultiple && valueIsSet)) {
-              module.verbose('Hiding placeholder text');
-              $text.addClass(className.filtered);
-            }
-            else if(!isMultiple || (isSearchMultiple && !valueIsSet)) {
-              module.verbose('Showing placeholder text');
-              $text.removeClass(className.filtered);
-            }
-          },
-          empty: function() {
-            $module.addClass(className.empty);
-          },
-          loading: function() {
-            $module.addClass(className.loading);
-          },
-          placeholderText: function(text) {
-            text = text || module.get.placeholderText();
-            module.debug('Setting placeholder text', text);
-            module.set.text(text);
-            $text.addClass(className.placeholder);
-          },
-          tabbable: function() {
-            if( module.is.searchSelection() ) {
-              module.debug('Added tabindex to searchable dropdown');
-              $search
-                .val('')
-                .attr('tabindex', 0)
-              ;
-              $menu
-                .attr('tabindex', -1)
-              ;
-            }
-            else {
-              module.debug('Added tabindex to dropdown');
-              if( $module.attr('tabindex') === undefined) {
-                $module
-                  .attr('tabindex', 0)
-                ;
-                $menu
-                  .attr('tabindex', -1)
-                ;
-              }
-            }
-          },
-          initialLoad: function() {
-            module.verbose('Setting initial load');
-            initialLoad = true;
-          },
-          activeItem: function($item) {
-            if( settings.allowAdditions && $item.filter(selector.addition).length > 0 ) {
-              $item.addClass(className.filtered);
-            }
-            else {
-              $item.addClass(className.active);
-            }
-          },
-          partialSearch: function(text) {
-            var
-              length = module.get.query().length
-            ;
-            $search.val( text.substr(0, length));
-          },
-          scrollPosition: function($item, forceScroll) {
-            var
-              edgeTolerance = 5,
-              $menu,
-              hasActive,
-              offset,
-              itemHeight,
-              itemOffset,
-              menuOffset,
-              menuScroll,
-              menuHeight,
-              abovePage,
-              belowPage
-            ;
-
-            $item       = $item || module.get.selectedItem();
-            $menu       = $item.closest(selector.menu);
-            hasActive   = ($item && $item.length > 0);
-            forceScroll = (forceScroll !== undefined)
-              ? forceScroll
-              : false
-            ;
-            if($item && $menu.length > 0 && hasActive) {
-              itemOffset = $item.position().top;
-
-              $menu.addClass(className.loading);
-              menuScroll = $menu.scrollTop();
-              menuOffset = $menu.offset().top;
-              itemOffset = $item.offset().top;
-              offset     = menuScroll - menuOffset + itemOffset;
-              if(!forceScroll) {
-                menuHeight = $menu.height();
-                belowPage  = menuScroll + menuHeight < (offset + edgeTolerance);
-                abovePage  = ((offset - edgeTolerance) < menuScroll);
-              }
-              module.debug('Scrolling to active item', offset);
-              if(forceScroll || abovePage || belowPage) {
-                $menu.scrollTop(offset);
-              }
-              $menu.removeClass(className.loading);
-            }
-          },
-          text: function(text) {
-            if(settings.action !== 'select') {
-              if(settings.action == 'combo') {
-                module.debug('Changing combo button text', text, $combo);
-                if(settings.preserveHTML) {
-                  $combo.html(text);
-                }
-                else {
-                  $combo.text(text);
-                }
-              }
-              else {
-                if(text !== module.get.placeholderText()) {
-                  $text.removeClass(className.placeholder);
-                }
-                module.debug('Changing text', text, $text);
-                $text
-                  .removeClass(className.filtered)
-                ;
-                if(settings.preserveHTML) {
-                  $text.html(text);
-                }
-                else {
-                  $text.text(text);
-                }
-              }
-            }
-          },
-          selectedItem: function($item) {
-            var
-              value      = module.get.choiceValue($item),
-              searchText = module.get.choiceText($item, false),
-              text       = module.get.choiceText($item, true)
-            ;
-            module.debug('Setting user selection to item', $item);
-            module.remove.activeItem();
-            module.set.partialSearch(searchText);
-            module.set.activeItem($item);
-            module.set.selected(value, $item);
-            module.set.text(text);
-          },
-          selectedLetter: function(letter) {
-            var
-              $selectedItem         = $item.filter('.' + className.selected),
-              alreadySelectedLetter = $selectedItem.length > 0 && module.has.firstLetter($selectedItem, letter),
-              $nextValue            = false,
-              $nextItem
-            ;
-            // check next of same letter
-            if(alreadySelectedLetter) {
-              $nextItem = $selectedItem.nextAll($item).eq(0);
-              if( module.has.firstLetter($nextItem, letter) ) {
-                $nextValue  = $nextItem;
-              }
-            }
-            // check all values
-            if(!$nextValue) {
-              $item
-                .each(function(){
-                  if(module.has.firstLetter($(this), letter)) {
-                    $nextValue = $(this);
-                    return false;
-                  }
-                })
-              ;
-            }
-            // set next value
-            if($nextValue) {
-              module.verbose('Scrolling to next value with letter', letter);
-              module.set.scrollPosition($nextValue);
-              $selectedItem.removeClass(className.selected);
-              $nextValue.addClass(className.selected);
-              if(settings.selectOnKeydown && module.is.single()) {
-                module.set.selectedItem($nextValue);
-              }
-            }
-          },
-          direction: function($menu) {
-            if(settings.direction == 'auto') {
-              // reset position
-              module.remove.upward();
-
-              if(module.can.openDownward($menu)) {
-                module.remove.upward($menu);
-              }
-              else {
-                module.set.upward($menu);
-              }
-              if(!module.is.leftward($menu) && !module.can.openRightward($menu)) {
-                module.set.leftward($menu);
-              }
-            }
-            else if(settings.direction == 'upward') {
-              module.set.upward($menu);
-            }
-          },
-          upward: function($currentMenu) {
-            var $element = $currentMenu || $module;
-            $element.addClass(className.upward);
-          },
-          leftward: function($currentMenu) {
-            var $element = $currentMenu || $menu;
-            $element.addClass(className.leftward);
-          },
-          value: function(value, text, $selected) {
-            var
-              escapedValue = module.escape.value(value),
-              hasInput     = ($input.length > 0),
-              currentValue = module.get.values(),
-              stringValue  = (value !== undefined)
-                ? String(value)
-                : value,
-              newValue
-            ;
-            if(hasInput) {
-              if(!settings.allowReselection && stringValue == currentValue) {
-                module.verbose('Skipping value update already same value', value, currentValue);
-                if(!module.is.initialLoad()) {
-                  return;
-                }
-              }
-
-              if( module.is.single() && module.has.selectInput() && module.can.extendSelect() ) {
-                module.debug('Adding user option', value);
-                module.add.optionValue(value);
-              }
-              module.debug('Updating input value', escapedValue, currentValue);
-              internalChange = true;
-              $input
-                .val(escapedValue)
-              ;
-              if(settings.fireOnInit === false && module.is.initialLoad()) {
-                module.debug('Input native change event ignored on initial load');
-              }
-              else {
-                module.trigger.change();
-              }
-              internalChange = false;
-            }
-            else {
-              module.verbose('Storing value in metadata', escapedValue, $input);
-              if(escapedValue !== currentValue) {
-                $module.data(metadata.value, stringValue);
-              }
-            }
-            if(module.is.single() && settings.clearable) {
-              // treat undefined or '' as empty
-              if(!escapedValue) {
-                module.remove.clearable();
-              }
-              else {
-                module.set.clearable();
-              }
-            }
-            if(settings.fireOnInit === false && module.is.initialLoad()) {
-              module.verbose('No callback on initial load', settings.onChange);
-            }
-            else {
-              settings.onChange.call(element, value, text, $selected);
-            }
-          },
-          active: function() {
-            $module
-              .addClass(className.active)
-            ;
-          },
-          multiple: function() {
-            $module.addClass(className.multiple);
-          },
-          visible: function() {
-            $module.addClass(className.visible);
-          },
-          exactly: function(value, $selectedItem) {
-            module.debug('Setting selected to exact values');
-            module.clear();
-            module.set.selected(value, $selectedItem);
-          },
-          selected: function(value, $selectedItem) {
-            var
-              isMultiple = module.is.multiple(),
-              $userSelectedItem
-            ;
-            $selectedItem = (settings.allowAdditions)
-              ? $selectedItem || module.get.itemWithAdditions(value)
-              : $selectedItem || module.get.item(value)
-            ;
-            if(!$selectedItem) {
-              return;
-            }
-            module.debug('Setting selected menu item to', $selectedItem);
-            if(module.is.multiple()) {
-              module.remove.searchWidth();
-            }
-            if(module.is.single()) {
-              module.remove.activeItem();
-              module.remove.selectedItem();
-            }
-            else if(settings.useLabels) {
-              module.remove.selectedItem();
-            }
-            // select each item
-            $selectedItem
-              .each(function() {
-                var
-                  $selected      = $(this),
-                  selectedText   = module.get.choiceText($selected),
-                  selectedValue  = module.get.choiceValue($selected, selectedText),
-
-                  isFiltered     = $selected.hasClass(className.filtered),
-                  isActive       = $selected.hasClass(className.active),
-                  isUserValue    = $selected.hasClass(className.addition),
-                  shouldAnimate  = (isMultiple && $selectedItem.length == 1)
-                ;
-                if(isMultiple) {
-                  if(!isActive || isUserValue) {
-                    if(settings.apiSettings && settings.saveRemoteData) {
-                      module.save.remoteData(selectedText, selectedValue);
-                    }
-                    if(settings.useLabels) {
-                      module.add.label(selectedValue, selectedText, shouldAnimate);
-                      module.add.value(selectedValue, selectedText, $selected);
-                      module.set.activeItem($selected);
-                      module.filterActive();
-                      module.select.nextAvailable($selectedItem);
-                    }
-                    else {
-                      module.add.value(selectedValue, selectedText, $selected);
-                      module.set.text(module.add.variables(message.count));
-                      module.set.activeItem($selected);
-                    }
-                  }
-                  else if(!isFiltered) {
-                    module.debug('Selected active value, removing label');
-                    module.remove.selected(selectedValue);
-                  }
-                }
-                else {
-                  if(settings.apiSettings && settings.saveRemoteData) {
-                    module.save.remoteData(selectedText, selectedValue);
-                  }
-                  module.set.text(selectedText);
-                  module.set.value(selectedValue, selectedText, $selected);
-                  $selected
-                    .addClass(className.active)
-                    .addClass(className.selected)
-                  ;
-                }
-              })
-            ;
-          },
-          clearable: function() {
-            $icon.addClass(className.clear);
-          },
-        },
-
-        add: {
-          label: function(value, text, shouldAnimate) {
-            var
-              $next  = module.is.searchSelection()
-                ? $search
-                : $text,
-              escapedValue = module.escape.value(value),
-              $label
-            ;
-            if(settings.ignoreCase) {
-              escapedValue = escapedValue.toLowerCase();
-            }
-            $label =  $('<a />')
-              .addClass(className.label)
-              .attr('data-' + metadata.value, escapedValue)
-              .html(templates.label(escapedValue, text))
-            ;
-            $label = settings.onLabelCreate.call($label, escapedValue, text);
-
-            if(module.has.label(value)) {
-              module.debug('User selection already exists, skipping', escapedValue);
-              return;
-            }
-            if(settings.label.variation) {
-              $label.addClass(settings.label.variation);
-            }
-            if(shouldAnimate === true) {
-              module.debug('Animating in label', $label);
-              $label
-                .addClass(className.hidden)
-                .insertBefore($next)
-                .transition(settings.label.transition, settings.label.duration)
-              ;
-            }
-            else {
-              module.debug('Adding selection label', $label);
-              $label
-                .insertBefore($next)
-              ;
-            }
-          },
-          message: function(message) {
-            var
-              $message = $menu.children(selector.message),
-              html     = settings.templates.message(module.add.variables(message))
-            ;
-            if($message.length > 0) {
-              $message
-                .html(html)
-              ;
-            }
-            else {
-              $message = $('<div/>')
-                .html(html)
-                .addClass(className.message)
-                .appendTo($menu)
-              ;
-            }
-          },
-          optionValue: function(value) {
-            var
-              escapedValue = module.escape.value(value),
-              $option      = $input.find('option[value="' + module.escape.string(escapedValue) + '"]'),
-              hasOption    = ($option.length > 0)
-            ;
-            if(hasOption) {
-              return;
-            }
-            // temporarily disconnect observer
-            module.disconnect.selectObserver();
-            if( module.is.single() ) {
-              module.verbose('Removing previous user addition');
-              $input.find('option.' + className.addition).remove();
-            }
-            $('<option/>')
-              .prop('value', escapedValue)
-              .addClass(className.addition)
-              .html(value)
-              .appendTo($input)
-            ;
-            module.verbose('Adding user addition as an <option>', value);
-            module.observe.select();
-          },
-          userSuggestion: function(value) {
-            var
-              $addition         = $menu.children(selector.addition),
-              $existingItem     = module.get.item(value),
-              alreadyHasValue   = $existingItem && $existingItem.not(selector.addition).length,
-              hasUserSuggestion = $addition.length > 0,
-              html
-            ;
-            if(settings.useLabels && module.has.maxSelections()) {
-              return;
-            }
-            if(value === '' || alreadyHasValue) {
-              $addition.remove();
-              return;
-            }
-            if(hasUserSuggestion) {
-              $addition
-                .data(metadata.value, value)
-                .data(metadata.text, value)
-                .attr('data-' + metadata.value, value)
-                .attr('data-' + metadata.text, value)
-                .removeClass(className.filtered)
-              ;
-              if(!settings.hideAdditions) {
-                html = settings.templates.addition( module.add.variables(message.addResult, value) );
-                $addition
-                  .html(html)
-                ;
-              }
-              module.verbose('Replacing user suggestion with new value', $addition);
-            }
-            else {
-              $addition = module.create.userChoice(value);
-              $addition
-                .prependTo($menu)
-              ;
-              module.verbose('Adding item choice to menu corresponding with user choice addition', $addition);
-            }
-            if(!settings.hideAdditions || module.is.allFiltered()) {
-              $addition
-                .addClass(className.selected)
-                .siblings()
-                .removeClass(className.selected)
-              ;
-            }
-            module.refreshItems();
-          },
-          variables: function(message, term) {
-            var
-              hasCount    = (message.search('{count}') !== -1),
-              hasMaxCount = (message.search('{maxCount}') !== -1),
-              hasTerm     = (message.search('{term}') !== -1),
-              values,
-              count,
-              query
-            ;
-            module.verbose('Adding templated variables to message', message);
-            if(hasCount) {
-              count  = module.get.selectionCount();
-              message = message.replace('{count}', count);
-            }
-            if(hasMaxCount) {
-              count  = module.get.selectionCount();
-              message = message.replace('{maxCount}', settings.maxSelections);
-            }
-            if(hasTerm) {
-              query   = term || module.get.query();
-              message = message.replace('{term}', query);
-            }
-            return message;
-          },
-          value: function(addedValue, addedText, $selectedItem) {
-            var
-              currentValue = module.get.values(),
-              newValue
-            ;
-            if(module.has.value(addedValue)) {
-              module.debug('Value already selected');
-              return;
-            }
-            if(addedValue === '') {
-              module.debug('Cannot select blank values from multiselect');
-              return;
-            }
-            // extend current array
-            if($.isArray(currentValue)) {
-              newValue = currentValue.concat([addedValue]);
-              newValue = module.get.uniqueArray(newValue);
-            }
-            else {
-              newValue = [addedValue];
-            }
-            // add values
-            if( module.has.selectInput() ) {
-              if(module.can.extendSelect()) {
-                module.debug('Adding value to select', addedValue, newValue, $input);
-                module.add.optionValue(addedValue);
-              }
-            }
-            else {
-              newValue = newValue.join(settings.delimiter);
-              module.debug('Setting hidden input to delimited value', newValue, $input);
-            }
-
-            if(settings.fireOnInit === false && module.is.initialLoad()) {
-              module.verbose('Skipping onadd callback on initial load', settings.onAdd);
-            }
-            else {
-              settings.onAdd.call(element, addedValue, addedText, $selectedItem);
-            }
-            module.set.value(newValue, addedValue, addedText, $selectedItem);
-            module.check.maxSelections();
-          },
-        },
-
-        remove: {
-          active: function() {
-            $module.removeClass(className.active);
-          },
-          activeLabel: function() {
-            $module.find(selector.label).removeClass(className.active);
-          },
-          empty: function() {
-            $module.removeClass(className.empty);
-          },
-          loading: function() {
-            $module.removeClass(className.loading);
-          },
-          initialLoad: function() {
-            initialLoad = false;
-          },
-          upward: function($currentMenu) {
-            var $element = $currentMenu || $module;
-            $element.removeClass(className.upward);
-          },
-          leftward: function($currentMenu) {
-            var $element = $currentMenu || $menu;
-            $element.removeClass(className.leftward);
-          },
-          visible: function() {
-            $module.removeClass(className.visible);
-          },
-          activeItem: function() {
-            $item.removeClass(className.active);
-          },
-          filteredItem: function() {
-            if(settings.useLabels && module.has.maxSelections() ) {
-              return;
-            }
-            if(settings.useLabels && module.is.multiple()) {
-              $item.not('.' + className.active).removeClass(className.filtered);
-            }
-            else {
-              $item.removeClass(className.filtered);
-            }
-            module.remove.empty();
-          },
-          optionValue: function(value) {
-            var
-              escapedValue = module.escape.value(value),
-              $option      = $input.find('option[value="' + module.escape.string(escapedValue) + '"]'),
-              hasOption    = ($option.length > 0)
-            ;
-            if(!hasOption || !$option.hasClass(className.addition)) {
-              return;
-            }
-            // temporarily disconnect observer
-            if(selectObserver) {
-              selectObserver.disconnect();
-              module.verbose('Temporarily disconnecting mutation observer');
-            }
-            $option.remove();
-            module.verbose('Removing user addition as an <option>', escapedValue);
-            if(selectObserver) {
-              selectObserver.observe($input[0], {
-                childList : true,
-                subtree   : true
-              });
-            }
-          },
-          message: function() {
-            $menu.children(selector.message).remove();
-          },
-          searchWidth: function() {
-            $search.css('width', '');
-          },
-          searchTerm: function() {
-            module.verbose('Cleared search term');
-            $search.val('');
-            module.set.filtered();
-          },
-          userAddition: function() {
-            $item.filter(selector.addition).remove();
-          },
-          selected: function(value, $selectedItem) {
-            $selectedItem = (settings.allowAdditions)
-              ? $selectedItem || module.get.itemWithAdditions(value)
-              : $selectedItem || module.get.item(value)
-            ;
-
-            if(!$selectedItem) {
-              return false;
-            }
-
-            $selectedItem
-              .each(function() {
-                var
-                  $selected     = $(this),
-                  selectedText  = module.get.choiceText($selected),
-                  selectedValue = module.get.choiceValue($selected, selectedText)
-                ;
-                if(module.is.multiple()) {
-                  if(settings.useLabels) {
-                    module.remove.value(selectedValue, selectedText, $selected);
-                    module.remove.label(selectedValue);
-                  }
-                  else {
-                    module.remove.value(selectedValue, selectedText, $selected);
-                    if(module.get.selectionCount() === 0) {
-                      module.set.placeholderText();
-                    }
-                    else {
-                      module.set.text(module.add.variables(message.count));
-                    }
-                  }
-                }
-                else {
-                  module.remove.value(selectedValue, selectedText, $selected);
-                }
-                $selected
-                  .removeClass(className.filtered)
-                  .removeClass(className.active)
-                ;
-                if(settings.useLabels) {
-                  $selected.removeClass(className.selected);
-                }
-              })
-            ;
-          },
-          selectedItem: function() {
-            $item.removeClass(className.selected);
-          },
-          value: function(removedValue, removedText, $removedItem) {
-            var
-              values = module.get.values(),
-              newValue
-            ;
-            if( module.has.selectInput() ) {
-              module.verbose('Input is <select> removing selected option', removedValue);
-              newValue = module.remove.arrayValue(removedValue, values);
-              module.remove.optionValue(removedValue);
-            }
-            else {
-              module.verbose('Removing from delimited values', removedValue);
-              newValue = module.remove.arrayValue(removedValue, values);
-              newValue = newValue.join(settings.delimiter);
-            }
-            if(settings.fireOnInit === false && module.is.initialLoad()) {
-              module.verbose('No callback on initial load', settings.onRemove);
-            }
-            else {
-              settings.onRemove.call(element, removedValue, removedText, $removedItem);
-            }
-            module.set.value(newValue, removedText, $removedItem);
-            module.check.maxSelections();
-          },
-          arrayValue: function(removedValue, values) {
-            if( !$.isArray(values) ) {
-              values = [values];
-            }
-            values = $.grep(values, function(value){
-              return (removedValue != value);
-            });
-            module.verbose('Removed value from delimited string', removedValue, values);
-            return values;
-          },
-          label: function(value, shouldAnimate) {
-            var
-              $labels       = $module.find(selector.label),
-              $removedLabel = $labels.filter('[data-' + metadata.value + '="' + module.escape.string(value) +'"]')
-            ;
-            module.verbose('Removing label', $removedLabel);
-            $removedLabel.remove();
-          },
-          activeLabels: function($activeLabels) {
-            $activeLabels = $activeLabels || $module.find(selector.label).filter('.' + className.active);
-            module.verbose('Removing active label selections', $activeLabels);
-            module.remove.labels($activeLabels);
-          },
-          labels: function($labels) {
-            $labels = $labels || $module.find(selector.label);
-            module.verbose('Removing labels', $labels);
-            $labels
-              .each(function(){
-                var
-                  $label      = $(this),
-                  value       = $label.data(metadata.value),
-                  stringValue = (value !== undefined)
-                    ? String(value)
-                    : value,
-                  isUserValue = module.is.userValue(stringValue)
-                ;
-                if(settings.onLabelRemove.call($label, value) === false) {
-                  module.debug('Label remove callback cancelled removal');
-                  return;
-                }
-                module.remove.message();
-                if(isUserValue) {
-                  module.remove.value(stringValue);
-                  module.remove.label(stringValue);
-                }
-                else {
-                  // selected will also remove label
-                  module.remove.selected(stringValue);
-                }
-              })
-            ;
-          },
-          tabbable: function() {
-            if( module.is.searchSelection() ) {
-              module.debug('Searchable dropdown initialized');
-              $search
-                .removeAttr('tabindex')
-              ;
-              $menu
-                .removeAttr('tabindex')
-              ;
-            }
-            else {
-              module.debug('Simple selection dropdown initialized');
-              $module
-                .removeAttr('tabindex')
-              ;
-              $menu
-                .removeAttr('tabindex')
-              ;
-            }
-          },
-          clearable: function() {
-            $icon.removeClass(className.clear);
-          }
-        },
-
-        has: {
-          menuSearch: function() {
-            return (module.has.search() && $search.closest($menu).length > 0);
-          },
-          search: function() {
-            return ($search.length > 0);
-          },
-          sizer: function() {
-            return ($sizer.length > 0);
-          },
-          selectInput: function() {
-            return ( $input.is('select') );
-          },
-          minCharacters: function(searchTerm) {
-            if(settings.minCharacters) {
-              searchTerm = (searchTerm !== undefined)
-                ? String(searchTerm)
-                : String(module.get.query())
-              ;
-              return (searchTerm.length >= settings.minCharacters);
-            }
-            return true;
-          },
-          firstLetter: function($item, letter) {
-            var
-              text,
-              firstLetter
-            ;
-            if(!$item || $item.length === 0 || typeof letter !== 'string') {
-              return false;
-            }
-            text        = module.get.choiceText($item, false);
-            letter      = letter.toLowerCase();
-            firstLetter = String(text).charAt(0).toLowerCase();
-            return (letter == firstLetter);
-          },
-          input: function() {
-            return ($input.length > 0);
-          },
-          items: function() {
-            return ($item.length > 0);
-          },
-          menu: function() {
-            return ($menu.length > 0);
-          },
-          message: function() {
-            return ($menu.children(selector.message).length !== 0);
-          },
-          label: function(value) {
-            var
-              escapedValue = module.escape.value(value),
-              $labels      = $module.find(selector.label)
-            ;
-            if(settings.ignoreCase) {
-              escapedValue = escapedValue.toLowerCase();
-            }
-            return ($labels.filter('[data-' + metadata.value + '="' + module.escape.string(escapedValue) +'"]').length > 0);
-          },
-          maxSelections: function() {
-            return (settings.maxSelections && module.get.selectionCount() >= settings.maxSelections);
-          },
-          allResultsFiltered: function() {
-            var
-              $normalResults = $item.not(selector.addition)
-            ;
-            return ($normalResults.filter(selector.unselectable).length === $normalResults.length);
-          },
-          userSuggestion: function() {
-            return ($menu.children(selector.addition).length > 0);
-          },
-          query: function() {
-            return (module.get.query() !== '');
-          },
-          value: function(value) {
-            return (settings.ignoreCase)
-              ? module.has.valueIgnoringCase(value)
-              : module.has.valueMatchingCase(value)
-            ;
-          },
-          valueMatchingCase: function(value) {
-            var
-              values   = module.get.values(),
-              hasValue = $.isArray(values)
-               ? values && ($.inArray(value, values) !== -1)
-               : (values == value)
-            ;
-            return (hasValue)
-              ? true
-              : false
-            ;
-          },
-          valueIgnoringCase: function(value) {
-            var
-              values   = module.get.values(),
-              hasValue = false
-            ;
-            if(!$.isArray(values)) {
-              values = [values];
-            }
-            $.each(values, function(index, existingValue) {
-              if(String(value).toLowerCase() == String(existingValue).toLowerCase()) {
-                hasValue = true;
-                return false;
-              }
-            });
-            return hasValue;
-          }
-        },
-
-        is: {
-          active: function() {
-            return $module.hasClass(className.active);
-          },
-          animatingInward: function() {
-            return $menu.transition('is inward');
-          },
-          animatingOutward: function() {
-            return $menu.transition('is outward');
-          },
-          bubbledLabelClick: function(event) {
-            return $(event.target).is('select, input') && $module.closest('label').length > 0;
-          },
-          bubbledIconClick: function(event) {
-            return $(event.target).closest($icon).length > 0;
-          },
-          alreadySetup: function() {
-            return ($module.is('select') && $module.parent(selector.dropdown).data(moduleNamespace) !== undefined && $module.prev().length === 0);
-          },
-          animating: function($subMenu) {
-            return ($subMenu)
-              ? $subMenu.transition && $subMenu.transition('is animating')
-              : $menu.transition    && $menu.transition('is animating')
-            ;
-          },
-          leftward: function($subMenu) {
-            var $selectedMenu = $subMenu || $menu;
-            return $selectedMenu.hasClass(className.leftward);
-          },
-          disabled: function() {
-            return $module.hasClass(className.disabled);
-          },
-          focused: function() {
-            return (document.activeElement === $module[0]);
-          },
-          focusedOnSearch: function() {
-            return (document.activeElement === $search[0]);
-          },
-          allFiltered: function() {
-            return( (module.is.multiple() || module.has.search()) && !(settings.hideAdditions == false && module.has.userSuggestion()) && !module.has.message() && module.has.allResultsFiltered() );
-          },
-          hidden: function($subMenu) {
-            return !module.is.visible($subMenu);
-          },
-          initialLoad: function() {
-            return initialLoad;
-          },
-          inObject: function(needle, object) {
-            var
-              found = false
-            ;
-            $.each(object, function(index, property) {
-              if(property == needle) {
-                found = true;
-                return true;
-              }
-            });
-            return found;
-          },
-          multiple: function() {
-            return $module.hasClass(className.multiple);
-          },
-          remote: function() {
-            return settings.apiSettings && module.can.useAPI();
-          },
-          single: function() {
-            return !module.is.multiple();
-          },
-          selectMutation: function(mutations) {
-            var
-              selectChanged = false
-            ;
-            $.each(mutations, function(index, mutation) {
-              if(mutation.target && $(mutation.target).is('select')) {
-                selectChanged = true;
-                return true;
-              }
-            });
-            return selectChanged;
-          },
-          search: function() {
-            return $module.hasClass(className.search);
-          },
-          searchSelection: function() {
-            return ( module.has.search() && $search.parent(selector.dropdown).length === 1 );
-          },
-          selection: function() {
-            return $module.hasClass(className.selection);
-          },
-          userValue: function(value) {
-            return ($.inArray(value, module.get.userValues()) !== -1);
-          },
-          upward: function($menu) {
-            var $element = $menu || $module;
-            return $element.hasClass(className.upward);
-          },
-          visible: function($subMenu) {
-            return ($subMenu)
-              ? $subMenu.hasClass(className.visible)
-              : $menu.hasClass(className.visible)
-            ;
-          },
-          verticallyScrollableContext: function() {
-            var
-              overflowY = ($context.get(0) !== window)
-                ? $context.css('overflow-y')
-                : false
-            ;
-            return (overflowY == 'auto' || overflowY == 'scroll');
-          },
-          horizontallyScrollableContext: function() {
-            var
-              overflowX = ($context.get(0) !== window)
-                ? $context.css('overflow-X')
-                : false
-            ;
-            return (overflowX == 'auto' || overflowX == 'scroll');
-          }
-        },
-
-        can: {
-          activate: function($item) {
-            if(settings.useLabels) {
-              return true;
-            }
-            if(!module.has.maxSelections()) {
-              return true;
-            }
-            if(module.has.maxSelections() && $item.hasClass(className.active)) {
-              return true;
-            }
-            return false;
-          },
-          openDownward: function($subMenu) {
-            var
-              $currentMenu    = $subMenu || $menu,
-              canOpenDownward = true,
-              onScreen        = {},
-              calculations
-            ;
-            $currentMenu
-              .addClass(className.loading)
-            ;
-            calculations = {
-              context: {
-                offset    : ($context.get(0) === window)
-                  ? { top: 0, left: 0}
-                  : $context.offset(),
-                scrollTop : $context.scrollTop(),
-                height    : $context.outerHeight()
-              },
-              menu : {
-                offset: $currentMenu.offset(),
-                height: $currentMenu.outerHeight()
-              }
-            };
-            if(module.is.verticallyScrollableContext()) {
-              calculations.menu.offset.top += calculations.context.scrollTop;
-            }
-            onScreen = {
-              above : (calculations.context.scrollTop) <= calculations.menu.offset.top - calculations.context.offset.top - calculations.menu.height,
-              below : (calculations.context.scrollTop + calculations.context.height) >= calculations.menu.offset.top - calculations.context.offset.top + calculations.menu.height
-            };
-            if(onScreen.below) {
-              module.verbose('Dropdown can fit in context downward', onScreen);
-              canOpenDownward = true;
-            }
-            else if(!onScreen.below && !onScreen.above) {
-              module.verbose('Dropdown cannot fit in either direction, favoring downward', onScreen);
-              canOpenDownward = true;
-            }
-            else {
-              module.verbose('Dropdown cannot fit below, opening upward', onScreen);
-              canOpenDownward = false;
-            }
-            $currentMenu.removeClass(className.loading);
-            return canOpenDownward;
-          },
-          openRightward: function($subMenu) {
-            var
-              $currentMenu     = $subMenu || $menu,
-              canOpenRightward = true,
-              isOffscreenRight = false,
-              calculations
-            ;
-            $currentMenu
-              .addClass(className.loading)
-            ;
-            calculations = {
-              context: {
-                offset     : ($context.get(0) === window)
-                  ? { top: 0, left: 0}
-                  : $context.offset(),
-                scrollLeft : $context.scrollLeft(),
-                width      : $context.outerWidth()
-              },
-              menu: {
-                offset : $currentMenu.offset(),
-                width  : $currentMenu.outerWidth()
-              }
-            };
-            if(module.is.horizontallyScrollableContext()) {
-              calculations.menu.offset.left += calculations.context.scrollLeft;
-            }
-            isOffscreenRight = (calculations.menu.offset.left - calculations.context.offset.left + calculations.menu.width >= calculations.context.scrollLeft + calculations.context.width);
-            if(isOffscreenRight) {
-              module.verbose('Dropdown cannot fit in context rightward', isOffscreenRight);
-              canOpenRightward = false;
-            }
-            $currentMenu.removeClass(className.loading);
-            return canOpenRightward;
-          },
-          click: function() {
-            return (hasTouch || settings.on == 'click');
-          },
-          extendSelect: function() {
-            return settings.allowAdditions || settings.apiSettings;
-          },
-          show: function() {
-            return !module.is.disabled() && (module.has.items() || module.has.message());
-          },
-          useAPI: function() {
-            return $.fn.api !== undefined;
-          }
-        },
-
-        animate: {
-          show: function(callback, $subMenu) {
-            var
-              $currentMenu = $subMenu || $menu,
-              start = ($subMenu)
-                ? function() {}
-                : function() {
-                  module.hideSubMenus();
-                  module.hideOthers();
-                  module.set.active();
-                },
-              transition
-            ;
-            callback = $.isFunction(callback)
-              ? callback
-              : function(){}
-            ;
-            module.verbose('Doing menu show animation', $currentMenu);
-            module.set.direction($subMenu);
-            transition = module.get.transition($subMenu);
-            if( module.is.selection() ) {
-              module.set.scrollPosition(module.get.selectedItem(), true);
-            }
-            if( module.is.hidden($currentMenu) || module.is.animating($currentMenu) ) {
-              if(transition == 'none') {
-                start();
-                $currentMenu.transition('show');
-                callback.call(element);
-              }
-              else if($.fn.transition !== undefined && $module.transition('is supported')) {
-                $currentMenu
-                  .transition({
-                    animation  : transition + ' in',
-                    debug      : settings.debug,
-                    verbose    : settings.verbose,
-                    duration   : settings.duration,
-                    queue      : true,
-                    onStart    : start,
-                    onComplete : function() {
-                      callback.call(element);
-                    }
-                  })
-                ;
-              }
-              else {
-                module.error(error.noTransition, transition);
-              }
-            }
-          },
-          hide: function(callback, $subMenu) {
-            var
-              $currentMenu = $subMenu || $menu,
-              duration = ($subMenu)
-                ? (settings.duration * 0.9)
-                : settings.duration,
-              start = ($subMenu)
-                ? function() {}
-                : function() {
-                  if( module.can.click() ) {
-                    module.unbind.intent();
-                  }
-                  module.remove.active();
-                },
-              transition = module.get.transition($subMenu)
-            ;
-            callback = $.isFunction(callback)
-              ? callback
-              : function(){}
-            ;
-            if( module.is.visible($currentMenu) || module.is.animating($currentMenu) ) {
-              module.verbose('Doing menu hide animation', $currentMenu);
-
-              if(transition == 'none') {
-                start();
-                $currentMenu.transition('hide');
-                callback.call(element);
-              }
-              else if($.fn.transition !== undefined && $module.transition('is supported')) {
-                $currentMenu
-                  .transition({
-                    animation  : transition + ' out',
-                    duration   : settings.duration,
-                    debug      : settings.debug,
-                    verbose    : settings.verbose,
-                    queue      : false,
-                    onStart    : start,
-                    onComplete : function() {
-                      callback.call(element);
-                    }
-                  })
-                ;
-              }
-              else {
-                module.error(error.transition);
-              }
-            }
-          }
-        },
-
-        hideAndClear: function() {
-          module.remove.searchTerm();
-          if( module.has.maxSelections() ) {
-            return;
-          }
-          if(module.has.search()) {
-            module.hide(function() {
-              module.remove.filteredItem();
-            });
-          }
-          else {
-            module.hide();
-          }
-        },
-
-        delay: {
-          show: function() {
-            module.verbose('Delaying show event to ensure user intent');
-            clearTimeout(module.timer);
-            module.timer = setTimeout(module.show, settings.delay.show);
-          },
-          hide: function() {
-            module.verbose('Delaying hide event to ensure user intent');
-            clearTimeout(module.timer);
-            module.timer = setTimeout(module.hide, settings.delay.hide);
-          }
-        },
-
-        escape: {
-          value: function(value) {
-            var
-              multipleValues = $.isArray(value),
-              stringValue    = (typeof value === 'string'),
-              isUnparsable   = (!stringValue && !multipleValues),
-              hasQuotes      = (stringValue && value.search(regExp.quote) !== -1),
-              values         = []
-            ;
-            if(isUnparsable || !hasQuotes) {
-              return value;
-            }
-            module.debug('Encoding quote values for use in select', value);
-            if(multipleValues) {
-              $.each(value, function(index, value){
-                values.push(value.replace(regExp.quote, '&quot;'));
-              });
-              return values;
-            }
-            return value.replace(regExp.quote, '&quot;');
-          },
-          string: function(text) {
-            text =  String(text);
-            return text.replace(regExp.escape, '\\$&');
-          }
-        },
-
-        setting: function(name, value) {
-          module.debug('Changing setting', name, value);
-          if( $.isPlainObject(name) ) {
-            $.extend(true, settings, name);
-          }
-          else if(value !== undefined) {
-            if($.isPlainObject(settings[name])) {
-              $.extend(true, settings[name], value);
-            }
-            else {
-              settings[name] = value;
-            }
-          }
-          else {
-            return settings[name];
-          }
-        },
-        internal: function(name, value) {
-          if( $.isPlainObject(name) ) {
-            $.extend(true, module, name);
-          }
-          else if(value !== undefined) {
-            module[name] = value;
-          }
-          else {
-            return module[name];
-          }
-        },
-        debug: function() {
-          if(!settings.silent && settings.debug) {
-            if(settings.performance) {
-              module.performance.log(arguments);
-            }
-            else {
-              module.debug = Function.prototype.bind.call(console.info, console, settings.name + ':');
-              module.debug.apply(console, arguments);
-            }
-          }
-        },
-        verbose: function() {
-          if(!settings.silent && settings.verbose && settings.debug) {
-            if(settings.performance) {
-              module.performance.log(arguments);
-            }
-            else {
-              module.verbose = Function.prototype.bind.call(console.info, console, settings.name + ':');
-              module.verbose.apply(console, arguments);
-            }
-          }
-        },
-        error: function() {
-          if(!settings.silent) {
-            module.error = Function.prototype.bind.call(console.error, console, settings.name + ':');
-            module.error.apply(console, arguments);
-          }
-        },
-        performance: {
-          log: function(message) {
-            var
-              currentTime,
-              executionTime,
-              previousTime
-            ;
-            if(settings.performance) {
-              currentTime   = new Date().getTime();
-              previousTime  = time || currentTime;
-              executionTime = currentTime - previousTime;
-              time          = currentTime;
-              performance.push({
-                'Name'           : message[0],
-                'Arguments'      : [].slice.call(message, 1) || '',
-                'Element'        : element,
-                'Execution Time' : executionTime
-              });
-            }
-            clearTimeout(module.performance.timer);
-            module.performance.timer = setTimeout(module.performance.display, 500);
-          },
-          display: function() {
-            var
-              title = settings.name + ':',
-              totalTime = 0
-            ;
-            time = false;
-            clearTimeout(module.performance.timer);
-            $.each(performance, function(index, data) {
-              totalTime += data['Execution Time'];
-            });
-            title += ' ' + totalTime + 'ms';
-            if(moduleSelector) {
-              title += ' \'' + moduleSelector + '\'';
-            }
-            if( (console.group !== undefined || console.table !== undefined) && performance.length > 0) {
-              console.groupCollapsed(title);
-              if(console.table) {
-                console.table(performance);
-              }
-              else {
-                $.each(performance, function(index, data) {
-                  console.log(data['Name'] + ': ' + data['Execution Time']+'ms');
-                });
-              }
-              console.groupEnd();
-            }
-            performance = [];
-          }
-        },
-        invoke: function(query, passedArguments, context) {
-          var
-            object = instance,
-            maxDepth,
-            found,
-            response
-          ;
-          passedArguments = passedArguments || queryArguments;
-          context         = element         || context;
-          if(typeof query == 'string' && object !== undefined) {
-            query    = query.split(/[\. ]/);
-            maxDepth = query.length - 1;
-            $.each(query, function(depth, value) {
-              var camelCaseValue = (depth != maxDepth)
-                ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
-                : query
-              ;
-              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
-                object = object[camelCaseValue];
-              }
-              else if( object[camelCaseValue] !== undefined ) {
-                found = object[camelCaseValue];
-                return false;
-              }
-              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
-                object = object[value];
-              }
-              else if( object[value] !== undefined ) {
-                found = object[value];
-                return false;
-              }
-              else {
-                module.error(error.method, query);
-                return false;
-              }
-            });
-          }
-          if ( $.isFunction( found ) ) {
-            response = found.apply(context, passedArguments);
-          }
-          else if(found !== undefined) {
-            response = found;
-          }
-          if($.isArray(returnedValue)) {
-            returnedValue.push(response);
-          }
-          else if(returnedValue !== undefined) {
-            returnedValue = [returnedValue, response];
-          }
-          else if(response !== undefined) {
-            returnedValue = response;
-          }
-          return found;
-        }
-      };
-
-      if(methodInvoked) {
-        if(instance === undefined) {
-          module.initialize();
-        }
-        module.invoke(query);
-      }
-      else {
-        if(instance !== undefined) {
-          instance.invoke('destroy');
-        }
-        module.initialize();
-      }
-    })
-  ;
-  return (returnedValue !== undefined)
-    ? returnedValue
-    : $allModules
-  ;
-};
-
-$.fn.dropdown.settings = {
-
-  silent                 : false,
-  debug                  : false,
-  verbose                : false,
-  performance            : true,
-
-  on                     : 'click',    // what event should show menu action on item selection
-  action                 : 'activate', // action on item selection (nothing, activate, select, combo, hide, function(){})
-
-  values                 : false,      // specify values to use for dropdown
-
-  clearable              : false,      // whether the value of the dropdown can be cleared
-
-  apiSettings            : false,
-  selectOnKeydown        : true,       // Whether selection should occur automatically when keyboard shortcuts used
-  minCharacters          : 0,          // Minimum characters required to trigger API call
-
-  filterRemoteData       : false,      // Whether API results should be filtered after being returned for query term
-  saveRemoteData         : true,       // Whether remote name/value pairs should be stored in sessionStorage to allow remote data to be restored on page refresh
-
-  throttle               : 200,        // How long to wait after last user input to search remotely
-
-  context                : window,     // Context to use when determining if on screen
-  direction              : 'auto',     // Whether dropdown should always open in one direction
-  keepOnScreen           : true,       // Whether dropdown should check whether it is on screen before showing
-
-  match                  : 'both',     // what to match against with search selection (both, text, or label)
-  fullTextSearch         : false,      // search anywhere in value (set to 'exact' to require exact matches)
-
-  placeholder            : 'auto',     // whether to convert blank <select> values to placeholder text
-  preserveHTML           : true,       // preserve html when selecting value
-  sortSelect             : false,      // sort selection on init
-
-  forceSelection         : true,       // force a choice on blur with search selection
-
-  allowAdditions         : false,      // whether multiple select should allow user added values
-  ignoreCase             : false,       // whether to consider values not matching in case to be the same
-  hideAdditions          : true,       // whether or not to hide special message prompting a user they can enter a value
-
-  maxSelections          : false,      // When set to a number limits the number of selections to this count
-  useLabels              : true,       // whether multiple select should filter currently active selections from choices
-  delimiter              : ',',        // when multiselect uses normal <input> the values will be delimited with this character
-
-  showOnFocus            : true,       // show menu on focus
-  allowReselection       : false,      // whether current value should trigger callbacks when reselected
-  allowTab               : true,       // add tabindex to element
-  allowCategorySelection : false,      // allow elements with sub-menus to be selected
-
-  fireOnInit             : false,      // Whether callbacks should fire when initializing dropdown values
-
-  transition             : 'auto',     // auto transition will slide down or up based on direction
-  duration               : 200,        // duration of transition
-
-  glyphWidth             : 1.037,      // widest glyph width in em (W is 1.037 em) used to calculate multiselect input width
-
-  // label settings on multi-select
-  label: {
-    transition : 'scale',
-    duration   : 200,
-    variation  : false
-  },
-
-  // delay before event
-  delay : {
-    hide   : 300,
-    show   : 200,
-    search : 20,
-    touch  : 50
-  },
-
-  /* Callbacks */
-  onChange      : function(value, text, $selected){},
-  onAdd         : function(value, text, $selected){},
-  onRemove      : function(value, text, $selected){},
-
-  onLabelSelect : function($selectedLabels){},
-  onLabelCreate : function(value, text) { return $(this); },
-  onLabelRemove : function(value) { return true; },
-  onNoResults   : function(searchTerm) { return true; },
-  onShow        : function(){},
-  onHide        : function(){},
-
-  /* Component */
-  name           : 'Dropdown',
-  namespace      : 'dropdown',
-
-  message: {
-    addResult     : 'Add <b>{term}</b>',
-    count         : '{count} selected',
-    maxSelections : 'Max {maxCount} selections',
-    noResults     : 'No results found.',
-    serverError   : 'There was an error contacting the server'
-  },
-
-  error : {
-    action          : 'You called a dropdown action that was not defined',
-    alreadySetup    : 'Once a select has been initialized behaviors must be called on the created ui dropdown',
-    labels          : 'Allowing user additions currently requires the use of labels.',
-    missingMultiple : '<select> requires multiple property to be set to correctly preserve multiple values',
-    method          : 'The method you called is not defined.',
-    noAPI           : 'The API module is required to load resources remotely',
-    noStorage       : 'Saving remote data requires session storage',
-    noTransition    : 'This module requires ui transitions <https://github.com/Semantic-Org/UI-Transition>'
-  },
-
-  regExp : {
-    escape   : /[-[\]{}()*+?.,\\^$|#\s]/g,
-    quote    : /"/g
-  },
-
-  metadata : {
-    defaultText     : 'defaultText',
-    defaultValue    : 'defaultValue',
-    placeholderText : 'placeholder',
-    text            : 'text',
-    value           : 'value'
-  },
-
-  // property names for remote query
-  fields: {
-    remoteValues : 'results',  // grouping for api results
-    values       : 'values',   // grouping for all dropdown values
-    disabled     : 'disabled', // whether value should be disabled
-    name         : 'name',     // displayed dropdown text
-    value        : 'value',    // actual dropdown value
-    text         : 'text'      // displayed text when selected
-  },
-
-  keys : {
-    backspace  : 8,
-    delimiter  : 188, // comma
-    deleteKey  : 46,
-    enter      : 13,
-    escape     : 27,
-    pageUp     : 33,
-    pageDown   : 34,
-    leftArrow  : 37,
-    upArrow    : 38,
-    rightArrow : 39,
-    downArrow  : 40
-  },
-
-  selector : {
-    addition     : '.addition',
-    dropdown     : '.ui.dropdown',
-    hidden       : '.hidden',
-    icon         : '> .dropdown.icon',
-    input        : '> input[type="hidden"], > select',
-    item         : '.item',
-    label        : '> .label',
-    remove       : '> .label > .delete.icon',
-    siblingLabel : '.label',
-    menu         : '.menu',
-    message      : '.message',
-    menuIcon     : '.dropdown.icon',
-    search       : 'input.search, .menu > .search > input, .menu input.search',
-    sizer        : '> input.sizer',
-    text         : '> .text:not(.icon)',
-    unselectable : '.disabled, .filtered'
-  },
-
-  className : {
-    active      : 'active',
-    addition    : 'addition',
-    animating   : 'animating',
-    clear       : 'clear',
-    disabled    : 'disabled',
-    empty       : 'empty',
-    dropdown    : 'ui dropdown',
-    filtered    : 'filtered',
-    hidden      : 'hidden transition',
-    item        : 'item',
-    label       : 'ui label',
-    loading     : 'loading',
-    menu        : 'menu',
-    message     : 'message',
-    multiple    : 'multiple',
-    placeholder : 'default',
-    sizer       : 'sizer',
-    search      : 'search',
-    selected    : 'selected',
-    selection   : 'selection',
-    upward      : 'upward',
-    leftward    : 'left',
-    visible     : 'visible'
-  }
-
-};
-
-/* Templates */
-$.fn.dropdown.settings.templates = {
-
-  // generates dropdown from select values
-  dropdown: function(select) {
-    var
-      placeholder = select.placeholder || false,
-      values      = select.values || {},
-      html        = ''
-    ;
-    html +=  '<i class="dropdown icon"></i>';
-    if(select.placeholder) {
-      html += '<div class="default text">' + placeholder + '</div>';
-    }
-    else {
-      html += '<div class="text"></div>';
-    }
-    html += '<div class="menu">';
-    $.each(select.values, function(index, option) {
-      html += (option.disabled)
-        ? '<div class="disabled item" data-value="' + option.value + '">' + option.name + '</div>'
-        : '<div class="item" data-value="' + option.value + '">' + option.name + '</div>'
-      ;
-    });
-    html += '</div>';
-    return html;
-  },
-
-  // generates just menu from select
-  menu: function(response, fields) {
-    var
-      values = response[fields.values] || {},
-      html   = ''
-    ;
-    $.each(values, function(index, option) {
-      var
-        maybeText = (option[fields.text])
-          ? 'data-text="' + option[fields.text] + '"'
-          : '',
-        maybeDisabled = (option[fields.disabled])
-          ? 'disabled '
-          : ''
-      ;
-      html += '<div class="'+ maybeDisabled +'item" data-value="' + option[fields.value] + '"' + maybeText + '>';
-      html +=   option[fields.name];
-      html += '</div>';
-    });
-    return html;
-  },
-
-  // generates label for multiselect
-  label: function(value, text) {
-    return text + '<i class="delete icon"></i>';
-  },
-
-
-  // generates messages like "No results"
-  message: function(message) {
-    return message;
-  },
-
-  // generates user addition to selection menu
-  addition: function(choice) {
-    return choice;
-  }
-
-};
-
-})( jQuery, window, document );
-
-
-/***/ }),
-
-/***/ "./node_modules/semantic-ui-transition/transition.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/semantic-ui-transition/transition.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * # Semantic UI 2.3.1 - Transition
- * http://github.com/semantic-org/semantic-ui/
- *
- *
- * Released under the MIT license
- * http://opensource.org/licenses/MIT
- *
- */
-
-;(function ($, window, document, undefined) {
-
-'use strict';
-
-window = (typeof window != 'undefined' && window.Math == Math)
-  ? window
-  : (typeof self != 'undefined' && self.Math == Math)
-    ? self
-    : Function('return this')()
-;
-
-$.fn.transition = function() {
-  var
-    $allModules     = $(this),
-    moduleSelector  = $allModules.selector || '',
-
-    time            = new Date().getTime(),
-    performance     = [],
-
-    moduleArguments = arguments,
-    query           = moduleArguments[0],
-    queryArguments  = [].slice.call(arguments, 1),
-    methodInvoked   = (typeof query === 'string'),
-
-    requestAnimationFrame = window.requestAnimationFrame
-      || window.mozRequestAnimationFrame
-      || window.webkitRequestAnimationFrame
-      || window.msRequestAnimationFrame
-      || function(callback) { setTimeout(callback, 0); },
-
-    returnedValue
-  ;
-  $allModules
-    .each(function(index) {
-      var
-        $module  = $(this),
-        element  = this,
-
-        // set at run time
-        settings,
-        instance,
-
-        error,
-        className,
-        metadata,
-        animationEnd,
-        animationName,
-
-        namespace,
-        moduleNamespace,
-        eventNamespace,
-        module
-      ;
-
-      module = {
-
-        initialize: function() {
-
-          // get full settings
-          settings        = module.get.settings.apply(element, moduleArguments);
-
-          // shorthand
-          className       = settings.className;
-          error           = settings.error;
-          metadata        = settings.metadata;
-
-          // define namespace
-          eventNamespace  = '.' + settings.namespace;
-          moduleNamespace = 'module-' + settings.namespace;
-          instance        = $module.data(moduleNamespace) || module;
-
-          // get vendor specific events
-          animationEnd    = module.get.animationEndEvent();
-
-          if(methodInvoked) {
-            methodInvoked = module.invoke(query);
-          }
-
-          // method not invoked, lets run an animation
-          if(methodInvoked === false) {
-            module.verbose('Converted arguments into settings object', settings);
-            if(settings.interval) {
-              module.delay(settings.animate);
-            }
-            else  {
-              module.animate();
-            }
-            module.instantiate();
-          }
-        },
-
-        instantiate: function() {
-          module.verbose('Storing instance of module', module);
-          instance = module;
-          $module
-            .data(moduleNamespace, instance)
-          ;
-        },
-
-        destroy: function() {
-          module.verbose('Destroying previous module for', element);
-          $module
-            .removeData(moduleNamespace)
-          ;
-        },
-
-        refresh: function() {
-          module.verbose('Refreshing display type on next animation');
-          delete module.displayType;
-        },
-
-        forceRepaint: function() {
-          module.verbose('Forcing element repaint');
-          var
-            $parentElement = $module.parent(),
-            $nextElement = $module.next()
-          ;
-          if($nextElement.length === 0) {
-            $module.detach().appendTo($parentElement);
-          }
-          else {
-            $module.detach().insertBefore($nextElement);
-          }
-        },
-
-        repaint: function() {
-          module.verbose('Repainting element');
-          var
-            fakeAssignment = element.offsetWidth
-          ;
-        },
-
-        delay: function(interval) {
-          var
-            direction = module.get.animationDirection(),
-            shouldReverse,
-            delay
-          ;
-          if(!direction) {
-            direction = module.can.transition()
-              ? module.get.direction()
-              : 'static'
-            ;
-          }
-          interval = (interval !== undefined)
-            ? interval
-            : settings.interval
-          ;
-          shouldReverse = (settings.reverse == 'auto' && direction == className.outward);
-          delay = (shouldReverse || settings.reverse == true)
-            ? ($allModules.length - index) * settings.interval
-            : index * settings.interval
-          ;
-          module.debug('Delaying animation by', delay);
-          setTimeout(module.animate, delay);
-        },
-
-        animate: function(overrideSettings) {
-          settings = overrideSettings || settings;
-          if(!module.is.supported()) {
-            module.error(error.support);
-            return false;
-          }
-          module.debug('Preparing animation', settings.animation);
-          if(module.is.animating()) {
-            if(settings.queue) {
-              if(!settings.allowRepeats && module.has.direction() && module.is.occurring() && module.queuing !== true) {
-                module.debug('Animation is currently occurring, preventing queueing same animation', settings.animation);
-              }
-              else {
-                module.queue(settings.animation);
-              }
-              return false;
-            }
-            else if(!settings.allowRepeats && module.is.occurring()) {
-              module.debug('Animation is already occurring, will not execute repeated animation', settings.animation);
-              return false;
-            }
-            else {
-              module.debug('New animation started, completing previous early', settings.animation);
-              instance.complete();
-            }
-          }
-          if( module.can.animate() ) {
-            module.set.animating(settings.animation);
-          }
-          else {
-            module.error(error.noAnimation, settings.animation, element);
-          }
-        },
-
-        reset: function() {
-          module.debug('Resetting animation to beginning conditions');
-          module.remove.animationCallbacks();
-          module.restore.conditions();
-          module.remove.animating();
-        },
-
-        queue: function(animation) {
-          module.debug('Queueing animation of', animation);
-          module.queuing = true;
-          $module
-            .one(animationEnd + '.queue' + eventNamespace, function() {
-              module.queuing = false;
-              module.repaint();
-              module.animate.apply(this, settings);
-            })
-          ;
-        },
-
-        complete: function (event) {
-          module.debug('Animation complete', settings.animation);
-          module.remove.completeCallback();
-          module.remove.failSafe();
-          if(!module.is.looping()) {
-            if( module.is.outward() ) {
-              module.verbose('Animation is outward, hiding element');
-              module.restore.conditions();
-              module.hide();
-            }
-            else if( module.is.inward() ) {
-              module.verbose('Animation is outward, showing element');
-              module.restore.conditions();
-              module.show();
-            }
-            else {
-              module.verbose('Static animation completed');
-              module.restore.conditions();
-              settings.onComplete.call(element);
-            }
-          }
-        },
-
-        force: {
-          visible: function() {
-            var
-              style          = $module.attr('style'),
-              userStyle      = module.get.userStyle(),
-              displayType    = module.get.displayType(),
-              overrideStyle  = userStyle + 'display: ' + displayType + ' !important;',
-              currentDisplay = $module.css('display'),
-              emptyStyle     = (style === undefined || style === '')
-            ;
-            if(currentDisplay !== displayType) {
-              module.verbose('Overriding default display to show element', displayType);
-              $module
-                .attr('style', overrideStyle)
-              ;
-            }
-            else if(emptyStyle) {
-              $module.removeAttr('style');
-            }
-          },
-          hidden: function() {
-            var
-              style          = $module.attr('style'),
-              currentDisplay = $module.css('display'),
-              emptyStyle     = (style === undefined || style === '')
-            ;
-            if(currentDisplay !== 'none' && !module.is.hidden()) {
-              module.verbose('Overriding default display to hide element');
-              $module
-                .css('display', 'none')
-              ;
-            }
-            else if(emptyStyle) {
-              $module
-                .removeAttr('style')
-              ;
-            }
-          }
-        },
-
-        has: {
-          direction: function(animation) {
-            var
-              hasDirection = false
-            ;
-            animation = animation || settings.animation;
-            if(typeof animation === 'string') {
-              animation = animation.split(' ');
-              $.each(animation, function(index, word){
-                if(word === className.inward || word === className.outward) {
-                  hasDirection = true;
-                }
-              });
-            }
-            return hasDirection;
-          },
-          inlineDisplay: function() {
-            var
-              style = $module.attr('style') || ''
-            ;
-            return $.isArray(style.match(/display.*?;/, ''));
-          }
-        },
-
-        set: {
-          animating: function(animation) {
-            var
-              animationClass,
-              direction
-            ;
-            // remove previous callbacks
-            module.remove.completeCallback();
-
-            // determine exact animation
-            animation      = animation || settings.animation;
-            animationClass = module.get.animationClass(animation);
-
-            // save animation class in cache to restore class names
-            module.save.animation(animationClass);
-
-            // override display if necessary so animation appears visibly
-            module.force.visible();
-
-            module.remove.hidden();
-            module.remove.direction();
-
-            module.start.animation(animationClass);
-
-          },
-          duration: function(animationName, duration) {
-            duration = duration || settings.duration;
-            duration = (typeof duration == 'number')
-              ? duration + 'ms'
-              : duration
-            ;
-            if(duration || duration === 0) {
-              module.verbose('Setting animation duration', duration);
-              $module
-                .css({
-                  'animation-duration':  duration
-                })
-              ;
-            }
-          },
-          direction: function(direction) {
-            direction = direction || module.get.direction();
-            if(direction == className.inward) {
-              module.set.inward();
-            }
-            else {
-              module.set.outward();
-            }
-          },
-          looping: function() {
-            module.debug('Transition set to loop');
-            $module
-              .addClass(className.looping)
-            ;
-          },
-          hidden: function() {
-            $module
-              .addClass(className.transition)
-              .addClass(className.hidden)
-            ;
-          },
-          inward: function() {
-            module.debug('Setting direction to inward');
-            $module
-              .removeClass(className.outward)
-              .addClass(className.inward)
-            ;
-          },
-          outward: function() {
-            module.debug('Setting direction to outward');
-            $module
-              .removeClass(className.inward)
-              .addClass(className.outward)
-            ;
-          },
-          visible: function() {
-            $module
-              .addClass(className.transition)
-              .addClass(className.visible)
-            ;
-          }
-        },
-
-        start: {
-          animation: function(animationClass) {
-            animationClass = animationClass || module.get.animationClass();
-            module.debug('Starting tween', animationClass);
-            $module
-              .addClass(animationClass)
-              .one(animationEnd + '.complete' + eventNamespace, module.complete)
-            ;
-            if(settings.useFailSafe) {
-              module.add.failSafe();
-            }
-            module.set.duration(settings.duration);
-            settings.onStart.call(element);
-          }
-        },
-
-        save: {
-          animation: function(animation) {
-            if(!module.cache) {
-              module.cache = {};
-            }
-            module.cache.animation = animation;
-          },
-          displayType: function(displayType) {
-            if(displayType !== 'none') {
-              $module.data(metadata.displayType, displayType);
-            }
-          },
-          transitionExists: function(animation, exists) {
-            $.fn.transition.exists[animation] = exists;
-            module.verbose('Saving existence of transition', animation, exists);
-          }
-        },
-
-        restore: {
-          conditions: function() {
-            var
-              animation = module.get.currentAnimation()
-            ;
-            if(animation) {
-              $module
-                .removeClass(animation)
-              ;
-              module.verbose('Removing animation class', module.cache);
-            }
-            module.remove.duration();
-          }
-        },
-
-        add: {
-          failSafe: function() {
-            var
-              duration = module.get.duration()
-            ;
-            module.timer = setTimeout(function() {
-              $module.triggerHandler(animationEnd);
-            }, duration + settings.failSafeDelay);
-            module.verbose('Adding fail safe timer', module.timer);
-          }
-        },
-
-        remove: {
-          animating: function() {
-            $module.removeClass(className.animating);
-          },
-          animationCallbacks: function() {
-            module.remove.queueCallback();
-            module.remove.completeCallback();
-          },
-          queueCallback: function() {
-            $module.off('.queue' + eventNamespace);
-          },
-          completeCallback: function() {
-            $module.off('.complete' + eventNamespace);
-          },
-          display: function() {
-            $module.css('display', '');
-          },
-          direction: function() {
-            $module
-              .removeClass(className.inward)
-              .removeClass(className.outward)
-            ;
-          },
-          duration: function() {
-            $module
-              .css('animation-duration', '')
-            ;
-          },
-          failSafe: function() {
-            module.verbose('Removing fail safe timer', module.timer);
-            if(module.timer) {
-              clearTimeout(module.timer);
-            }
-          },
-          hidden: function() {
-            $module.removeClass(className.hidden);
-          },
-          visible: function() {
-            $module.removeClass(className.visible);
-          },
-          looping: function() {
-            module.debug('Transitions are no longer looping');
-            if( module.is.looping() ) {
-              module.reset();
-              $module
-                .removeClass(className.looping)
-              ;
-            }
-          },
-          transition: function() {
-            $module
-              .removeClass(className.visible)
-              .removeClass(className.hidden)
-            ;
-          }
-        },
-        get: {
-          settings: function(animation, duration, onComplete) {
-            // single settings object
-            if(typeof animation == 'object') {
-              return $.extend(true, {}, $.fn.transition.settings, animation);
-            }
-            // all arguments provided
-            else if(typeof onComplete == 'function') {
-              return $.extend({}, $.fn.transition.settings, {
-                animation  : animation,
-                onComplete : onComplete,
-                duration   : duration
-              });
-            }
-            // only duration provided
-            else if(typeof duration == 'string' || typeof duration == 'number') {
-              return $.extend({}, $.fn.transition.settings, {
-                animation : animation,
-                duration  : duration
-              });
-            }
-            // duration is actually settings object
-            else if(typeof duration == 'object') {
-              return $.extend({}, $.fn.transition.settings, duration, {
-                animation : animation
-              });
-            }
-            // duration is actually callback
-            else if(typeof duration == 'function') {
-              return $.extend({}, $.fn.transition.settings, {
-                animation  : animation,
-                onComplete : duration
-              });
-            }
-            // only animation provided
-            else {
-              return $.extend({}, $.fn.transition.settings, {
-                animation : animation
-              });
-            }
-          },
-          animationClass: function(animation) {
-            var
-              animationClass = animation || settings.animation,
-              directionClass = (module.can.transition() && !module.has.direction())
-                ? module.get.direction() + ' '
-                : ''
-            ;
-            return className.animating + ' '
-              + className.transition + ' '
-              + directionClass
-              + animationClass
-            ;
-          },
-          currentAnimation: function() {
-            return (module.cache && module.cache.animation !== undefined)
-              ? module.cache.animation
-              : false
-            ;
-          },
-          currentDirection: function() {
-            return module.is.inward()
-              ? className.inward
-              : className.outward
-            ;
-          },
-          direction: function() {
-            return module.is.hidden() || !module.is.visible()
-              ? className.inward
-              : className.outward
-            ;
-          },
-          animationDirection: function(animation) {
-            var
-              direction
-            ;
-            animation = animation || settings.animation;
-            if(typeof animation === 'string') {
-              animation = animation.split(' ');
-              // search animation name for out/in class
-              $.each(animation, function(index, word){
-                if(word === className.inward) {
-                  direction = className.inward;
-                }
-                else if(word === className.outward) {
-                  direction = className.outward;
-                }
-              });
-            }
-            // return found direction
-            if(direction) {
-              return direction;
-            }
-            return false;
-          },
-          duration: function(duration) {
-            duration = duration || settings.duration;
-            if(duration === false) {
-              duration = $module.css('animation-duration') || 0;
-            }
-            return (typeof duration === 'string')
-              ? (duration.indexOf('ms') > -1)
-                ? parseFloat(duration)
-                : parseFloat(duration) * 1000
-              : duration
-            ;
-          },
-          displayType: function(shouldDetermine) {
-            shouldDetermine = (shouldDetermine !== undefined)
-              ? shouldDetermine
-              : true
-            ;
-            if(settings.displayType) {
-              return settings.displayType;
-            }
-            if(shouldDetermine && $module.data(metadata.displayType) === undefined) {
-              // create fake element to determine display state
-              module.can.transition(true);
-            }
-            return $module.data(metadata.displayType);
-          },
-          userStyle: function(style) {
-            style = style || $module.attr('style') || '';
-            return style.replace(/display.*?;/, '');
-          },
-          transitionExists: function(animation) {
-            return $.fn.transition.exists[animation];
-          },
-          animationStartEvent: function() {
-            var
-              element     = document.createElement('div'),
-              animations  = {
-                'animation'       :'animationstart',
-                'OAnimation'      :'oAnimationStart',
-                'MozAnimation'    :'mozAnimationStart',
-                'WebkitAnimation' :'webkitAnimationStart'
-              },
-              animation
-            ;
-            for(animation in animations){
-              if( element.style[animation] !== undefined ){
-                return animations[animation];
-              }
-            }
-            return false;
-          },
-          animationEndEvent: function() {
-            var
-              element     = document.createElement('div'),
-              animations  = {
-                'animation'       :'animationend',
-                'OAnimation'      :'oAnimationEnd',
-                'MozAnimation'    :'mozAnimationEnd',
-                'WebkitAnimation' :'webkitAnimationEnd'
-              },
-              animation
-            ;
-            for(animation in animations){
-              if( element.style[animation] !== undefined ){
-                return animations[animation];
-              }
-            }
-            return false;
-          }
-
-        },
-
-        can: {
-          transition: function(forced) {
-            var
-              animation         = settings.animation,
-              transitionExists  = module.get.transitionExists(animation),
-              displayType       = module.get.displayType(false),
-              elementClass,
-              tagName,
-              $clone,
-              currentAnimation,
-              inAnimation,
-              directionExists
-            ;
-            if( transitionExists === undefined || forced) {
-              module.verbose('Determining whether animation exists');
-              elementClass = $module.attr('class');
-              tagName      = $module.prop('tagName');
-
-              $clone = $('<' + tagName + ' />').addClass( elementClass ).insertAfter($module);
-              currentAnimation = $clone
-                .addClass(animation)
-                .removeClass(className.inward)
-                .removeClass(className.outward)
-                .addClass(className.animating)
-                .addClass(className.transition)
-                .css('animationName')
-              ;
-              inAnimation = $clone
-                .addClass(className.inward)
-                .css('animationName')
-              ;
-              if(!displayType) {
-                displayType = $clone
-                  .attr('class', elementClass)
-                  .removeAttr('style')
-                  .removeClass(className.hidden)
-                  .removeClass(className.visible)
-                  .show()
-                  .css('display')
-                ;
-                module.verbose('Determining final display state', displayType);
-                module.save.displayType(displayType);
-              }
-
-              $clone.remove();
-              if(currentAnimation != inAnimation) {
-                module.debug('Direction exists for animation', animation);
-                directionExists = true;
-              }
-              else if(currentAnimation == 'none' || !currentAnimation) {
-                module.debug('No animation defined in css', animation);
-                return;
-              }
-              else {
-                module.debug('Static animation found', animation, displayType);
-                directionExists = false;
-              }
-              module.save.transitionExists(animation, directionExists);
-            }
-            return (transitionExists !== undefined)
-              ? transitionExists
-              : directionExists
-            ;
-          },
-          animate: function() {
-            // can transition does not return a value if animation does not exist
-            return (module.can.transition() !== undefined);
-          }
-        },
-
-        is: {
-          animating: function() {
-            return $module.hasClass(className.animating);
-          },
-          inward: function() {
-            return $module.hasClass(className.inward);
-          },
-          outward: function() {
-            return $module.hasClass(className.outward);
-          },
-          looping: function() {
-            return $module.hasClass(className.looping);
-          },
-          occurring: function(animation) {
-            animation = animation || settings.animation;
-            animation = '.' + animation.replace(' ', '.');
-            return ( $module.filter(animation).length > 0 );
-          },
-          visible: function() {
-            return $module.is(':visible');
-          },
-          hidden: function() {
-            return $module.css('visibility') === 'hidden';
-          },
-          supported: function() {
-            return(animationEnd !== false);
-          }
-        },
-
-        hide: function() {
-          module.verbose('Hiding element');
-          if( module.is.animating() ) {
-            module.reset();
-          }
-          element.blur(); // IE will trigger focus change if element is not blurred before hiding
-          module.remove.display();
-          module.remove.visible();
-          module.set.hidden();
-          module.force.hidden();
-          settings.onHide.call(element);
-          settings.onComplete.call(element);
-          // module.repaint();
-        },
-
-        show: function(display) {
-          module.verbose('Showing element', display);
-          module.remove.hidden();
-          module.set.visible();
-          module.force.visible();
-          settings.onShow.call(element);
-          settings.onComplete.call(element);
-          // module.repaint();
-        },
-
-        toggle: function() {
-          if( module.is.visible() ) {
-            module.hide();
-          }
-          else {
-            module.show();
-          }
-        },
-
-        stop: function() {
-          module.debug('Stopping current animation');
-          $module.triggerHandler(animationEnd);
-        },
-
-        stopAll: function() {
-          module.debug('Stopping all animation');
-          module.remove.queueCallback();
-          $module.triggerHandler(animationEnd);
-        },
-
-        clear: {
-          queue: function() {
-            module.debug('Clearing animation queue');
-            module.remove.queueCallback();
-          }
-        },
-
-        enable: function() {
-          module.verbose('Starting animation');
-          $module.removeClass(className.disabled);
-        },
-
-        disable: function() {
-          module.debug('Stopping animation');
-          $module.addClass(className.disabled);
-        },
-
-        setting: function(name, value) {
-          module.debug('Changing setting', name, value);
-          if( $.isPlainObject(name) ) {
-            $.extend(true, settings, name);
-          }
-          else if(value !== undefined) {
-            if($.isPlainObject(settings[name])) {
-              $.extend(true, settings[name], value);
-            }
-            else {
-              settings[name] = value;
-            }
-          }
-          else {
-            return settings[name];
-          }
-        },
-        internal: function(name, value) {
-          if( $.isPlainObject(name) ) {
-            $.extend(true, module, name);
-          }
-          else if(value !== undefined) {
-            module[name] = value;
-          }
-          else {
-            return module[name];
-          }
-        },
-        debug: function() {
-          if(!settings.silent && settings.debug) {
-            if(settings.performance) {
-              module.performance.log(arguments);
-            }
-            else {
-              module.debug = Function.prototype.bind.call(console.info, console, settings.name + ':');
-              module.debug.apply(console, arguments);
-            }
-          }
-        },
-        verbose: function() {
-          if(!settings.silent && settings.verbose && settings.debug) {
-            if(settings.performance) {
-              module.performance.log(arguments);
-            }
-            else {
-              module.verbose = Function.prototype.bind.call(console.info, console, settings.name + ':');
-              module.verbose.apply(console, arguments);
-            }
-          }
-        },
-        error: function() {
-          if(!settings.silent) {
-            module.error = Function.prototype.bind.call(console.error, console, settings.name + ':');
-            module.error.apply(console, arguments);
-          }
-        },
-        performance: {
-          log: function(message) {
-            var
-              currentTime,
-              executionTime,
-              previousTime
-            ;
-            if(settings.performance) {
-              currentTime   = new Date().getTime();
-              previousTime  = time || currentTime;
-              executionTime = currentTime - previousTime;
-              time          = currentTime;
-              performance.push({
-                'Name'           : message[0],
-                'Arguments'      : [].slice.call(message, 1) || '',
-                'Element'        : element,
-                'Execution Time' : executionTime
-              });
-            }
-            clearTimeout(module.performance.timer);
-            module.performance.timer = setTimeout(module.performance.display, 500);
-          },
-          display: function() {
-            var
-              title = settings.name + ':',
-              totalTime = 0
-            ;
-            time = false;
-            clearTimeout(module.performance.timer);
-            $.each(performance, function(index, data) {
-              totalTime += data['Execution Time'];
-            });
-            title += ' ' + totalTime + 'ms';
-            if(moduleSelector) {
-              title += ' \'' + moduleSelector + '\'';
-            }
-            if($allModules.length > 1) {
-              title += ' ' + '(' + $allModules.length + ')';
-            }
-            if( (console.group !== undefined || console.table !== undefined) && performance.length > 0) {
-              console.groupCollapsed(title);
-              if(console.table) {
-                console.table(performance);
-              }
-              else {
-                $.each(performance, function(index, data) {
-                  console.log(data['Name'] + ': ' + data['Execution Time']+'ms');
-                });
-              }
-              console.groupEnd();
-            }
-            performance = [];
-          }
-        },
-        // modified for transition to return invoke success
-        invoke: function(query, passedArguments, context) {
-          var
-            object = instance,
-            maxDepth,
-            found,
-            response
-          ;
-          passedArguments = passedArguments || queryArguments;
-          context         = element         || context;
-          if(typeof query == 'string' && object !== undefined) {
-            query    = query.split(/[\. ]/);
-            maxDepth = query.length - 1;
-            $.each(query, function(depth, value) {
-              var camelCaseValue = (depth != maxDepth)
-                ? value + query[depth + 1].charAt(0).toUpperCase() + query[depth + 1].slice(1)
-                : query
-              ;
-              if( $.isPlainObject( object[camelCaseValue] ) && (depth != maxDepth) ) {
-                object = object[camelCaseValue];
-              }
-              else if( object[camelCaseValue] !== undefined ) {
-                found = object[camelCaseValue];
-                return false;
-              }
-              else if( $.isPlainObject( object[value] ) && (depth != maxDepth) ) {
-                object = object[value];
-              }
-              else if( object[value] !== undefined ) {
-                found = object[value];
-                return false;
-              }
-              else {
-                return false;
-              }
-            });
-          }
-          if ( $.isFunction( found ) ) {
-            response = found.apply(context, passedArguments);
-          }
-          else if(found !== undefined) {
-            response = found;
-          }
-
-          if($.isArray(returnedValue)) {
-            returnedValue.push(response);
-          }
-          else if(returnedValue !== undefined) {
-            returnedValue = [returnedValue, response];
-          }
-          else if(response !== undefined) {
-            returnedValue = response;
-          }
-          return (found !== undefined)
-            ? found
-            : false
-          ;
-        }
-      };
-      module.initialize();
-    })
-  ;
-  return (returnedValue !== undefined)
-    ? returnedValue
-    : this
-  ;
-};
-
-// Records if CSS transition is available
-$.fn.transition.exists = {};
-
-$.fn.transition.settings = {
-
-  // module info
-  name          : 'Transition',
-
-  // hide all output from this component regardless of other settings
-  silent        : false,
-
-  // debug content outputted to console
-  debug         : false,
-
-  // verbose debug output
-  verbose       : false,
-
-  // performance data output
-  performance   : true,
-
-  // event namespace
-  namespace     : 'transition',
-
-  // delay between animations in group
-  interval      : 0,
-
-  // whether group animations should be reversed
-  reverse       : 'auto',
-
-  // animation callback event
-  onStart       : function() {},
-  onComplete    : function() {},
-  onShow        : function() {},
-  onHide        : function() {},
-
-  // whether timeout should be used to ensure callback fires in cases animationend does not
-  useFailSafe   : true,
-
-  // delay in ms for fail safe
-  failSafeDelay : 100,
-
-  // whether EXACT animation can occur twice in a row
-  allowRepeats  : false,
-
-  // Override final display type on visible
-  displayType   : false,
-
-  // animation duration
-  animation     : 'fade',
-  duration      : false,
-
-  // new animations will occur after previous ones
-  queue         : true,
-
-  metadata : {
-    displayType: 'display'
-  },
-
-  className   : {
-    animating  : 'animating',
-    disabled   : 'disabled',
-    hidden     : 'hidden',
-    inward     : 'in',
-    loading    : 'loading',
-    looping    : 'looping',
-    outward    : 'out',
-    transition : 'transition',
-    visible    : 'visible'
-  },
-
-  // possible errors
-  error: {
-    noAnimation : 'Element is no longer attached to DOM. Unable to animate.  Use silent setting to surpress this warning in production.',
-    repeated    : 'That animation is already occurring, cancelling repeated animation',
-    method      : 'The method you called is not defined',
-    support     : 'This browser does not support CSS animations'
-  }
-
-};
-
-
-})( jQuery, window, document );
-
-
-/***/ }),
-
 /***/ "./node_modules/webpack/buildin/global.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
@@ -41992,11 +36920,13 @@ module.exports = function(module) {
 
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-__webpack_require__(/*! semantic-ui-dropdown/dropdown */ "./node_modules/semantic-ui-dropdown/dropdown.js");
+__webpack_require__(/*! ./select2 */ "./resources/js/select2.js"); // require('semantic-ui-dropdown/dropdown');
+// require('semantic-ui-transition/transition');
 
-__webpack_require__(/*! semantic-ui-transition/transition */ "./node_modules/semantic-ui-transition/transition.js");
 
 __webpack_require__(/*! ./custom */ "./resources/js/custom.js");
+
+__webpack_require__(/*! ./formValidation */ "./resources/js/formValidation.js");
 
 /***/ }),
 
@@ -42056,6 +36986,2820 @@ jQuery(document).ready(function ($) {
   $(function () {
     $('[data-toggle="tooltip"]').tooltip();
   });
+});
+
+/***/ }),
+
+/***/ "./resources/js/formValidation.js":
+/*!****************************************!*\
+  !*** ./resources/js/formValidation.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// //Tikrina imones ikurimo data ir pagal tai palieka
+// //tik leistinus konsultacijos tipus
+//Jei imonei daugiau nei 5 metai, tai pasalina VKT is dropdown
+jQuery(document).ready(function ($) {
+  $("#company_reg_date").change(function () {
+    var ivestaData = new Date($("#company_reg_date").val());
+    var esamaData = new Date();
+    var skirtumas = (esamaData - ivestaData) / 1000 / 60 / 60 / 24 / 365;
+
+    if (skirtumas >= 5) {
+      $('#con_type option[value="VKT"]').css("display", "none");
+    }
+  });
+});
+
+/***/ }),
+
+/***/ "./resources/js/select2.js":
+/*!*********************************!*\
+  !*** ./resources/js/select2.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/*! Select2 4.0.6-rc.0 | https://github.com/select2/select2/blob/master/LICENSE.md */
+!function (a) {
+   true ? !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")], __WEBPACK_AMD_DEFINE_FACTORY__ = (a),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : undefined;
+}(function (a) {
+  var b = function () {
+    if (a && a.fn && a.fn.select2 && a.fn.select2.amd) var b = a.fn.select2.amd;
+    var b;
+    return function () {
+      if (!b || !b.requirejs) {
+        b ? c = b : b = {};
+        var a, c, d;
+        !function (b) {
+          function e(a, b) {
+            return v.call(a, b);
+          }
+
+          function f(a, b) {
+            var c,
+                d,
+                e,
+                f,
+                g,
+                h,
+                i,
+                j,
+                k,
+                l,
+                m,
+                n,
+                o = b && b.split("/"),
+                p = t.map,
+                q = p && p["*"] || {};
+
+            if (a) {
+              for (a = a.split("/"), g = a.length - 1, t.nodeIdCompat && x.test(a[g]) && (a[g] = a[g].replace(x, "")), "." === a[0].charAt(0) && o && (n = o.slice(0, o.length - 1), a = n.concat(a)), k = 0; k < a.length; k++) {
+                if ("." === (m = a[k])) a.splice(k, 1), k -= 1;else if (".." === m) {
+                  if (0 === k || 1 === k && ".." === a[2] || ".." === a[k - 1]) continue;
+                  k > 0 && (a.splice(k - 1, 2), k -= 2);
+                }
+              }
+
+              a = a.join("/");
+            }
+
+            if ((o || q) && p) {
+              for (c = a.split("/"), k = c.length; k > 0; k -= 1) {
+                if (d = c.slice(0, k).join("/"), o) for (l = o.length; l > 0; l -= 1) {
+                  if ((e = p[o.slice(0, l).join("/")]) && (e = e[d])) {
+                    f = e, h = k;
+                    break;
+                  }
+                }
+                if (f) break;
+                !i && q && q[d] && (i = q[d], j = k);
+              }
+
+              !f && i && (f = i, h = j), f && (c.splice(0, h, f), a = c.join("/"));
+            }
+
+            return a;
+          }
+
+          function g(a, c) {
+            return function () {
+              var d = w.call(arguments, 0);
+              return "string" != typeof d[0] && 1 === d.length && d.push(null), _o.apply(b, d.concat([a, c]));
+            };
+          }
+
+          function h(a) {
+            return function (b) {
+              return f(b, a);
+            };
+          }
+
+          function i(a) {
+            return function (b) {
+              r[a] = b;
+            };
+          }
+
+          function j(a) {
+            if (e(s, a)) {
+              var c = s[a];
+              delete s[a], u[a] = !0, n.apply(b, c);
+            }
+
+            if (!e(r, a) && !e(u, a)) throw new Error("No " + a);
+            return r[a];
+          }
+
+          function k(a) {
+            var b,
+                c = a ? a.indexOf("!") : -1;
+            return c > -1 && (b = a.substring(0, c), a = a.substring(c + 1, a.length)), [b, a];
+          }
+
+          function l(a) {
+            return a ? k(a) : [];
+          }
+
+          function m(a) {
+            return function () {
+              return t && t.config && t.config[a] || {};
+            };
+          }
+
+          var n,
+              _o,
+              p,
+              q,
+              r = {},
+              s = {},
+              t = {},
+              u = {},
+              v = Object.prototype.hasOwnProperty,
+              w = [].slice,
+              x = /\.js$/;
+
+          p = function p(a, b) {
+            var c,
+                d = k(a),
+                e = d[0],
+                g = b[1];
+            return a = d[1], e && (e = f(e, g), c = j(e)), e ? a = c && c.normalize ? c.normalize(a, h(g)) : f(a, g) : (a = f(a, g), d = k(a), e = d[0], a = d[1], e && (c = j(e))), {
+              f: e ? e + "!" + a : a,
+              n: a,
+              pr: e,
+              p: c
+            };
+          }, q = {
+            require: function require(a) {
+              return g(a);
+            },
+            exports: function exports(a) {
+              var b = r[a];
+              return void 0 !== b ? b : r[a] = {};
+            },
+            module: function module(a) {
+              return {
+                id: a,
+                uri: "",
+                exports: r[a],
+                config: m(a)
+              };
+            }
+          }, n = function n(a, c, d, f) {
+            var h,
+                k,
+                m,
+                n,
+                o,
+                t,
+                v,
+                w = [],
+                x = _typeof(d);
+
+            if (f = f || a, t = l(f), "undefined" === x || "function" === x) {
+              for (c = !c.length && d.length ? ["require", "exports", "module"] : c, o = 0; o < c.length; o += 1) {
+                if (n = p(c[o], t), "require" === (k = n.f)) w[o] = q.require(a);else if ("exports" === k) w[o] = q.exports(a), v = !0;else if ("module" === k) h = w[o] = q.module(a);else if (e(r, k) || e(s, k) || e(u, k)) w[o] = j(k);else {
+                  if (!n.p) throw new Error(a + " missing " + k);
+                  n.p.load(n.n, g(f, !0), i(k), {}), w[o] = r[k];
+                }
+              }
+
+              m = d ? d.apply(r[a], w) : void 0, a && (h && h.exports !== b && h.exports !== r[a] ? r[a] = h.exports : m === b && v || (r[a] = m));
+            } else a && (r[a] = d);
+          }, a = c = _o = function o(a, c, d, e, f) {
+            if ("string" == typeof a) return q[a] ? q[a](c) : j(p(a, l(c)).f);
+
+            if (!a.splice) {
+              if (t = a, t.deps && _o(t.deps, t.callback), !c) return;
+              c.splice ? (a = c, c = d, d = null) : a = b;
+            }
+
+            return c = c || function () {}, "function" == typeof d && (d = e, e = f), e ? n(b, a, c, d) : setTimeout(function () {
+              n(b, a, c, d);
+            }, 4), _o;
+          }, _o.config = function (a) {
+            return _o(a);
+          }, a._defined = r, d = function d(a, b, c) {
+            if ("string" != typeof a) throw new Error("See almond README: incorrect module build, no module name");
+            b.splice || (c = b, b = []), e(r, a) || e(s, a) || (s[a] = [a, b, c]);
+          }, d.amd = {
+            jQuery: !0
+          };
+        }(), b.requirejs = a, b.require = c, b.define = d;
+      }
+    }(), b.define("almond", function () {}), b.define("jquery", [], function () {
+      var b = a || $;
+      return null == b && console && console.error && console.error("Select2: An instance of jQuery or a jQuery-compatible library was not found. Make sure that you are including jQuery before Select2 on your web page."), b;
+    }), b.define("select2/utils", ["jquery"], function (a) {
+      function b(a) {
+        var b = a.prototype,
+            c = [];
+
+        for (var d in b) {
+          "function" == typeof b[d] && "constructor" !== d && c.push(d);
+        }
+
+        return c;
+      }
+
+      var c = {};
+      c.Extend = function (a, b) {
+        function c() {
+          this.constructor = a;
+        }
+
+        var d = {}.hasOwnProperty;
+
+        for (var e in b) {
+          d.call(b, e) && (a[e] = b[e]);
+        }
+
+        return c.prototype = b.prototype, a.prototype = new c(), a.__super__ = b.prototype, a;
+      }, c.Decorate = function (a, c) {
+        function d() {
+          var b = Array.prototype.unshift,
+              d = c.prototype.constructor.length,
+              e = a.prototype.constructor;
+          d > 0 && (b.call(arguments, a.prototype.constructor), e = c.prototype.constructor), e.apply(this, arguments);
+        }
+
+        function e() {
+          this.constructor = d;
+        }
+
+        var f = b(c),
+            g = b(a);
+        c.displayName = a.displayName, d.prototype = new e();
+
+        for (var h = 0; h < g.length; h++) {
+          var i = g[h];
+          d.prototype[i] = a.prototype[i];
+        }
+
+        for (var j = function j(a) {
+          var b = function b() {};
+
+          (a in d.prototype) && (b = d.prototype[a]);
+          var e = c.prototype[a];
+          return function () {
+            return Array.prototype.unshift.call(arguments, b), e.apply(this, arguments);
+          };
+        }, k = 0; k < f.length; k++) {
+          var l = f[k];
+          d.prototype[l] = j(l);
+        }
+
+        return d;
+      };
+
+      var d = function d() {
+        this.listeners = {};
+      };
+
+      d.prototype.on = function (a, b) {
+        this.listeners = this.listeners || {}, a in this.listeners ? this.listeners[a].push(b) : this.listeners[a] = [b];
+      }, d.prototype.trigger = function (a) {
+        var b = Array.prototype.slice,
+            c = b.call(arguments, 1);
+        this.listeners = this.listeners || {}, null == c && (c = []), 0 === c.length && c.push({}), c[0]._type = a, a in this.listeners && this.invoke(this.listeners[a], b.call(arguments, 1)), "*" in this.listeners && this.invoke(this.listeners["*"], arguments);
+      }, d.prototype.invoke = function (a, b) {
+        for (var c = 0, d = a.length; c < d; c++) {
+          a[c].apply(this, b);
+        }
+      }, c.Observable = d, c.generateChars = function (a) {
+        for (var b = "", c = 0; c < a; c++) {
+          b += Math.floor(36 * Math.random()).toString(36);
+        }
+
+        return b;
+      }, c.bind = function (a, b) {
+        return function () {
+          a.apply(b, arguments);
+        };
+      }, c._convertData = function (a) {
+        for (var b in a) {
+          var c = b.split("-"),
+              d = a;
+
+          if (1 !== c.length) {
+            for (var e = 0; e < c.length; e++) {
+              var f = c[e];
+              f = f.substring(0, 1).toLowerCase() + f.substring(1), f in d || (d[f] = {}), e == c.length - 1 && (d[f] = a[b]), d = d[f];
+            }
+
+            delete a[b];
+          }
+        }
+
+        return a;
+      }, c.hasScroll = function (b, c) {
+        var d = a(c),
+            e = c.style.overflowX,
+            f = c.style.overflowY;
+        return (e !== f || "hidden" !== f && "visible" !== f) && ("scroll" === e || "scroll" === f || d.innerHeight() < c.scrollHeight || d.innerWidth() < c.scrollWidth);
+      }, c.escapeMarkup = function (a) {
+        var b = {
+          "\\": "&#92;",
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+          "/": "&#47;"
+        };
+        return "string" != typeof a ? a : String(a).replace(/[&<>"'\/\\]/g, function (a) {
+          return b[a];
+        });
+      }, c.appendMany = function (b, c) {
+        if ("1.7" === a.fn.jquery.substr(0, 3)) {
+          var d = a();
+          a.map(c, function (a) {
+            d = d.add(a);
+          }), c = d;
+        }
+
+        b.append(c);
+      }, c.__cache = {};
+      var e = 0;
+      return c.GetUniqueElementId = function (a) {
+        var b = a.getAttribute("data-select2-id");
+        return null == b && (a.id ? (b = a.id, a.setAttribute("data-select2-id", b)) : (a.setAttribute("data-select2-id", ++e), b = e.toString())), b;
+      }, c.StoreData = function (a, b, d) {
+        var e = c.GetUniqueElementId(a);
+        c.__cache[e] || (c.__cache[e] = {}), c.__cache[e][b] = d;
+      }, c.GetData = function (b, d) {
+        var e = c.GetUniqueElementId(b);
+        return d ? c.__cache[e] && null != c.__cache[e][d] ? c.__cache[e][d] : a(b).data(d) : c.__cache[e];
+      }, c.RemoveData = function (a) {
+        var b = c.GetUniqueElementId(a);
+        null != c.__cache[b] && delete c.__cache[b];
+      }, c;
+    }), b.define("select2/results", ["jquery", "./utils"], function (a, b) {
+      function c(a, b, d) {
+        this.$element = a, this.data = d, this.options = b, c.__super__.constructor.call(this);
+      }
+
+      return b.Extend(c, b.Observable), c.prototype.render = function () {
+        var b = a('<ul class="select2-results__options" role="tree"></ul>');
+        return this.options.get("multiple") && b.attr("aria-multiselectable", "true"), this.$results = b, b;
+      }, c.prototype.clear = function () {
+        this.$results.empty();
+      }, c.prototype.displayMessage = function (b) {
+        var c = this.options.get("escapeMarkup");
+        this.clear(), this.hideLoading();
+        var d = a('<li role="treeitem" aria-live="assertive" class="select2-results__option"></li>'),
+            e = this.options.get("translations").get(b.message);
+        d.append(c(e(b.args))), d[0].className += " select2-results__message", this.$results.append(d);
+      }, c.prototype.hideMessages = function () {
+        this.$results.find(".select2-results__message").remove();
+      }, c.prototype.append = function (a) {
+        this.hideLoading();
+        var b = [];
+        if (null == a.results || 0 === a.results.length) return void (0 === this.$results.children().length && this.trigger("results:message", {
+          message: "noResults"
+        }));
+        a.results = this.sort(a.results);
+
+        for (var c = 0; c < a.results.length; c++) {
+          var d = a.results[c],
+              e = this.option(d);
+          b.push(e);
+        }
+
+        this.$results.append(b);
+      }, c.prototype.position = function (a, b) {
+        b.find(".select2-results").append(a);
+      }, c.prototype.sort = function (a) {
+        return this.options.get("sorter")(a);
+      }, c.prototype.highlightFirstItem = function () {
+        var a = this.$results.find(".select2-results__option[aria-selected]"),
+            b = a.filter("[aria-selected=true]");
+        b.length > 0 ? b.first().trigger("mouseenter") : a.first().trigger("mouseenter"), this.ensureHighlightVisible();
+      }, c.prototype.setClasses = function () {
+        var c = this;
+        this.data.current(function (d) {
+          var e = a.map(d, function (a) {
+            return a.id.toString();
+          });
+          c.$results.find(".select2-results__option[aria-selected]").each(function () {
+            var c = a(this),
+                d = b.GetData(this, "data"),
+                f = "" + d.id;
+            null != d.element && d.element.selected || null == d.element && a.inArray(f, e) > -1 ? c.attr("aria-selected", "true") : c.attr("aria-selected", "false");
+          });
+        });
+      }, c.prototype.showLoading = function (a) {
+        this.hideLoading();
+        var b = this.options.get("translations").get("searching"),
+            c = {
+          disabled: !0,
+          loading: !0,
+          text: b(a)
+        },
+            d = this.option(c);
+        d.className += " loading-results", this.$results.prepend(d);
+      }, c.prototype.hideLoading = function () {
+        this.$results.find(".loading-results").remove();
+      }, c.prototype.option = function (c) {
+        var d = document.createElement("li");
+        d.className = "select2-results__option";
+        var e = {
+          role: "treeitem",
+          "aria-selected": "false"
+        };
+        c.disabled && (delete e["aria-selected"], e["aria-disabled"] = "true"), null == c.id && delete e["aria-selected"], null != c._resultId && (d.id = c._resultId), c.title && (d.title = c.title), c.children && (e.role = "group", e["aria-label"] = c.text, delete e["aria-selected"]);
+
+        for (var f in e) {
+          var g = e[f];
+          d.setAttribute(f, g);
+        }
+
+        if (c.children) {
+          var h = a(d),
+              i = document.createElement("strong");
+          i.className = "select2-results__group";
+          a(i);
+          this.template(c, i);
+
+          for (var j = [], k = 0; k < c.children.length; k++) {
+            var l = c.children[k],
+                m = this.option(l);
+            j.push(m);
+          }
+
+          var n = a("<ul></ul>", {
+            "class": "select2-results__options select2-results__options--nested"
+          });
+          n.append(j), h.append(i), h.append(n);
+        } else this.template(c, d);
+
+        return b.StoreData(d, "data", c), d;
+      }, c.prototype.bind = function (c, d) {
+        var e = this,
+            f = c.id + "-results";
+        this.$results.attr("id", f), c.on("results:all", function (a) {
+          e.clear(), e.append(a.data), c.isOpen() && (e.setClasses(), e.highlightFirstItem());
+        }), c.on("results:append", function (a) {
+          e.append(a.data), c.isOpen() && e.setClasses();
+        }), c.on("query", function (a) {
+          e.hideMessages(), e.showLoading(a);
+        }), c.on("select", function () {
+          c.isOpen() && (e.setClasses(), e.highlightFirstItem());
+        }), c.on("unselect", function () {
+          c.isOpen() && (e.setClasses(), e.highlightFirstItem());
+        }), c.on("open", function () {
+          e.$results.attr("aria-expanded", "true"), e.$results.attr("aria-hidden", "false"), e.setClasses(), e.ensureHighlightVisible();
+        }), c.on("close", function () {
+          e.$results.attr("aria-expanded", "false"), e.$results.attr("aria-hidden", "true"), e.$results.removeAttr("aria-activedescendant");
+        }), c.on("results:toggle", function () {
+          var a = e.getHighlightedResults();
+          0 !== a.length && a.trigger("mouseup");
+        }), c.on("results:select", function () {
+          var a = e.getHighlightedResults();
+
+          if (0 !== a.length) {
+            var c = b.GetData(a[0], "data");
+            "true" == a.attr("aria-selected") ? e.trigger("close", {}) : e.trigger("select", {
+              data: c
+            });
+          }
+        }), c.on("results:previous", function () {
+          var a = e.getHighlightedResults(),
+              b = e.$results.find("[aria-selected]"),
+              c = b.index(a);
+
+          if (0 !== c) {
+            var d = c - 1;
+            0 === a.length && (d = 0);
+            var f = b.eq(d);
+            f.trigger("mouseenter");
+            var g = e.$results.offset().top,
+                h = f.offset().top,
+                i = e.$results.scrollTop() + (h - g);
+            0 === d ? e.$results.scrollTop(0) : h - g < 0 && e.$results.scrollTop(i);
+          }
+        }), c.on("results:next", function () {
+          var a = e.getHighlightedResults(),
+              b = e.$results.find("[aria-selected]"),
+              c = b.index(a),
+              d = c + 1;
+
+          if (!(d >= b.length)) {
+            var f = b.eq(d);
+            f.trigger("mouseenter");
+            var g = e.$results.offset().top + e.$results.outerHeight(!1),
+                h = f.offset().top + f.outerHeight(!1),
+                i = e.$results.scrollTop() + h - g;
+            0 === d ? e.$results.scrollTop(0) : h > g && e.$results.scrollTop(i);
+          }
+        }), c.on("results:focus", function (a) {
+          a.element.addClass("select2-results__option--highlighted");
+        }), c.on("results:message", function (a) {
+          e.displayMessage(a);
+        }), a.fn.mousewheel && this.$results.on("mousewheel", function (a) {
+          var b = e.$results.scrollTop(),
+              c = e.$results.get(0).scrollHeight - b + a.deltaY,
+              d = a.deltaY > 0 && b - a.deltaY <= 0,
+              f = a.deltaY < 0 && c <= e.$results.height();
+          d ? (e.$results.scrollTop(0), a.preventDefault(), a.stopPropagation()) : f && (e.$results.scrollTop(e.$results.get(0).scrollHeight - e.$results.height()), a.preventDefault(), a.stopPropagation());
+        }), this.$results.on("mouseup", ".select2-results__option[aria-selected]", function (c) {
+          var d = a(this),
+              f = b.GetData(this, "data");
+          if ("true" === d.attr("aria-selected")) return void (e.options.get("multiple") ? e.trigger("unselect", {
+            originalEvent: c,
+            data: f
+          }) : e.trigger("close", {}));
+          e.trigger("select", {
+            originalEvent: c,
+            data: f
+          });
+        }), this.$results.on("mouseenter", ".select2-results__option[aria-selected]", function (c) {
+          var d = b.GetData(this, "data");
+          e.getHighlightedResults().removeClass("select2-results__option--highlighted"), e.trigger("results:focus", {
+            data: d,
+            element: a(this)
+          });
+        });
+      }, c.prototype.getHighlightedResults = function () {
+        return this.$results.find(".select2-results__option--highlighted");
+      }, c.prototype.destroy = function () {
+        this.$results.remove();
+      }, c.prototype.ensureHighlightVisible = function () {
+        var a = this.getHighlightedResults();
+
+        if (0 !== a.length) {
+          var b = this.$results.find("[aria-selected]"),
+              c = b.index(a),
+              d = this.$results.offset().top,
+              e = a.offset().top,
+              f = this.$results.scrollTop() + (e - d),
+              g = e - d;
+          f -= 2 * a.outerHeight(!1), c <= 2 ? this.$results.scrollTop(0) : (g > this.$results.outerHeight() || g < 0) && this.$results.scrollTop(f);
+        }
+      }, c.prototype.template = function (b, c) {
+        var d = this.options.get("templateResult"),
+            e = this.options.get("escapeMarkup"),
+            f = d(b, c);
+        null == f ? c.style.display = "none" : "string" == typeof f ? c.innerHTML = e(f) : a(c).append(f);
+      }, c;
+    }), b.define("select2/keys", [], function () {
+      return {
+        BACKSPACE: 8,
+        TAB: 9,
+        ENTER: 13,
+        SHIFT: 16,
+        CTRL: 17,
+        ALT: 18,
+        ESC: 27,
+        SPACE: 32,
+        PAGE_UP: 33,
+        PAGE_DOWN: 34,
+        END: 35,
+        HOME: 36,
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        DELETE: 46
+      };
+    }), b.define("select2/selection/base", ["jquery", "../utils", "../keys"], function (a, b, c) {
+      function d(a, b) {
+        this.$element = a, this.options = b, d.__super__.constructor.call(this);
+      }
+
+      return b.Extend(d, b.Observable), d.prototype.render = function () {
+        var c = a('<span class="select2-selection" role="combobox"  aria-haspopup="true" aria-expanded="false"></span>');
+        return this._tabindex = 0, null != b.GetData(this.$element[0], "old-tabindex") ? this._tabindex = b.GetData(this.$element[0], "old-tabindex") : null != this.$element.attr("tabindex") && (this._tabindex = this.$element.attr("tabindex")), c.attr("title", this.$element.attr("title")), c.attr("tabindex", this._tabindex), this.$selection = c, c;
+      }, d.prototype.bind = function (a, b) {
+        var d = this,
+            e = (a.id, a.id + "-results");
+        this.container = a, this.$selection.on("focus", function (a) {
+          d.trigger("focus", a);
+        }), this.$selection.on("blur", function (a) {
+          d._handleBlur(a);
+        }), this.$selection.on("keydown", function (a) {
+          d.trigger("keypress", a), a.which === c.SPACE && a.preventDefault();
+        }), a.on("results:focus", function (a) {
+          d.$selection.attr("aria-activedescendant", a.data._resultId);
+        }), a.on("selection:update", function (a) {
+          d.update(a.data);
+        }), a.on("open", function () {
+          d.$selection.attr("aria-expanded", "true"), d.$selection.attr("aria-owns", e), d._attachCloseHandler(a);
+        }), a.on("close", function () {
+          d.$selection.attr("aria-expanded", "false"), d.$selection.removeAttr("aria-activedescendant"), d.$selection.removeAttr("aria-owns"), d.$selection.focus(), d._detachCloseHandler(a);
+        }), a.on("enable", function () {
+          d.$selection.attr("tabindex", d._tabindex);
+        }), a.on("disable", function () {
+          d.$selection.attr("tabindex", "-1");
+        });
+      }, d.prototype._handleBlur = function (b) {
+        var c = this;
+        window.setTimeout(function () {
+          document.activeElement == c.$selection[0] || a.contains(c.$selection[0], document.activeElement) || c.trigger("blur", b);
+        }, 1);
+      }, d.prototype._attachCloseHandler = function (c) {
+        a(document.body).on("mousedown.select2." + c.id, function (c) {
+          var d = a(c.target),
+              e = d.closest(".select2");
+          a(".select2.select2-container--open").each(function () {
+            a(this), this != e[0] && b.GetData(this, "element").select2("close");
+          });
+        });
+      }, d.prototype._detachCloseHandler = function (b) {
+        a(document.body).off("mousedown.select2." + b.id);
+      }, d.prototype.position = function (a, b) {
+        b.find(".selection").append(a);
+      }, d.prototype.destroy = function () {
+        this._detachCloseHandler(this.container);
+      }, d.prototype.update = function (a) {
+        throw new Error("The `update` method must be defined in child classes.");
+      }, d;
+    }), b.define("select2/selection/single", ["jquery", "./base", "../utils", "../keys"], function (a, b, c, d) {
+      function e() {
+        e.__super__.constructor.apply(this, arguments);
+      }
+
+      return c.Extend(e, b), e.prototype.render = function () {
+        var a = e.__super__.render.call(this);
+
+        return a.addClass("select2-selection--single"), a.html('<span class="select2-selection__rendered"></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span>'), a;
+      }, e.prototype.bind = function (a, b) {
+        var c = this;
+
+        e.__super__.bind.apply(this, arguments);
+
+        var d = a.id + "-container";
+        this.$selection.find(".select2-selection__rendered").attr("id", d).attr("role", "textbox").attr("aria-readonly", "true"), this.$selection.attr("aria-labelledby", d), this.$selection.on("mousedown", function (a) {
+          1 === a.which && c.trigger("toggle", {
+            originalEvent: a
+          });
+        }), this.$selection.on("focus", function (a) {}), this.$selection.on("blur", function (a) {}), a.on("focus", function (b) {
+          a.isOpen() || c.$selection.focus();
+        });
+      }, e.prototype.clear = function () {
+        var a = this.$selection.find(".select2-selection__rendered");
+        a.empty(), a.removeAttr("title");
+      }, e.prototype.display = function (a, b) {
+        var c = this.options.get("templateSelection");
+        return this.options.get("escapeMarkup")(c(a, b));
+      }, e.prototype.selectionContainer = function () {
+        return a("<span></span>");
+      }, e.prototype.update = function (a) {
+        if (0 === a.length) return void this.clear();
+        var b = a[0],
+            c = this.$selection.find(".select2-selection__rendered"),
+            d = this.display(b, c);
+        c.empty().append(d), c.attr("title", b.title || b.text);
+      }, e;
+    }), b.define("select2/selection/multiple", ["jquery", "./base", "../utils"], function (a, b, c) {
+      function d(a, b) {
+        d.__super__.constructor.apply(this, arguments);
+      }
+
+      return c.Extend(d, b), d.prototype.render = function () {
+        var a = d.__super__.render.call(this);
+
+        return a.addClass("select2-selection--multiple"), a.html('<ul class="select2-selection__rendered"></ul>'), a;
+      }, d.prototype.bind = function (b, e) {
+        var f = this;
+        d.__super__.bind.apply(this, arguments), this.$selection.on("click", function (a) {
+          f.trigger("toggle", {
+            originalEvent: a
+          });
+        }), this.$selection.on("click", ".select2-selection__choice__remove", function (b) {
+          if (!f.options.get("disabled")) {
+            var d = a(this),
+                e = d.parent(),
+                g = c.GetData(e[0], "data");
+            f.trigger("unselect", {
+              originalEvent: b,
+              data: g
+            });
+          }
+        });
+      }, d.prototype.clear = function () {
+        var a = this.$selection.find(".select2-selection__rendered");
+        a.empty(), a.removeAttr("title");
+      }, d.prototype.display = function (a, b) {
+        var c = this.options.get("templateSelection");
+        return this.options.get("escapeMarkup")(c(a, b));
+      }, d.prototype.selectionContainer = function () {
+        return a('<li class="select2-selection__choice"><span class="select2-selection__choice__remove" role="presentation">&times;</span></li>');
+      }, d.prototype.update = function (a) {
+        if (this.clear(), 0 !== a.length) {
+          for (var b = [], d = 0; d < a.length; d++) {
+            var e = a[d],
+                f = this.selectionContainer(),
+                g = this.display(e, f);
+            f.append(g), f.attr("title", e.title || e.text), c.StoreData(f[0], "data", e), b.push(f);
+          }
+
+          var h = this.$selection.find(".select2-selection__rendered");
+          c.appendMany(h, b);
+        }
+      }, d;
+    }), b.define("select2/selection/placeholder", ["../utils"], function (a) {
+      function b(a, b, c) {
+        this.placeholder = this.normalizePlaceholder(c.get("placeholder")), a.call(this, b, c);
+      }
+
+      return b.prototype.normalizePlaceholder = function (a, b) {
+        return "string" == typeof b && (b = {
+          id: "",
+          text: b
+        }), b;
+      }, b.prototype.createPlaceholder = function (a, b) {
+        var c = this.selectionContainer();
+        return c.html(this.display(b)), c.addClass("select2-selection__placeholder").removeClass("select2-selection__choice"), c;
+      }, b.prototype.update = function (a, b) {
+        var c = 1 == b.length && b[0].id != this.placeholder.id;
+        if (b.length > 1 || c) return a.call(this, b);
+        this.clear();
+        var d = this.createPlaceholder(this.placeholder);
+        this.$selection.find(".select2-selection__rendered").append(d);
+      }, b;
+    }), b.define("select2/selection/allowClear", ["jquery", "../keys", "../utils"], function (a, b, c) {
+      function d() {}
+
+      return d.prototype.bind = function (a, b, c) {
+        var d = this;
+        a.call(this, b, c), null == this.placeholder && this.options.get("debug") && window.console && console.error && console.error("Select2: The `allowClear` option should be used in combination with the `placeholder` option."), this.$selection.on("mousedown", ".select2-selection__clear", function (a) {
+          d._handleClear(a);
+        }), b.on("keypress", function (a) {
+          d._handleKeyboardClear(a, b);
+        });
+      }, d.prototype._handleClear = function (a, b) {
+        if (!this.options.get("disabled")) {
+          var d = this.$selection.find(".select2-selection__clear");
+
+          if (0 !== d.length) {
+            b.stopPropagation();
+            var e = c.GetData(d[0], "data"),
+                f = this.$element.val();
+            this.$element.val(this.placeholder.id);
+            var g = {
+              data: e
+            };
+            if (this.trigger("clear", g), g.prevented) return void this.$element.val(f);
+
+            for (var h = 0; h < e.length; h++) {
+              if (g = {
+                data: e[h]
+              }, this.trigger("unselect", g), g.prevented) return void this.$element.val(f);
+            }
+
+            this.$element.trigger("change"), this.trigger("toggle", {});
+          }
+        }
+      }, d.prototype._handleKeyboardClear = function (a, c, d) {
+        d.isOpen() || c.which != b.DELETE && c.which != b.BACKSPACE || this._handleClear(c);
+      }, d.prototype.update = function (b, d) {
+        if (b.call(this, d), !(this.$selection.find(".select2-selection__placeholder").length > 0 || 0 === d.length)) {
+          var e = a('<span class="select2-selection__clear">&times;</span>');
+          c.StoreData(e[0], "data", d), this.$selection.find(".select2-selection__rendered").prepend(e);
+        }
+      }, d;
+    }), b.define("select2/selection/search", ["jquery", "../utils", "../keys"], function (a, b, c) {
+      function d(a, b, c) {
+        a.call(this, b, c);
+      }
+
+      return d.prototype.render = function (b) {
+        var c = a('<li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" tabindex="-1" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" aria-autocomplete="list" /></li>');
+        this.$searchContainer = c, this.$search = c.find("input");
+        var d = b.call(this);
+        return this._transferTabIndex(), d;
+      }, d.prototype.bind = function (a, d, e) {
+        var f = this;
+        a.call(this, d, e), d.on("open", function () {
+          f.$search.trigger("focus");
+        }), d.on("close", function () {
+          f.$search.val(""), f.$search.removeAttr("aria-activedescendant"), f.$search.trigger("focus");
+        }), d.on("enable", function () {
+          f.$search.prop("disabled", !1), f._transferTabIndex();
+        }), d.on("disable", function () {
+          f.$search.prop("disabled", !0);
+        }), d.on("focus", function (a) {
+          f.$search.trigger("focus");
+        }), d.on("results:focus", function (a) {
+          f.$search.attr("aria-activedescendant", a.id);
+        }), this.$selection.on("focusin", ".select2-search--inline", function (a) {
+          f.trigger("focus", a);
+        }), this.$selection.on("focusout", ".select2-search--inline", function (a) {
+          f._handleBlur(a);
+        }), this.$selection.on("keydown", ".select2-search--inline", function (a) {
+          if (a.stopPropagation(), f.trigger("keypress", a), f._keyUpPrevented = a.isDefaultPrevented(), a.which === c.BACKSPACE && "" === f.$search.val()) {
+            var d = f.$searchContainer.prev(".select2-selection__choice");
+
+            if (d.length > 0) {
+              var e = b.GetData(d[0], "data");
+              f.searchRemoveChoice(e), a.preventDefault();
+            }
+          }
+        });
+        var g = document.documentMode,
+            h = g && g <= 11;
+        this.$selection.on("input.searchcheck", ".select2-search--inline", function (a) {
+          if (h) return void f.$selection.off("input.search input.searchcheck");
+          f.$selection.off("keyup.search");
+        }), this.$selection.on("keyup.search input.search", ".select2-search--inline", function (a) {
+          if (h && "input" === a.type) return void f.$selection.off("input.search input.searchcheck");
+          var b = a.which;
+          b != c.SHIFT && b != c.CTRL && b != c.ALT && b != c.TAB && f.handleSearch(a);
+        });
+      }, d.prototype._transferTabIndex = function (a) {
+        this.$search.attr("tabindex", this.$selection.attr("tabindex")), this.$selection.attr("tabindex", "-1");
+      }, d.prototype.createPlaceholder = function (a, b) {
+        this.$search.attr("placeholder", b.text);
+      }, d.prototype.update = function (a, b) {
+        var c = this.$search[0] == document.activeElement;
+        this.$search.attr("placeholder", ""), a.call(this, b), this.$selection.find(".select2-selection__rendered").append(this.$searchContainer), this.resizeSearch(), c && this.$search.focus();
+      }, d.prototype.handleSearch = function () {
+        if (this.resizeSearch(), !this._keyUpPrevented) {
+          var a = this.$search.val();
+          this.trigger("query", {
+            term: a
+          });
+        }
+
+        this._keyUpPrevented = !1;
+      }, d.prototype.searchRemoveChoice = function (a, b) {
+        this.trigger("unselect", {
+          data: b
+        }), this.$search.val(b.text), this.handleSearch();
+      }, d.prototype.resizeSearch = function () {
+        this.$search.css("width", "25px");
+        var a = "";
+        if ("" !== this.$search.attr("placeholder")) a = this.$selection.find(".select2-selection__rendered").innerWidth();else {
+          a = .75 * (this.$search.val().length + 1) + "em";
+        }
+        this.$search.css("width", a);
+      }, d;
+    }), b.define("select2/selection/eventRelay", ["jquery"], function (a) {
+      function b() {}
+
+      return b.prototype.bind = function (b, c, d) {
+        var e = this,
+            f = ["open", "opening", "close", "closing", "select", "selecting", "unselect", "unselecting", "clear", "clearing"],
+            g = ["opening", "closing", "selecting", "unselecting", "clearing"];
+        b.call(this, c, d), c.on("*", function (b, c) {
+          if (-1 !== a.inArray(b, f)) {
+            c = c || {};
+            var d = a.Event("select2:" + b, {
+              params: c
+            });
+            e.$element.trigger(d), -1 !== a.inArray(b, g) && (c.prevented = d.isDefaultPrevented());
+          }
+        });
+      }, b;
+    }), b.define("select2/translation", ["jquery", "require"], function (a, b) {
+      function c(a) {
+        this.dict = a || {};
+      }
+
+      return c.prototype.all = function () {
+        return this.dict;
+      }, c.prototype.get = function (a) {
+        return this.dict[a];
+      }, c.prototype.extend = function (b) {
+        this.dict = a.extend({}, b.all(), this.dict);
+      }, c._cache = {}, c.loadPath = function (a) {
+        if (!(a in c._cache)) {
+          var d = b(a);
+          c._cache[a] = d;
+        }
+
+        return new c(c._cache[a]);
+      }, c;
+    }), b.define("select2/diacritics", [], function () {
+      return {
+        "Ⓐ": "A",
+        "Ａ": "A",
+        "À": "A",
+        "Á": "A",
+        "Â": "A",
+        "Ầ": "A",
+        "Ấ": "A",
+        "Ẫ": "A",
+        "Ẩ": "A",
+        "Ã": "A",
+        "Ā": "A",
+        "Ă": "A",
+        "Ằ": "A",
+        "Ắ": "A",
+        "Ẵ": "A",
+        "Ẳ": "A",
+        "Ȧ": "A",
+        "Ǡ": "A",
+        "Ä": "A",
+        "Ǟ": "A",
+        "Ả": "A",
+        "Å": "A",
+        "Ǻ": "A",
+        "Ǎ": "A",
+        "Ȁ": "A",
+        "Ȃ": "A",
+        "Ạ": "A",
+        "Ậ": "A",
+        "Ặ": "A",
+        "Ḁ": "A",
+        "Ą": "A",
+        "Ⱥ": "A",
+        "Ɐ": "A",
+        "Ꜳ": "AA",
+        "Æ": "AE",
+        "Ǽ": "AE",
+        "Ǣ": "AE",
+        "Ꜵ": "AO",
+        "Ꜷ": "AU",
+        "Ꜹ": "AV",
+        "Ꜻ": "AV",
+        "Ꜽ": "AY",
+        "Ⓑ": "B",
+        "Ｂ": "B",
+        "Ḃ": "B",
+        "Ḅ": "B",
+        "Ḇ": "B",
+        "Ƀ": "B",
+        "Ƃ": "B",
+        "Ɓ": "B",
+        "Ⓒ": "C",
+        "Ｃ": "C",
+        "Ć": "C",
+        "Ĉ": "C",
+        "Ċ": "C",
+        "Č": "C",
+        "Ç": "C",
+        "Ḉ": "C",
+        "Ƈ": "C",
+        "Ȼ": "C",
+        "Ꜿ": "C",
+        "Ⓓ": "D",
+        "Ｄ": "D",
+        "Ḋ": "D",
+        "Ď": "D",
+        "Ḍ": "D",
+        "Ḑ": "D",
+        "Ḓ": "D",
+        "Ḏ": "D",
+        "Đ": "D",
+        "Ƌ": "D",
+        "Ɗ": "D",
+        "Ɖ": "D",
+        "Ꝺ": "D",
+        "Ǳ": "DZ",
+        "Ǆ": "DZ",
+        "ǲ": "Dz",
+        "ǅ": "Dz",
+        "Ⓔ": "E",
+        "Ｅ": "E",
+        "È": "E",
+        "É": "E",
+        "Ê": "E",
+        "Ề": "E",
+        "Ế": "E",
+        "Ễ": "E",
+        "Ể": "E",
+        "Ẽ": "E",
+        "Ē": "E",
+        "Ḕ": "E",
+        "Ḗ": "E",
+        "Ĕ": "E",
+        "Ė": "E",
+        "Ë": "E",
+        "Ẻ": "E",
+        "Ě": "E",
+        "Ȅ": "E",
+        "Ȇ": "E",
+        "Ẹ": "E",
+        "Ệ": "E",
+        "Ȩ": "E",
+        "Ḝ": "E",
+        "Ę": "E",
+        "Ḙ": "E",
+        "Ḛ": "E",
+        "Ɛ": "E",
+        "Ǝ": "E",
+        "Ⓕ": "F",
+        "Ｆ": "F",
+        "Ḟ": "F",
+        "Ƒ": "F",
+        "Ꝼ": "F",
+        "Ⓖ": "G",
+        "Ｇ": "G",
+        "Ǵ": "G",
+        "Ĝ": "G",
+        "Ḡ": "G",
+        "Ğ": "G",
+        "Ġ": "G",
+        "Ǧ": "G",
+        "Ģ": "G",
+        "Ǥ": "G",
+        "Ɠ": "G",
+        "Ꞡ": "G",
+        "Ᵹ": "G",
+        "Ꝿ": "G",
+        "Ⓗ": "H",
+        "Ｈ": "H",
+        "Ĥ": "H",
+        "Ḣ": "H",
+        "Ḧ": "H",
+        "Ȟ": "H",
+        "Ḥ": "H",
+        "Ḩ": "H",
+        "Ḫ": "H",
+        "Ħ": "H",
+        "Ⱨ": "H",
+        "Ⱶ": "H",
+        "Ɥ": "H",
+        "Ⓘ": "I",
+        "Ｉ": "I",
+        "Ì": "I",
+        "Í": "I",
+        "Î": "I",
+        "Ĩ": "I",
+        "Ī": "I",
+        "Ĭ": "I",
+        "İ": "I",
+        "Ï": "I",
+        "Ḯ": "I",
+        "Ỉ": "I",
+        "Ǐ": "I",
+        "Ȉ": "I",
+        "Ȋ": "I",
+        "Ị": "I",
+        "Į": "I",
+        "Ḭ": "I",
+        "Ɨ": "I",
+        "Ⓙ": "J",
+        "Ｊ": "J",
+        "Ĵ": "J",
+        "Ɉ": "J",
+        "Ⓚ": "K",
+        "Ｋ": "K",
+        "Ḱ": "K",
+        "Ǩ": "K",
+        "Ḳ": "K",
+        "Ķ": "K",
+        "Ḵ": "K",
+        "Ƙ": "K",
+        "Ⱪ": "K",
+        "Ꝁ": "K",
+        "Ꝃ": "K",
+        "Ꝅ": "K",
+        "Ꞣ": "K",
+        "Ⓛ": "L",
+        "Ｌ": "L",
+        "Ŀ": "L",
+        "Ĺ": "L",
+        "Ľ": "L",
+        "Ḷ": "L",
+        "Ḹ": "L",
+        "Ļ": "L",
+        "Ḽ": "L",
+        "Ḻ": "L",
+        "Ł": "L",
+        "Ƚ": "L",
+        "Ɫ": "L",
+        "Ⱡ": "L",
+        "Ꝉ": "L",
+        "Ꝇ": "L",
+        "Ꞁ": "L",
+        "Ǉ": "LJ",
+        "ǈ": "Lj",
+        "Ⓜ": "M",
+        "Ｍ": "M",
+        "Ḿ": "M",
+        "Ṁ": "M",
+        "Ṃ": "M",
+        "Ɱ": "M",
+        "Ɯ": "M",
+        "Ⓝ": "N",
+        "Ｎ": "N",
+        "Ǹ": "N",
+        "Ń": "N",
+        "Ñ": "N",
+        "Ṅ": "N",
+        "Ň": "N",
+        "Ṇ": "N",
+        "Ņ": "N",
+        "Ṋ": "N",
+        "Ṉ": "N",
+        "Ƞ": "N",
+        "Ɲ": "N",
+        "Ꞑ": "N",
+        "Ꞥ": "N",
+        "Ǌ": "NJ",
+        "ǋ": "Nj",
+        "Ⓞ": "O",
+        "Ｏ": "O",
+        "Ò": "O",
+        "Ó": "O",
+        "Ô": "O",
+        "Ồ": "O",
+        "Ố": "O",
+        "Ỗ": "O",
+        "Ổ": "O",
+        "Õ": "O",
+        "Ṍ": "O",
+        "Ȭ": "O",
+        "Ṏ": "O",
+        "Ō": "O",
+        "Ṑ": "O",
+        "Ṓ": "O",
+        "Ŏ": "O",
+        "Ȯ": "O",
+        "Ȱ": "O",
+        "Ö": "O",
+        "Ȫ": "O",
+        "Ỏ": "O",
+        "Ő": "O",
+        "Ǒ": "O",
+        "Ȍ": "O",
+        "Ȏ": "O",
+        "Ơ": "O",
+        "Ờ": "O",
+        "Ớ": "O",
+        "Ỡ": "O",
+        "Ở": "O",
+        "Ợ": "O",
+        "Ọ": "O",
+        "Ộ": "O",
+        "Ǫ": "O",
+        "Ǭ": "O",
+        "Ø": "O",
+        "Ǿ": "O",
+        "Ɔ": "O",
+        "Ɵ": "O",
+        "Ꝋ": "O",
+        "Ꝍ": "O",
+        "Ƣ": "OI",
+        "Ꝏ": "OO",
+        "Ȣ": "OU",
+        "Ⓟ": "P",
+        "Ｐ": "P",
+        "Ṕ": "P",
+        "Ṗ": "P",
+        "Ƥ": "P",
+        "Ᵽ": "P",
+        "Ꝑ": "P",
+        "Ꝓ": "P",
+        "Ꝕ": "P",
+        "Ⓠ": "Q",
+        "Ｑ": "Q",
+        "Ꝗ": "Q",
+        "Ꝙ": "Q",
+        "Ɋ": "Q",
+        "Ⓡ": "R",
+        "Ｒ": "R",
+        "Ŕ": "R",
+        "Ṙ": "R",
+        "Ř": "R",
+        "Ȑ": "R",
+        "Ȓ": "R",
+        "Ṛ": "R",
+        "Ṝ": "R",
+        "Ŗ": "R",
+        "Ṟ": "R",
+        "Ɍ": "R",
+        "Ɽ": "R",
+        "Ꝛ": "R",
+        "Ꞧ": "R",
+        "Ꞃ": "R",
+        "Ⓢ": "S",
+        "Ｓ": "S",
+        "ẞ": "S",
+        "Ś": "S",
+        "Ṥ": "S",
+        "Ŝ": "S",
+        "Ṡ": "S",
+        "Š": "S",
+        "Ṧ": "S",
+        "Ṣ": "S",
+        "Ṩ": "S",
+        "Ș": "S",
+        "Ş": "S",
+        "Ȿ": "S",
+        "Ꞩ": "S",
+        "Ꞅ": "S",
+        "Ⓣ": "T",
+        "Ｔ": "T",
+        "Ṫ": "T",
+        "Ť": "T",
+        "Ṭ": "T",
+        "Ț": "T",
+        "Ţ": "T",
+        "Ṱ": "T",
+        "Ṯ": "T",
+        "Ŧ": "T",
+        "Ƭ": "T",
+        "Ʈ": "T",
+        "Ⱦ": "T",
+        "Ꞇ": "T",
+        "Ꜩ": "TZ",
+        "Ⓤ": "U",
+        "Ｕ": "U",
+        "Ù": "U",
+        "Ú": "U",
+        "Û": "U",
+        "Ũ": "U",
+        "Ṹ": "U",
+        "Ū": "U",
+        "Ṻ": "U",
+        "Ŭ": "U",
+        "Ü": "U",
+        "Ǜ": "U",
+        "Ǘ": "U",
+        "Ǖ": "U",
+        "Ǚ": "U",
+        "Ủ": "U",
+        "Ů": "U",
+        "Ű": "U",
+        "Ǔ": "U",
+        "Ȕ": "U",
+        "Ȗ": "U",
+        "Ư": "U",
+        "Ừ": "U",
+        "Ứ": "U",
+        "Ữ": "U",
+        "Ử": "U",
+        "Ự": "U",
+        "Ụ": "U",
+        "Ṳ": "U",
+        "Ų": "U",
+        "Ṷ": "U",
+        "Ṵ": "U",
+        "Ʉ": "U",
+        "Ⓥ": "V",
+        "Ｖ": "V",
+        "Ṽ": "V",
+        "Ṿ": "V",
+        "Ʋ": "V",
+        "Ꝟ": "V",
+        "Ʌ": "V",
+        "Ꝡ": "VY",
+        "Ⓦ": "W",
+        "Ｗ": "W",
+        "Ẁ": "W",
+        "Ẃ": "W",
+        "Ŵ": "W",
+        "Ẇ": "W",
+        "Ẅ": "W",
+        "Ẉ": "W",
+        "Ⱳ": "W",
+        "Ⓧ": "X",
+        "Ｘ": "X",
+        "Ẋ": "X",
+        "Ẍ": "X",
+        "Ⓨ": "Y",
+        "Ｙ": "Y",
+        "Ỳ": "Y",
+        "Ý": "Y",
+        "Ŷ": "Y",
+        "Ỹ": "Y",
+        "Ȳ": "Y",
+        "Ẏ": "Y",
+        "Ÿ": "Y",
+        "Ỷ": "Y",
+        "Ỵ": "Y",
+        "Ƴ": "Y",
+        "Ɏ": "Y",
+        "Ỿ": "Y",
+        "Ⓩ": "Z",
+        "Ｚ": "Z",
+        "Ź": "Z",
+        "Ẑ": "Z",
+        "Ż": "Z",
+        "Ž": "Z",
+        "Ẓ": "Z",
+        "Ẕ": "Z",
+        "Ƶ": "Z",
+        "Ȥ": "Z",
+        "Ɀ": "Z",
+        "Ⱬ": "Z",
+        "Ꝣ": "Z",
+        "ⓐ": "a",
+        "ａ": "a",
+        "ẚ": "a",
+        "à": "a",
+        "á": "a",
+        "â": "a",
+        "ầ": "a",
+        "ấ": "a",
+        "ẫ": "a",
+        "ẩ": "a",
+        "ã": "a",
+        "ā": "a",
+        "ă": "a",
+        "ằ": "a",
+        "ắ": "a",
+        "ẵ": "a",
+        "ẳ": "a",
+        "ȧ": "a",
+        "ǡ": "a",
+        "ä": "a",
+        "ǟ": "a",
+        "ả": "a",
+        "å": "a",
+        "ǻ": "a",
+        "ǎ": "a",
+        "ȁ": "a",
+        "ȃ": "a",
+        "ạ": "a",
+        "ậ": "a",
+        "ặ": "a",
+        "ḁ": "a",
+        "ą": "a",
+        "ⱥ": "a",
+        "ɐ": "a",
+        "ꜳ": "aa",
+        "æ": "ae",
+        "ǽ": "ae",
+        "ǣ": "ae",
+        "ꜵ": "ao",
+        "ꜷ": "au",
+        "ꜹ": "av",
+        "ꜻ": "av",
+        "ꜽ": "ay",
+        "ⓑ": "b",
+        "ｂ": "b",
+        "ḃ": "b",
+        "ḅ": "b",
+        "ḇ": "b",
+        "ƀ": "b",
+        "ƃ": "b",
+        "ɓ": "b",
+        "ⓒ": "c",
+        "ｃ": "c",
+        "ć": "c",
+        "ĉ": "c",
+        "ċ": "c",
+        "č": "c",
+        "ç": "c",
+        "ḉ": "c",
+        "ƈ": "c",
+        "ȼ": "c",
+        "ꜿ": "c",
+        "ↄ": "c",
+        "ⓓ": "d",
+        "ｄ": "d",
+        "ḋ": "d",
+        "ď": "d",
+        "ḍ": "d",
+        "ḑ": "d",
+        "ḓ": "d",
+        "ḏ": "d",
+        "đ": "d",
+        "ƌ": "d",
+        "ɖ": "d",
+        "ɗ": "d",
+        "ꝺ": "d",
+        "ǳ": "dz",
+        "ǆ": "dz",
+        "ⓔ": "e",
+        "ｅ": "e",
+        "è": "e",
+        "é": "e",
+        "ê": "e",
+        "ề": "e",
+        "ế": "e",
+        "ễ": "e",
+        "ể": "e",
+        "ẽ": "e",
+        "ē": "e",
+        "ḕ": "e",
+        "ḗ": "e",
+        "ĕ": "e",
+        "ė": "e",
+        "ë": "e",
+        "ẻ": "e",
+        "ě": "e",
+        "ȅ": "e",
+        "ȇ": "e",
+        "ẹ": "e",
+        "ệ": "e",
+        "ȩ": "e",
+        "ḝ": "e",
+        "ę": "e",
+        "ḙ": "e",
+        "ḛ": "e",
+        "ɇ": "e",
+        "ɛ": "e",
+        "ǝ": "e",
+        "ⓕ": "f",
+        "ｆ": "f",
+        "ḟ": "f",
+        "ƒ": "f",
+        "ꝼ": "f",
+        "ⓖ": "g",
+        "ｇ": "g",
+        "ǵ": "g",
+        "ĝ": "g",
+        "ḡ": "g",
+        "ğ": "g",
+        "ġ": "g",
+        "ǧ": "g",
+        "ģ": "g",
+        "ǥ": "g",
+        "ɠ": "g",
+        "ꞡ": "g",
+        "ᵹ": "g",
+        "ꝿ": "g",
+        "ⓗ": "h",
+        "ｈ": "h",
+        "ĥ": "h",
+        "ḣ": "h",
+        "ḧ": "h",
+        "ȟ": "h",
+        "ḥ": "h",
+        "ḩ": "h",
+        "ḫ": "h",
+        "ẖ": "h",
+        "ħ": "h",
+        "ⱨ": "h",
+        "ⱶ": "h",
+        "ɥ": "h",
+        "ƕ": "hv",
+        "ⓘ": "i",
+        "ｉ": "i",
+        "ì": "i",
+        "í": "i",
+        "î": "i",
+        "ĩ": "i",
+        "ī": "i",
+        "ĭ": "i",
+        "ï": "i",
+        "ḯ": "i",
+        "ỉ": "i",
+        "ǐ": "i",
+        "ȉ": "i",
+        "ȋ": "i",
+        "ị": "i",
+        "į": "i",
+        "ḭ": "i",
+        "ɨ": "i",
+        "ı": "i",
+        "ⓙ": "j",
+        "ｊ": "j",
+        "ĵ": "j",
+        "ǰ": "j",
+        "ɉ": "j",
+        "ⓚ": "k",
+        "ｋ": "k",
+        "ḱ": "k",
+        "ǩ": "k",
+        "ḳ": "k",
+        "ķ": "k",
+        "ḵ": "k",
+        "ƙ": "k",
+        "ⱪ": "k",
+        "ꝁ": "k",
+        "ꝃ": "k",
+        "ꝅ": "k",
+        "ꞣ": "k",
+        "ⓛ": "l",
+        "ｌ": "l",
+        "ŀ": "l",
+        "ĺ": "l",
+        "ľ": "l",
+        "ḷ": "l",
+        "ḹ": "l",
+        "ļ": "l",
+        "ḽ": "l",
+        "ḻ": "l",
+        "ſ": "l",
+        "ł": "l",
+        "ƚ": "l",
+        "ɫ": "l",
+        "ⱡ": "l",
+        "ꝉ": "l",
+        "ꞁ": "l",
+        "ꝇ": "l",
+        "ǉ": "lj",
+        "ⓜ": "m",
+        "ｍ": "m",
+        "ḿ": "m",
+        "ṁ": "m",
+        "ṃ": "m",
+        "ɱ": "m",
+        "ɯ": "m",
+        "ⓝ": "n",
+        "ｎ": "n",
+        "ǹ": "n",
+        "ń": "n",
+        "ñ": "n",
+        "ṅ": "n",
+        "ň": "n",
+        "ṇ": "n",
+        "ņ": "n",
+        "ṋ": "n",
+        "ṉ": "n",
+        "ƞ": "n",
+        "ɲ": "n",
+        "ŉ": "n",
+        "ꞑ": "n",
+        "ꞥ": "n",
+        "ǌ": "nj",
+        "ⓞ": "o",
+        "ｏ": "o",
+        "ò": "o",
+        "ó": "o",
+        "ô": "o",
+        "ồ": "o",
+        "ố": "o",
+        "ỗ": "o",
+        "ổ": "o",
+        "õ": "o",
+        "ṍ": "o",
+        "ȭ": "o",
+        "ṏ": "o",
+        "ō": "o",
+        "ṑ": "o",
+        "ṓ": "o",
+        "ŏ": "o",
+        "ȯ": "o",
+        "ȱ": "o",
+        "ö": "o",
+        "ȫ": "o",
+        "ỏ": "o",
+        "ő": "o",
+        "ǒ": "o",
+        "ȍ": "o",
+        "ȏ": "o",
+        "ơ": "o",
+        "ờ": "o",
+        "ớ": "o",
+        "ỡ": "o",
+        "ở": "o",
+        "ợ": "o",
+        "ọ": "o",
+        "ộ": "o",
+        "ǫ": "o",
+        "ǭ": "o",
+        "ø": "o",
+        "ǿ": "o",
+        "ɔ": "o",
+        "ꝋ": "o",
+        "ꝍ": "o",
+        "ɵ": "o",
+        "ƣ": "oi",
+        "ȣ": "ou",
+        "ꝏ": "oo",
+        "ⓟ": "p",
+        "ｐ": "p",
+        "ṕ": "p",
+        "ṗ": "p",
+        "ƥ": "p",
+        "ᵽ": "p",
+        "ꝑ": "p",
+        "ꝓ": "p",
+        "ꝕ": "p",
+        "ⓠ": "q",
+        "ｑ": "q",
+        "ɋ": "q",
+        "ꝗ": "q",
+        "ꝙ": "q",
+        "ⓡ": "r",
+        "ｒ": "r",
+        "ŕ": "r",
+        "ṙ": "r",
+        "ř": "r",
+        "ȑ": "r",
+        "ȓ": "r",
+        "ṛ": "r",
+        "ṝ": "r",
+        "ŗ": "r",
+        "ṟ": "r",
+        "ɍ": "r",
+        "ɽ": "r",
+        "ꝛ": "r",
+        "ꞧ": "r",
+        "ꞃ": "r",
+        "ⓢ": "s",
+        "ｓ": "s",
+        "ß": "s",
+        "ś": "s",
+        "ṥ": "s",
+        "ŝ": "s",
+        "ṡ": "s",
+        "š": "s",
+        "ṧ": "s",
+        "ṣ": "s",
+        "ṩ": "s",
+        "ș": "s",
+        "ş": "s",
+        "ȿ": "s",
+        "ꞩ": "s",
+        "ꞅ": "s",
+        "ẛ": "s",
+        "ⓣ": "t",
+        "ｔ": "t",
+        "ṫ": "t",
+        "ẗ": "t",
+        "ť": "t",
+        "ṭ": "t",
+        "ț": "t",
+        "ţ": "t",
+        "ṱ": "t",
+        "ṯ": "t",
+        "ŧ": "t",
+        "ƭ": "t",
+        "ʈ": "t",
+        "ⱦ": "t",
+        "ꞇ": "t",
+        "ꜩ": "tz",
+        "ⓤ": "u",
+        "ｕ": "u",
+        "ù": "u",
+        "ú": "u",
+        "û": "u",
+        "ũ": "u",
+        "ṹ": "u",
+        "ū": "u",
+        "ṻ": "u",
+        "ŭ": "u",
+        "ü": "u",
+        "ǜ": "u",
+        "ǘ": "u",
+        "ǖ": "u",
+        "ǚ": "u",
+        "ủ": "u",
+        "ů": "u",
+        "ű": "u",
+        "ǔ": "u",
+        "ȕ": "u",
+        "ȗ": "u",
+        "ư": "u",
+        "ừ": "u",
+        "ứ": "u",
+        "ữ": "u",
+        "ử": "u",
+        "ự": "u",
+        "ụ": "u",
+        "ṳ": "u",
+        "ų": "u",
+        "ṷ": "u",
+        "ṵ": "u",
+        "ʉ": "u",
+        "ⓥ": "v",
+        "ｖ": "v",
+        "ṽ": "v",
+        "ṿ": "v",
+        "ʋ": "v",
+        "ꝟ": "v",
+        "ʌ": "v",
+        "ꝡ": "vy",
+        "ⓦ": "w",
+        "ｗ": "w",
+        "ẁ": "w",
+        "ẃ": "w",
+        "ŵ": "w",
+        "ẇ": "w",
+        "ẅ": "w",
+        "ẘ": "w",
+        "ẉ": "w",
+        "ⱳ": "w",
+        "ⓧ": "x",
+        "ｘ": "x",
+        "ẋ": "x",
+        "ẍ": "x",
+        "ⓨ": "y",
+        "ｙ": "y",
+        "ỳ": "y",
+        "ý": "y",
+        "ŷ": "y",
+        "ỹ": "y",
+        "ȳ": "y",
+        "ẏ": "y",
+        "ÿ": "y",
+        "ỷ": "y",
+        "ẙ": "y",
+        "ỵ": "y",
+        "ƴ": "y",
+        "ɏ": "y",
+        "ỿ": "y",
+        "ⓩ": "z",
+        "ｚ": "z",
+        "ź": "z",
+        "ẑ": "z",
+        "ż": "z",
+        "ž": "z",
+        "ẓ": "z",
+        "ẕ": "z",
+        "ƶ": "z",
+        "ȥ": "z",
+        "ɀ": "z",
+        "ⱬ": "z",
+        "ꝣ": "z",
+        "Ά": "Α",
+        "Έ": "Ε",
+        "Ή": "Η",
+        "Ί": "Ι",
+        "Ϊ": "Ι",
+        "Ό": "Ο",
+        "Ύ": "Υ",
+        "Ϋ": "Υ",
+        "Ώ": "Ω",
+        "ά": "α",
+        "έ": "ε",
+        "ή": "η",
+        "ί": "ι",
+        "ϊ": "ι",
+        "ΐ": "ι",
+        "ό": "ο",
+        "ύ": "υ",
+        "ϋ": "υ",
+        "ΰ": "υ",
+        "ω": "ω",
+        "ς": "σ"
+      };
+    }), b.define("select2/data/base", ["../utils"], function (a) {
+      function b(a, c) {
+        b.__super__.constructor.call(this);
+      }
+
+      return a.Extend(b, a.Observable), b.prototype.current = function (a) {
+        throw new Error("The `current` method must be defined in child classes.");
+      }, b.prototype.query = function (a, b) {
+        throw new Error("The `query` method must be defined in child classes.");
+      }, b.prototype.bind = function (a, b) {}, b.prototype.destroy = function () {}, b.prototype.generateResultId = function (b, c) {
+        var d = b.id + "-result-";
+        return d += a.generateChars(4), null != c.id ? d += "-" + c.id.toString() : d += "-" + a.generateChars(4), d;
+      }, b;
+    }), b.define("select2/data/select", ["./base", "../utils", "jquery"], function (a, b, c) {
+      function d(a, b) {
+        this.$element = a, this.options = b, d.__super__.constructor.call(this);
+      }
+
+      return b.Extend(d, a), d.prototype.current = function (a) {
+        var b = [],
+            d = this;
+        this.$element.find(":selected").each(function () {
+          var a = c(this),
+              e = d.item(a);
+          b.push(e);
+        }), a(b);
+      }, d.prototype.select = function (a) {
+        var b = this;
+        if (a.selected = !0, c(a.element).is("option")) return a.element.selected = !0, void this.$element.trigger("change");
+        if (this.$element.prop("multiple")) this.current(function (d) {
+          var e = [];
+          a = [a], a.push.apply(a, d);
+
+          for (var f = 0; f < a.length; f++) {
+            var g = a[f].id;
+            -1 === c.inArray(g, e) && e.push(g);
+          }
+
+          b.$element.val(e), b.$element.trigger("change");
+        });else {
+          var d = a.id;
+          this.$element.val(d), this.$element.trigger("change");
+        }
+      }, d.prototype.unselect = function (a) {
+        var b = this;
+
+        if (this.$element.prop("multiple")) {
+          if (a.selected = !1, c(a.element).is("option")) return a.element.selected = !1, void this.$element.trigger("change");
+          this.current(function (d) {
+            for (var e = [], f = 0; f < d.length; f++) {
+              var g = d[f].id;
+              g !== a.id && -1 === c.inArray(g, e) && e.push(g);
+            }
+
+            b.$element.val(e), b.$element.trigger("change");
+          });
+        }
+      }, d.prototype.bind = function (a, b) {
+        var c = this;
+        this.container = a, a.on("select", function (a) {
+          c.select(a.data);
+        }), a.on("unselect", function (a) {
+          c.unselect(a.data);
+        });
+      }, d.prototype.destroy = function () {
+        this.$element.find("*").each(function () {
+          b.RemoveData(this);
+        });
+      }, d.prototype.query = function (a, b) {
+        var d = [],
+            e = this;
+        this.$element.children().each(function () {
+          var b = c(this);
+
+          if (b.is("option") || b.is("optgroup")) {
+            var f = e.item(b),
+                g = e.matches(a, f);
+            null !== g && d.push(g);
+          }
+        }), b({
+          results: d
+        });
+      }, d.prototype.addOptions = function (a) {
+        b.appendMany(this.$element, a);
+      }, d.prototype.option = function (a) {
+        var d;
+        a.children ? (d = document.createElement("optgroup"), d.label = a.text) : (d = document.createElement("option"), void 0 !== d.textContent ? d.textContent = a.text : d.innerText = a.text), void 0 !== a.id && (d.value = a.id), a.disabled && (d.disabled = !0), a.selected && (d.selected = !0), a.title && (d.title = a.title);
+
+        var e = c(d),
+            f = this._normalizeItem(a);
+
+        return f.element = d, b.StoreData(d, "data", f), e;
+      }, d.prototype.item = function (a) {
+        var d = {};
+        if (null != (d = b.GetData(a[0], "data"))) return d;
+        if (a.is("option")) d = {
+          id: a.val(),
+          text: a.text(),
+          disabled: a.prop("disabled"),
+          selected: a.prop("selected"),
+          title: a.prop("title")
+        };else if (a.is("optgroup")) {
+          d = {
+            text: a.prop("label"),
+            children: [],
+            title: a.prop("title")
+          };
+
+          for (var e = a.children("option"), f = [], g = 0; g < e.length; g++) {
+            var h = c(e[g]),
+                i = this.item(h);
+            f.push(i);
+          }
+
+          d.children = f;
+        }
+        return d = this._normalizeItem(d), d.element = a[0], b.StoreData(a[0], "data", d), d;
+      }, d.prototype._normalizeItem = function (a) {
+        a !== Object(a) && (a = {
+          id: a,
+          text: a
+        }), a = c.extend({}, {
+          text: ""
+        }, a);
+        var b = {
+          selected: !1,
+          disabled: !1
+        };
+        return null != a.id && (a.id = a.id.toString()), null != a.text && (a.text = a.text.toString()), null == a._resultId && a.id && null != this.container && (a._resultId = this.generateResultId(this.container, a)), c.extend({}, b, a);
+      }, d.prototype.matches = function (a, b) {
+        return this.options.get("matcher")(a, b);
+      }, d;
+    }), b.define("select2/data/array", ["./select", "../utils", "jquery"], function (a, b, c) {
+      function d(a, b) {
+        var c = b.get("data") || [];
+        d.__super__.constructor.call(this, a, b), this.addOptions(this.convertToOptions(c));
+      }
+
+      return b.Extend(d, a), d.prototype.select = function (a) {
+        var b = this.$element.find("option").filter(function (b, c) {
+          return c.value == a.id.toString();
+        });
+        0 === b.length && (b = this.option(a), this.addOptions(b)), d.__super__.select.call(this, a);
+      }, d.prototype.convertToOptions = function (a) {
+        function d(a) {
+          return function () {
+            return c(this).val() == a.id;
+          };
+        }
+
+        for (var e = this, f = this.$element.find("option"), g = f.map(function () {
+          return e.item(c(this)).id;
+        }).get(), h = [], i = 0; i < a.length; i++) {
+          var j = this._normalizeItem(a[i]);
+
+          if (c.inArray(j.id, g) >= 0) {
+            var k = f.filter(d(j)),
+                l = this.item(k),
+                m = c.extend(!0, {}, j, l),
+                n = this.option(m);
+            k.replaceWith(n);
+          } else {
+            var o = this.option(j);
+
+            if (j.children) {
+              var p = this.convertToOptions(j.children);
+              b.appendMany(o, p);
+            }
+
+            h.push(o);
+          }
+        }
+
+        return h;
+      }, d;
+    }), b.define("select2/data/ajax", ["./array", "../utils", "jquery"], function (a, b, c) {
+      function d(a, b) {
+        this.ajaxOptions = this._applyDefaults(b.get("ajax")), null != this.ajaxOptions.processResults && (this.processResults = this.ajaxOptions.processResults), d.__super__.constructor.call(this, a, b);
+      }
+
+      return b.Extend(d, a), d.prototype._applyDefaults = function (a) {
+        var b = {
+          data: function data(a) {
+            return c.extend({}, a, {
+              q: a.term
+            });
+          },
+          transport: function transport(a, b, d) {
+            var e = c.ajax(a);
+            return e.then(b), e.fail(d), e;
+          }
+        };
+        return c.extend({}, b, a, !0);
+      }, d.prototype.processResults = function (a) {
+        return a;
+      }, d.prototype.query = function (a, b) {
+        function d() {
+          var d = f.transport(f, function (d) {
+            var f = e.processResults(d, a);
+            e.options.get("debug") && window.console && console.error && (f && f.results && c.isArray(f.results) || console.error("Select2: The AJAX results did not return an array in the `results` key of the response.")), b(f);
+          }, function () {
+            "status" in d && (0 === d.status || "0" === d.status) || e.trigger("results:message", {
+              message: "errorLoading"
+            });
+          });
+          e._request = d;
+        }
+
+        var e = this;
+        null != this._request && (c.isFunction(this._request.abort) && this._request.abort(), this._request = null);
+        var f = c.extend({
+          type: "GET"
+        }, this.ajaxOptions);
+        "function" == typeof f.url && (f.url = f.url.call(this.$element, a)), "function" == typeof f.data && (f.data = f.data.call(this.$element, a)), this.ajaxOptions.delay && null != a.term ? (this._queryTimeout && window.clearTimeout(this._queryTimeout), this._queryTimeout = window.setTimeout(d, this.ajaxOptions.delay)) : d();
+      }, d;
+    }), b.define("select2/data/tags", ["jquery"], function (a) {
+      function b(b, c, d) {
+        var e = d.get("tags"),
+            f = d.get("createTag");
+        void 0 !== f && (this.createTag = f);
+        var g = d.get("insertTag");
+        if (void 0 !== g && (this.insertTag = g), b.call(this, c, d), a.isArray(e)) for (var h = 0; h < e.length; h++) {
+          var i = e[h],
+              j = this._normalizeItem(i),
+              k = this.option(j);
+
+          this.$element.append(k);
+        }
+      }
+
+      return b.prototype.query = function (a, b, c) {
+        function d(a, f) {
+          for (var g = a.results, h = 0; h < g.length; h++) {
+            var i = g[h],
+                j = null != i.children && !d({
+              results: i.children
+            }, !0);
+            if ((i.text || "").toUpperCase() === (b.term || "").toUpperCase() || j) return !f && (a.data = g, void c(a));
+          }
+
+          if (f) return !0;
+          var k = e.createTag(b);
+
+          if (null != k) {
+            var l = e.option(k);
+            l.attr("data-select2-tag", !0), e.addOptions([l]), e.insertTag(g, k);
+          }
+
+          a.results = g, c(a);
+        }
+
+        var e = this;
+        if (this._removeOldTags(), null == b.term || null != b.page) return void a.call(this, b, c);
+        a.call(this, b, d);
+      }, b.prototype.createTag = function (b, c) {
+        var d = a.trim(c.term);
+        return "" === d ? null : {
+          id: d,
+          text: d
+        };
+      }, b.prototype.insertTag = function (a, b, c) {
+        b.unshift(c);
+      }, b.prototype._removeOldTags = function (b) {
+        this._lastTag;
+        this.$element.find("option[data-select2-tag]").each(function () {
+          this.selected || a(this).remove();
+        });
+      }, b;
+    }), b.define("select2/data/tokenizer", ["jquery"], function (a) {
+      function b(a, b, c) {
+        var d = c.get("tokenizer");
+        void 0 !== d && (this.tokenizer = d), a.call(this, b, c);
+      }
+
+      return b.prototype.bind = function (a, b, c) {
+        a.call(this, b, c), this.$search = b.dropdown.$search || b.selection.$search || c.find(".select2-search__field");
+      }, b.prototype.query = function (b, c, d) {
+        function e(b) {
+          var c = g._normalizeItem(b);
+
+          if (!g.$element.find("option").filter(function () {
+            return a(this).val() === c.id;
+          }).length) {
+            var d = g.option(c);
+            d.attr("data-select2-tag", !0), g._removeOldTags(), g.addOptions([d]);
+          }
+
+          f(c);
+        }
+
+        function f(a) {
+          g.trigger("select", {
+            data: a
+          });
+        }
+
+        var g = this;
+        c.term = c.term || "";
+        var h = this.tokenizer(c, this.options, e);
+        h.term !== c.term && (this.$search.length && (this.$search.val(h.term), this.$search.focus()), c.term = h.term), b.call(this, c, d);
+      }, b.prototype.tokenizer = function (b, c, d, e) {
+        for (var f = d.get("tokenSeparators") || [], g = c.term, h = 0, i = this.createTag || function (a) {
+          return {
+            id: a.term,
+            text: a.term
+          };
+        }; h < g.length;) {
+          var j = g[h];
+
+          if (-1 !== a.inArray(j, f)) {
+            var k = g.substr(0, h),
+                l = a.extend({}, c, {
+              term: k
+            }),
+                m = i(l);
+            null != m ? (e(m), g = g.substr(h + 1) || "", h = 0) : h++;
+          } else h++;
+        }
+
+        return {
+          term: g
+        };
+      }, b;
+    }), b.define("select2/data/minimumInputLength", [], function () {
+      function a(a, b, c) {
+        this.minimumInputLength = c.get("minimumInputLength"), a.call(this, b, c);
+      }
+
+      return a.prototype.query = function (a, b, c) {
+        if (b.term = b.term || "", b.term.length < this.minimumInputLength) return void this.trigger("results:message", {
+          message: "inputTooShort",
+          args: {
+            minimum: this.minimumInputLength,
+            input: b.term,
+            params: b
+          }
+        });
+        a.call(this, b, c);
+      }, a;
+    }), b.define("select2/data/maximumInputLength", [], function () {
+      function a(a, b, c) {
+        this.maximumInputLength = c.get("maximumInputLength"), a.call(this, b, c);
+      }
+
+      return a.prototype.query = function (a, b, c) {
+        if (b.term = b.term || "", this.maximumInputLength > 0 && b.term.length > this.maximumInputLength) return void this.trigger("results:message", {
+          message: "inputTooLong",
+          args: {
+            maximum: this.maximumInputLength,
+            input: b.term,
+            params: b
+          }
+        });
+        a.call(this, b, c);
+      }, a;
+    }), b.define("select2/data/maximumSelectionLength", [], function () {
+      function a(a, b, c) {
+        this.maximumSelectionLength = c.get("maximumSelectionLength"), a.call(this, b, c);
+      }
+
+      return a.prototype.query = function (a, b, c) {
+        var d = this;
+        this.current(function (e) {
+          var f = null != e ? e.length : 0;
+          if (d.maximumSelectionLength > 0 && f >= d.maximumSelectionLength) return void d.trigger("results:message", {
+            message: "maximumSelected",
+            args: {
+              maximum: d.maximumSelectionLength
+            }
+          });
+          a.call(d, b, c);
+        });
+      }, a;
+    }), b.define("select2/dropdown", ["jquery", "./utils"], function (a, b) {
+      function c(a, b) {
+        this.$element = a, this.options = b, c.__super__.constructor.call(this);
+      }
+
+      return b.Extend(c, b.Observable), c.prototype.render = function () {
+        var b = a('<span class="select2-dropdown"><span class="select2-results"></span></span>');
+        return b.attr("dir", this.options.get("dir")), this.$dropdown = b, b;
+      }, c.prototype.bind = function () {}, c.prototype.position = function (a, b) {}, c.prototype.destroy = function () {
+        this.$dropdown.remove();
+      }, c;
+    }), b.define("select2/dropdown/search", ["jquery", "../utils"], function (a, b) {
+      function c() {}
+
+      return c.prototype.render = function (b) {
+        var c = b.call(this),
+            d = a('<span class="select2-search select2-search--dropdown"><input class="select2-search__field" type="search" tabindex="-1" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" role="textbox" /></span>');
+        return this.$searchContainer = d, this.$search = d.find("input"), c.prepend(d), c;
+      }, c.prototype.bind = function (b, c, d) {
+        var e = this;
+        b.call(this, c, d), this.$search.on("keydown", function (a) {
+          e.trigger("keypress", a), e._keyUpPrevented = a.isDefaultPrevented();
+        }), this.$search.on("input", function (b) {
+          a(this).off("keyup");
+        }), this.$search.on("keyup input", function (a) {
+          e.handleSearch(a);
+        }), c.on("open", function () {
+          e.$search.attr("tabindex", 0), e.$search.focus(), window.setTimeout(function () {
+            e.$search.focus();
+          }, 0);
+        }), c.on("close", function () {
+          e.$search.attr("tabindex", -1), e.$search.val(""), e.$search.blur();
+        }), c.on("focus", function () {
+          c.isOpen() || e.$search.focus();
+        }), c.on("results:all", function (a) {
+          if (null == a.query.term || "" === a.query.term) {
+            e.showSearch(a) ? e.$searchContainer.removeClass("select2-search--hide") : e.$searchContainer.addClass("select2-search--hide");
+          }
+        });
+      }, c.prototype.handleSearch = function (a) {
+        if (!this._keyUpPrevented) {
+          var b = this.$search.val();
+          this.trigger("query", {
+            term: b
+          });
+        }
+
+        this._keyUpPrevented = !1;
+      }, c.prototype.showSearch = function (a, b) {
+        return !0;
+      }, c;
+    }), b.define("select2/dropdown/hidePlaceholder", [], function () {
+      function a(a, b, c, d) {
+        this.placeholder = this.normalizePlaceholder(c.get("placeholder")), a.call(this, b, c, d);
+      }
+
+      return a.prototype.append = function (a, b) {
+        b.results = this.removePlaceholder(b.results), a.call(this, b);
+      }, a.prototype.normalizePlaceholder = function (a, b) {
+        return "string" == typeof b && (b = {
+          id: "",
+          text: b
+        }), b;
+      }, a.prototype.removePlaceholder = function (a, b) {
+        for (var c = b.slice(0), d = b.length - 1; d >= 0; d--) {
+          var e = b[d];
+          this.placeholder.id === e.id && c.splice(d, 1);
+        }
+
+        return c;
+      }, a;
+    }), b.define("select2/dropdown/infiniteScroll", ["jquery"], function (a) {
+      function b(a, b, c, d) {
+        this.lastParams = {}, a.call(this, b, c, d), this.$loadingMore = this.createLoadingMore(), this.loading = !1;
+      }
+
+      return b.prototype.append = function (a, b) {
+        this.$loadingMore.remove(), this.loading = !1, a.call(this, b), this.showLoadingMore(b) && this.$results.append(this.$loadingMore);
+      }, b.prototype.bind = function (b, c, d) {
+        var e = this;
+        b.call(this, c, d), c.on("query", function (a) {
+          e.lastParams = a, e.loading = !0;
+        }), c.on("query:append", function (a) {
+          e.lastParams = a, e.loading = !0;
+        }), this.$results.on("scroll", function () {
+          var b = a.contains(document.documentElement, e.$loadingMore[0]);
+
+          if (!e.loading && b) {
+            e.$results.offset().top + e.$results.outerHeight(!1) + 50 >= e.$loadingMore.offset().top + e.$loadingMore.outerHeight(!1) && e.loadMore();
+          }
+        });
+      }, b.prototype.loadMore = function () {
+        this.loading = !0;
+        var b = a.extend({}, {
+          page: 1
+        }, this.lastParams);
+        b.page++, this.trigger("query:append", b);
+      }, b.prototype.showLoadingMore = function (a, b) {
+        return b.pagination && b.pagination.more;
+      }, b.prototype.createLoadingMore = function () {
+        var b = a('<li class="select2-results__option select2-results__option--load-more"role="treeitem" aria-disabled="true"></li>'),
+            c = this.options.get("translations").get("loadingMore");
+        return b.html(c(this.lastParams)), b;
+      }, b;
+    }), b.define("select2/dropdown/attachBody", ["jquery", "../utils"], function (a, b) {
+      function c(b, c, d) {
+        this.$dropdownParent = d.get("dropdownParent") || a(document.body), b.call(this, c, d);
+      }
+
+      return c.prototype.bind = function (a, b, c) {
+        var d = this,
+            e = !1;
+        a.call(this, b, c), b.on("open", function () {
+          d._showDropdown(), d._attachPositioningHandler(b), e || (e = !0, b.on("results:all", function () {
+            d._positionDropdown(), d._resizeDropdown();
+          }), b.on("results:append", function () {
+            d._positionDropdown(), d._resizeDropdown();
+          }));
+        }), b.on("close", function () {
+          d._hideDropdown(), d._detachPositioningHandler(b);
+        }), this.$dropdownContainer.on("mousedown", function (a) {
+          a.stopPropagation();
+        });
+      }, c.prototype.destroy = function (a) {
+        a.call(this), this.$dropdownContainer.remove();
+      }, c.prototype.position = function (a, b, c) {
+        b.attr("class", c.attr("class")), b.removeClass("select2"), b.addClass("select2-container--open"), b.css({
+          position: "absolute",
+          top: -999999
+        }), this.$container = c;
+      }, c.prototype.render = function (b) {
+        var c = a("<span></span>"),
+            d = b.call(this);
+        return c.append(d), this.$dropdownContainer = c, c;
+      }, c.prototype._hideDropdown = function (a) {
+        this.$dropdownContainer.detach();
+      }, c.prototype._attachPositioningHandler = function (c, d) {
+        var e = this,
+            f = "scroll.select2." + d.id,
+            g = "resize.select2." + d.id,
+            h = "orientationchange.select2." + d.id,
+            i = this.$container.parents().filter(b.hasScroll);
+        i.each(function () {
+          b.StoreData(this, "select2-scroll-position", {
+            x: a(this).scrollLeft(),
+            y: a(this).scrollTop()
+          });
+        }), i.on(f, function (c) {
+          var d = b.GetData(this, "select2-scroll-position");
+          a(this).scrollTop(d.y);
+        }), a(window).on(f + " " + g + " " + h, function (a) {
+          e._positionDropdown(), e._resizeDropdown();
+        });
+      }, c.prototype._detachPositioningHandler = function (c, d) {
+        var e = "scroll.select2." + d.id,
+            f = "resize.select2." + d.id,
+            g = "orientationchange.select2." + d.id;
+        this.$container.parents().filter(b.hasScroll).off(e), a(window).off(e + " " + f + " " + g);
+      }, c.prototype._positionDropdown = function () {
+        var b = a(window),
+            c = this.$dropdown.hasClass("select2-dropdown--above"),
+            d = this.$dropdown.hasClass("select2-dropdown--below"),
+            e = null,
+            f = this.$container.offset();
+        f.bottom = f.top + this.$container.outerHeight(!1);
+        var g = {
+          height: this.$container.outerHeight(!1)
+        };
+        g.top = f.top, g.bottom = f.top + g.height;
+        var h = {
+          height: this.$dropdown.outerHeight(!1)
+        },
+            i = {
+          top: b.scrollTop(),
+          bottom: b.scrollTop() + b.height()
+        },
+            j = i.top < f.top - h.height,
+            k = i.bottom > f.bottom + h.height,
+            l = {
+          left: f.left,
+          top: g.bottom
+        },
+            m = this.$dropdownParent;
+        "static" === m.css("position") && (m = m.offsetParent());
+        var n = m.offset();
+        l.top -= n.top, l.left -= n.left, c || d || (e = "below"), k || !j || c ? !j && k && c && (e = "below") : e = "above", ("above" == e || c && "below" !== e) && (l.top = g.top - n.top - h.height), null != e && (this.$dropdown.removeClass("select2-dropdown--below select2-dropdown--above").addClass("select2-dropdown--" + e), this.$container.removeClass("select2-container--below select2-container--above").addClass("select2-container--" + e)), this.$dropdownContainer.css(l);
+      }, c.prototype._resizeDropdown = function () {
+        var a = {
+          width: this.$container.outerWidth(!1) + "px"
+        };
+        this.options.get("dropdownAutoWidth") && (a.minWidth = a.width, a.position = "relative", a.width = "auto"), this.$dropdown.css(a);
+      }, c.prototype._showDropdown = function (a) {
+        this.$dropdownContainer.appendTo(this.$dropdownParent), this._positionDropdown(), this._resizeDropdown();
+      }, c;
+    }), b.define("select2/dropdown/minimumResultsForSearch", [], function () {
+      function a(b) {
+        for (var c = 0, d = 0; d < b.length; d++) {
+          var e = b[d];
+          e.children ? c += a(e.children) : c++;
+        }
+
+        return c;
+      }
+
+      function b(a, b, c, d) {
+        this.minimumResultsForSearch = c.get("minimumResultsForSearch"), this.minimumResultsForSearch < 0 && (this.minimumResultsForSearch = 1 / 0), a.call(this, b, c, d);
+      }
+
+      return b.prototype.showSearch = function (b, c) {
+        return !(a(c.data.results) < this.minimumResultsForSearch) && b.call(this, c);
+      }, b;
+    }), b.define("select2/dropdown/selectOnClose", ["../utils"], function (a) {
+      function b() {}
+
+      return b.prototype.bind = function (a, b, c) {
+        var d = this;
+        a.call(this, b, c), b.on("close", function (a) {
+          d._handleSelectOnClose(a);
+        });
+      }, b.prototype._handleSelectOnClose = function (b, c) {
+        if (c && null != c.originalSelect2Event) {
+          var d = c.originalSelect2Event;
+          if ("select" === d._type || "unselect" === d._type) return;
+        }
+
+        var e = this.getHighlightedResults();
+
+        if (!(e.length < 1)) {
+          var f = a.GetData(e[0], "data");
+          null != f.element && f.element.selected || null == f.element && f.selected || this.trigger("select", {
+            data: f
+          });
+        }
+      }, b;
+    }), b.define("select2/dropdown/closeOnSelect", [], function () {
+      function a() {}
+
+      return a.prototype.bind = function (a, b, c) {
+        var d = this;
+        a.call(this, b, c), b.on("select", function (a) {
+          d._selectTriggered(a);
+        }), b.on("unselect", function (a) {
+          d._selectTriggered(a);
+        });
+      }, a.prototype._selectTriggered = function (a, b) {
+        var c = b.originalEvent;
+        c && c.ctrlKey || this.trigger("close", {
+          originalEvent: c,
+          originalSelect2Event: b
+        });
+      }, a;
+    }), b.define("select2/i18n/en", [], function () {
+      return {
+        errorLoading: function errorLoading() {
+          return "The results could not be loaded.";
+        },
+        inputTooLong: function inputTooLong(a) {
+          var b = a.input.length - a.maximum,
+              c = "Please delete " + b + " character";
+          return 1 != b && (c += "s"), c;
+        },
+        inputTooShort: function inputTooShort(a) {
+          return "Please enter " + (a.minimum - a.input.length) + " or more characters";
+        },
+        loadingMore: function loadingMore() {
+          return "Loading more results…";
+        },
+        maximumSelected: function maximumSelected(a) {
+          var b = "You can only select " + a.maximum + " item";
+          return 1 != a.maximum && (b += "s"), b;
+        },
+        noResults: function noResults() {
+          return "No results found";
+        },
+        searching: function searching() {
+          return "Searching…";
+        }
+      };
+    }), b.define("select2/defaults", ["jquery", "require", "./results", "./selection/single", "./selection/multiple", "./selection/placeholder", "./selection/allowClear", "./selection/search", "./selection/eventRelay", "./utils", "./translation", "./diacritics", "./data/select", "./data/array", "./data/ajax", "./data/tags", "./data/tokenizer", "./data/minimumInputLength", "./data/maximumInputLength", "./data/maximumSelectionLength", "./dropdown", "./dropdown/search", "./dropdown/hidePlaceholder", "./dropdown/infiniteScroll", "./dropdown/attachBody", "./dropdown/minimumResultsForSearch", "./dropdown/selectOnClose", "./dropdown/closeOnSelect", "./i18n/en"], function (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, A, B, C) {
+      function D() {
+        this.reset();
+      }
+
+      return D.prototype.apply = function (l) {
+        if (l = a.extend(!0, {}, this.defaults, l), null == l.dataAdapter) {
+          if (null != l.ajax ? l.dataAdapter = o : null != l.data ? l.dataAdapter = n : l.dataAdapter = m, l.minimumInputLength > 0 && (l.dataAdapter = j.Decorate(l.dataAdapter, r)), l.maximumInputLength > 0 && (l.dataAdapter = j.Decorate(l.dataAdapter, s)), l.maximumSelectionLength > 0 && (l.dataAdapter = j.Decorate(l.dataAdapter, t)), l.tags && (l.dataAdapter = j.Decorate(l.dataAdapter, p)), null == l.tokenSeparators && null == l.tokenizer || (l.dataAdapter = j.Decorate(l.dataAdapter, q)), null != l.query) {
+            var C = b(l.amdBase + "compat/query");
+            l.dataAdapter = j.Decorate(l.dataAdapter, C);
+          }
+
+          if (null != l.initSelection) {
+            var D = b(l.amdBase + "compat/initSelection");
+            l.dataAdapter = j.Decorate(l.dataAdapter, D);
+          }
+        }
+
+        if (null == l.resultsAdapter && (l.resultsAdapter = c, null != l.ajax && (l.resultsAdapter = j.Decorate(l.resultsAdapter, x)), null != l.placeholder && (l.resultsAdapter = j.Decorate(l.resultsAdapter, w)), l.selectOnClose && (l.resultsAdapter = j.Decorate(l.resultsAdapter, A))), null == l.dropdownAdapter) {
+          if (l.multiple) l.dropdownAdapter = u;else {
+            var E = j.Decorate(u, v);
+            l.dropdownAdapter = E;
+          }
+
+          if (0 !== l.minimumResultsForSearch && (l.dropdownAdapter = j.Decorate(l.dropdownAdapter, z)), l.closeOnSelect && (l.dropdownAdapter = j.Decorate(l.dropdownAdapter, B)), null != l.dropdownCssClass || null != l.dropdownCss || null != l.adaptDropdownCssClass) {
+            var F = b(l.amdBase + "compat/dropdownCss");
+            l.dropdownAdapter = j.Decorate(l.dropdownAdapter, F);
+          }
+
+          l.dropdownAdapter = j.Decorate(l.dropdownAdapter, y);
+        }
+
+        if (null == l.selectionAdapter) {
+          if (l.multiple ? l.selectionAdapter = e : l.selectionAdapter = d, null != l.placeholder && (l.selectionAdapter = j.Decorate(l.selectionAdapter, f)), l.allowClear && (l.selectionAdapter = j.Decorate(l.selectionAdapter, g)), l.multiple && (l.selectionAdapter = j.Decorate(l.selectionAdapter, h)), null != l.containerCssClass || null != l.containerCss || null != l.adaptContainerCssClass) {
+            var G = b(l.amdBase + "compat/containerCss");
+            l.selectionAdapter = j.Decorate(l.selectionAdapter, G);
+          }
+
+          l.selectionAdapter = j.Decorate(l.selectionAdapter, i);
+        }
+
+        if ("string" == typeof l.language) if (l.language.indexOf("-") > 0) {
+          var H = l.language.split("-"),
+              I = H[0];
+          l.language = [l.language, I];
+        } else l.language = [l.language];
+
+        if (a.isArray(l.language)) {
+          var J = new k();
+          l.language.push("en");
+
+          for (var K = l.language, L = 0; L < K.length; L++) {
+            var M = K[L],
+                N = {};
+
+            try {
+              N = k.loadPath(M);
+            } catch (a) {
+              try {
+                M = this.defaults.amdLanguageBase + M, N = k.loadPath(M);
+              } catch (a) {
+                l.debug && window.console && console.warn && console.warn('Select2: The language file for "' + M + '" could not be automatically loaded. A fallback will be used instead.');
+                continue;
+              }
+            }
+
+            J.extend(N);
+          }
+
+          l.translations = J;
+        } else {
+          var O = k.loadPath(this.defaults.amdLanguageBase + "en"),
+              P = new k(l.language);
+          P.extend(O), l.translations = P;
+        }
+
+        return l;
+      }, D.prototype.reset = function () {
+        function b(a) {
+          function b(a) {
+            return l[a] || a;
+          }
+
+          return a.replace(/[^\u0000-\u007E]/g, b);
+        }
+
+        function c(d, e) {
+          if ("" === a.trim(d.term)) return e;
+
+          if (e.children && e.children.length > 0) {
+            for (var f = a.extend(!0, {}, e), g = e.children.length - 1; g >= 0; g--) {
+              null == c(d, e.children[g]) && f.children.splice(g, 1);
+            }
+
+            return f.children.length > 0 ? f : c(d, f);
+          }
+
+          var h = b(e.text).toUpperCase(),
+              i = b(d.term).toUpperCase();
+          return h.indexOf(i) > -1 ? e : null;
+        }
+
+        this.defaults = {
+          amdBase: "./",
+          amdLanguageBase: "./i18n/",
+          closeOnSelect: !0,
+          debug: !1,
+          dropdownAutoWidth: !1,
+          escapeMarkup: j.escapeMarkup,
+          language: C,
+          matcher: c,
+          minimumInputLength: 0,
+          maximumInputLength: 0,
+          maximumSelectionLength: 0,
+          minimumResultsForSearch: 0,
+          selectOnClose: !1,
+          sorter: function sorter(a) {
+            return a;
+          },
+          templateResult: function templateResult(a) {
+            return a.text;
+          },
+          templateSelection: function templateSelection(a) {
+            return a.text;
+          },
+          theme: "default",
+          width: "resolve"
+        };
+      }, D.prototype.set = function (b, c) {
+        var d = a.camelCase(b),
+            e = {};
+        e[d] = c;
+
+        var f = j._convertData(e);
+
+        a.extend(!0, this.defaults, f);
+      }, new D();
+    }), b.define("select2/options", ["require", "jquery", "./defaults", "./utils"], function (a, b, c, d) {
+      function e(b, e) {
+        if (this.options = b, null != e && this.fromElement(e), this.options = c.apply(this.options), e && e.is("input")) {
+          var f = a(this.get("amdBase") + "compat/inputData");
+          this.options.dataAdapter = d.Decorate(this.options.dataAdapter, f);
+        }
+      }
+
+      return e.prototype.fromElement = function (a) {
+        var c = ["select2"];
+        null == this.options.multiple && (this.options.multiple = a.prop("multiple")), null == this.options.disabled && (this.options.disabled = a.prop("disabled")), null == this.options.language && (a.prop("lang") ? this.options.language = a.prop("lang").toLowerCase() : a.closest("[lang]").prop("lang") && (this.options.language = a.closest("[lang]").prop("lang"))), null == this.options.dir && (a.prop("dir") ? this.options.dir = a.prop("dir") : a.closest("[dir]").prop("dir") ? this.options.dir = a.closest("[dir]").prop("dir") : this.options.dir = "ltr"), a.prop("disabled", this.options.disabled), a.prop("multiple", this.options.multiple), d.GetData(a[0], "select2Tags") && (this.options.debug && window.console && console.warn && console.warn('Select2: The `data-select2-tags` attribute has been changed to use the `data-data` and `data-tags="true"` attributes and will be removed in future versions of Select2.'), d.StoreData(a[0], "data", d.GetData(a[0], "select2Tags")), d.StoreData(a[0], "tags", !0)), d.GetData(a[0], "ajaxUrl") && (this.options.debug && window.console && console.warn && console.warn("Select2: The `data-ajax-url` attribute has been changed to `data-ajax--url` and support for the old attribute will be removed in future versions of Select2."), a.attr("ajax--url", d.GetData(a[0], "ajaxUrl")), d.StoreData(a[0], "ajax-Url", d.GetData(a[0], "ajaxUrl")));
+        var e = {};
+        e = b.fn.jquery && "1." == b.fn.jquery.substr(0, 2) && a[0].dataset ? b.extend(!0, {}, a[0].dataset, d.GetData(a[0])) : d.GetData(a[0]);
+        var f = b.extend(!0, {}, e);
+        f = d._convertData(f);
+
+        for (var g in f) {
+          b.inArray(g, c) > -1 || (b.isPlainObject(this.options[g]) ? b.extend(this.options[g], f[g]) : this.options[g] = f[g]);
+        }
+
+        return this;
+      }, e.prototype.get = function (a) {
+        return this.options[a];
+      }, e.prototype.set = function (a, b) {
+        this.options[a] = b;
+      }, e;
+    }), b.define("select2/core", ["jquery", "./options", "./utils", "./keys"], function (a, b, c, d) {
+      var e = function e(a, d) {
+        null != c.GetData(a[0], "select2") && c.GetData(a[0], "select2").destroy(), this.$element = a, this.id = this._generateId(a), d = d || {}, this.options = new b(d, a), e.__super__.constructor.call(this);
+        var f = a.attr("tabindex") || 0;
+        c.StoreData(a[0], "old-tabindex", f), a.attr("tabindex", "-1");
+        var g = this.options.get("dataAdapter");
+        this.dataAdapter = new g(a, this.options);
+        var h = this.render();
+
+        this._placeContainer(h);
+
+        var i = this.options.get("selectionAdapter");
+        this.selection = new i(a, this.options), this.$selection = this.selection.render(), this.selection.position(this.$selection, h);
+        var j = this.options.get("dropdownAdapter");
+        this.dropdown = new j(a, this.options), this.$dropdown = this.dropdown.render(), this.dropdown.position(this.$dropdown, h);
+        var k = this.options.get("resultsAdapter");
+        this.results = new k(a, this.options, this.dataAdapter), this.$results = this.results.render(), this.results.position(this.$results, this.$dropdown);
+        var l = this;
+        this._bindAdapters(), this._registerDomEvents(), this._registerDataEvents(), this._registerSelectionEvents(), this._registerDropdownEvents(), this._registerResultsEvents(), this._registerEvents(), this.dataAdapter.current(function (a) {
+          l.trigger("selection:update", {
+            data: a
+          });
+        }), a.addClass("select2-hidden-accessible"), a.attr("aria-hidden", "true"), this._syncAttributes(), c.StoreData(a[0], "select2", this);
+      };
+
+      return c.Extend(e, c.Observable), e.prototype._generateId = function (a) {
+        var b = "";
+        return b = null != a.attr("id") ? a.attr("id") : null != a.attr("name") ? a.attr("name") + "-" + c.generateChars(2) : c.generateChars(4), b = b.replace(/(:|\.|\[|\]|,)/g, ""), b = "select2-" + b;
+      }, e.prototype._placeContainer = function (a) {
+        a.insertAfter(this.$element);
+
+        var b = this._resolveWidth(this.$element, this.options.get("width"));
+
+        null != b && a.css("width", b);
+      }, e.prototype._resolveWidth = function (a, b) {
+        var c = /^width:(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc))/i;
+
+        if ("resolve" == b) {
+          var d = this._resolveWidth(a, "style");
+
+          return null != d ? d : this._resolveWidth(a, "element");
+        }
+
+        if ("element" == b) {
+          var e = a.outerWidth(!1);
+          return e <= 0 ? "auto" : e + "px";
+        }
+
+        if ("style" == b) {
+          var f = a.attr("style");
+          if ("string" != typeof f) return null;
+
+          for (var g = f.split(";"), h = 0, i = g.length; h < i; h += 1) {
+            var j = g[h].replace(/\s/g, ""),
+                k = j.match(c);
+            if (null !== k && k.length >= 1) return k[1];
+          }
+
+          return null;
+        }
+
+        return b;
+      }, e.prototype._bindAdapters = function () {
+        this.dataAdapter.bind(this, this.$container), this.selection.bind(this, this.$container), this.dropdown.bind(this, this.$container), this.results.bind(this, this.$container);
+      }, e.prototype._registerDomEvents = function () {
+        var b = this;
+        this.$element.on("change.select2", function () {
+          b.dataAdapter.current(function (a) {
+            b.trigger("selection:update", {
+              data: a
+            });
+          });
+        }), this.$element.on("focus.select2", function (a) {
+          b.trigger("focus", a);
+        }), this._syncA = c.bind(this._syncAttributes, this), this._syncS = c.bind(this._syncSubtree, this), this.$element[0].attachEvent && this.$element[0].attachEvent("onpropertychange", this._syncA);
+        var d = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+        null != d ? (this._observer = new d(function (c) {
+          a.each(c, b._syncA), a.each(c, b._syncS);
+        }), this._observer.observe(this.$element[0], {
+          attributes: !0,
+          childList: !0,
+          subtree: !1
+        })) : this.$element[0].addEventListener && (this.$element[0].addEventListener("DOMAttrModified", b._syncA, !1), this.$element[0].addEventListener("DOMNodeInserted", b._syncS, !1), this.$element[0].addEventListener("DOMNodeRemoved", b._syncS, !1));
+      }, e.prototype._registerDataEvents = function () {
+        var a = this;
+        this.dataAdapter.on("*", function (b, c) {
+          a.trigger(b, c);
+        });
+      }, e.prototype._registerSelectionEvents = function () {
+        var b = this,
+            c = ["toggle", "focus"];
+        this.selection.on("toggle", function () {
+          b.toggleDropdown();
+        }), this.selection.on("focus", function (a) {
+          b.focus(a);
+        }), this.selection.on("*", function (d, e) {
+          -1 === a.inArray(d, c) && b.trigger(d, e);
+        });
+      }, e.prototype._registerDropdownEvents = function () {
+        var a = this;
+        this.dropdown.on("*", function (b, c) {
+          a.trigger(b, c);
+        });
+      }, e.prototype._registerResultsEvents = function () {
+        var a = this;
+        this.results.on("*", function (b, c) {
+          a.trigger(b, c);
+        });
+      }, e.prototype._registerEvents = function () {
+        var a = this;
+        this.on("open", function () {
+          a.$container.addClass("select2-container--open");
+        }), this.on("close", function () {
+          a.$container.removeClass("select2-container--open");
+        }), this.on("enable", function () {
+          a.$container.removeClass("select2-container--disabled");
+        }), this.on("disable", function () {
+          a.$container.addClass("select2-container--disabled");
+        }), this.on("blur", function () {
+          a.$container.removeClass("select2-container--focus");
+        }), this.on("query", function (b) {
+          a.isOpen() || a.trigger("open", {}), this.dataAdapter.query(b, function (c) {
+            a.trigger("results:all", {
+              data: c,
+              query: b
+            });
+          });
+        }), this.on("query:append", function (b) {
+          this.dataAdapter.query(b, function (c) {
+            a.trigger("results:append", {
+              data: c,
+              query: b
+            });
+          });
+        }), this.on("keypress", function (b) {
+          var c = b.which;
+          a.isOpen() ? c === d.ESC || c === d.TAB || c === d.UP && b.altKey ? (a.close(), b.preventDefault()) : c === d.ENTER ? (a.trigger("results:select", {}), b.preventDefault()) : c === d.SPACE && b.ctrlKey ? (a.trigger("results:toggle", {}), b.preventDefault()) : c === d.UP ? (a.trigger("results:previous", {}), b.preventDefault()) : c === d.DOWN && (a.trigger("results:next", {}), b.preventDefault()) : (c === d.ENTER || c === d.SPACE || c === d.DOWN && b.altKey) && (a.open(), b.preventDefault());
+        });
+      }, e.prototype._syncAttributes = function () {
+        this.options.set("disabled", this.$element.prop("disabled")), this.options.get("disabled") ? (this.isOpen() && this.close(), this.trigger("disable", {})) : this.trigger("enable", {});
+      }, e.prototype._syncSubtree = function (a, b) {
+        var c = !1,
+            d = this;
+
+        if (!a || !a.target || "OPTION" === a.target.nodeName || "OPTGROUP" === a.target.nodeName) {
+          if (b) {
+            if (b.addedNodes && b.addedNodes.length > 0) for (var e = 0; e < b.addedNodes.length; e++) {
+              var f = b.addedNodes[e];
+              f.selected && (c = !0);
+            } else b.removedNodes && b.removedNodes.length > 0 && (c = !0);
+          } else c = !0;
+          c && this.dataAdapter.current(function (a) {
+            d.trigger("selection:update", {
+              data: a
+            });
+          });
+        }
+      }, e.prototype.trigger = function (a, b) {
+        var c = e.__super__.trigger,
+            d = {
+          open: "opening",
+          close: "closing",
+          select: "selecting",
+          unselect: "unselecting",
+          clear: "clearing"
+        };
+
+        if (void 0 === b && (b = {}), a in d) {
+          var f = d[a],
+              g = {
+            prevented: !1,
+            name: a,
+            args: b
+          };
+          if (c.call(this, f, g), g.prevented) return void (b.prevented = !0);
+        }
+
+        c.call(this, a, b);
+      }, e.prototype.toggleDropdown = function () {
+        this.options.get("disabled") || (this.isOpen() ? this.close() : this.open());
+      }, e.prototype.open = function () {
+        this.isOpen() || this.trigger("query", {});
+      }, e.prototype.close = function () {
+        this.isOpen() && this.trigger("close", {});
+      }, e.prototype.isOpen = function () {
+        return this.$container.hasClass("select2-container--open");
+      }, e.prototype.hasFocus = function () {
+        return this.$container.hasClass("select2-container--focus");
+      }, e.prototype.focus = function (a) {
+        this.hasFocus() || (this.$container.addClass("select2-container--focus"), this.trigger("focus", {}));
+      }, e.prototype.enable = function (a) {
+        this.options.get("debug") && window.console && console.warn && console.warn('Select2: The `select2("enable")` method has been deprecated and will be removed in later Select2 versions. Use $element.prop("disabled") instead.'), null != a && 0 !== a.length || (a = [!0]);
+        var b = !a[0];
+        this.$element.prop("disabled", b);
+      }, e.prototype.data = function () {
+        this.options.get("debug") && arguments.length > 0 && window.console && console.warn && console.warn('Select2: Data can no longer be set using `select2("data")`. You should consider setting the value instead using `$element.val()`.');
+        var a = [];
+        return this.dataAdapter.current(function (b) {
+          a = b;
+        }), a;
+      }, e.prototype.val = function (b) {
+        if (this.options.get("debug") && window.console && console.warn && console.warn('Select2: The `select2("val")` method has been deprecated and will be removed in later Select2 versions. Use $element.val() instead.'), null == b || 0 === b.length) return this.$element.val();
+        var c = b[0];
+        a.isArray(c) && (c = a.map(c, function (a) {
+          return a.toString();
+        })), this.$element.val(c).trigger("change");
+      }, e.prototype.destroy = function () {
+        this.$container.remove(), this.$element[0].detachEvent && this.$element[0].detachEvent("onpropertychange", this._syncA), null != this._observer ? (this._observer.disconnect(), this._observer = null) : this.$element[0].removeEventListener && (this.$element[0].removeEventListener("DOMAttrModified", this._syncA, !1), this.$element[0].removeEventListener("DOMNodeInserted", this._syncS, !1), this.$element[0].removeEventListener("DOMNodeRemoved", this._syncS, !1)), this._syncA = null, this._syncS = null, this.$element.off(".select2"), this.$element.attr("tabindex", c.GetData(this.$element[0], "old-tabindex")), this.$element.removeClass("select2-hidden-accessible"), this.$element.attr("aria-hidden", "false"), c.RemoveData(this.$element[0]), this.dataAdapter.destroy(), this.selection.destroy(), this.dropdown.destroy(), this.results.destroy(), this.dataAdapter = null, this.selection = null, this.dropdown = null, this.results = null;
+      }, e.prototype.render = function () {
+        var b = a('<span class="select2 select2-container"><span class="selection"></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>');
+        return b.attr("dir", this.options.get("dir")), this.$container = b, this.$container.addClass("select2-container--" + this.options.get("theme")), c.StoreData(b[0], "element", this.$element), b;
+      }, e;
+    }), b.define("jquery-mousewheel", ["jquery"], function (a) {
+      return a;
+    }), b.define("jquery.select2", ["jquery", "jquery-mousewheel", "./select2/core", "./select2/defaults", "./select2/utils"], function (a, b, c, d, e) {
+      if (null == a.fn.select2) {
+        var f = ["open", "close", "destroy"];
+
+        a.fn.select2 = function (b) {
+          if ("object" == _typeof(b = b || {})) return this.each(function () {
+            var d = a.extend(!0, {}, b);
+            new c(a(this), d);
+          }), this;
+
+          if ("string" == typeof b) {
+            var d,
+                g = Array.prototype.slice.call(arguments, 1);
+            return this.each(function () {
+              var a = e.GetData(this, "select2");
+              null == a && window.console && console.error && console.error("The select2('" + b + "') method was called on an element that is not using Select2."), d = a[b].apply(a, g);
+            }), a.inArray(b, f) > -1 ? this : d;
+          }
+
+          throw new Error("Invalid arguments for Select2: " + b);
+        };
+      }
+
+      return null == a.fn.select2.defaults && (a.fn.select2.defaults = d), c;
+    }), {
+      define: b.define,
+      require: b.require
+    };
+  }(),
+      c = b.require("jquery.select2");
+
+  return a.fn.select2.amd = b, c;
 });
 
 /***/ }),

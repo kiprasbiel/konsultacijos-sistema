@@ -5,7 +5,12 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
 @section('head-content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <link href="{{ asset('css/select2.css') }}" rel="stylesheet">
+{{--    <link href="{{ asset('css/select2.css') }}" rel="stylesheet">--}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+
+
+    {{--    <script src="{{ asset('js/select2.js') }}" defer></script>--}}
+
 @endsection
 
 @section('content')
@@ -93,6 +98,70 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
-    <script src="{{ asset('js/select2.js') }}" defer></script>
-    <script src="{{ asset('js/formValidation.js') }}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+
+    <script>
+        jQuery(document).ready(function($) {
+            $('.select2').select2();
+
+            $('#company_id').select2({
+                placeholder: "Veskite pavadinimą...",
+                minimumInputLength: 3,
+                ajax: {
+                    type: 'get',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    delay: 500,
+                    url: '/search',
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: $.trim(params.term)
+                        };
+                    },
+                    processResults: function (data) {
+
+                        return {
+
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('#company_id').change(function () {
+                $("#theme").html('');
+                var klientas = $(this).select2('data');
+                if (klientas != null){
+                    var ivestaData = new Date(klientas[0].company_reg_date);
+                    var esamaData = new Date();
+                    var skirtumas = (esamaData - ivestaData)/1000/60/60/24/365;
+                    $('#contacts').val(klientas[0].contacts);
+                    $.ajax({
+                        type: 'get',
+                        url: '/themesearch',
+                        data: {'theme':klientas[0].con_type, 'how_old':skirtumas},
+                        success: function (data) {
+                            var visa_info = [];
+                            data.forEach(funkcija);
+
+                            function funkcija(item, index) {
+                                visa_info.push({
+                                    id: item.id,
+                                    text: item.theme_number + '. ' + item.name
+                                }) ;
+                            };
+
+                            $("#theme").select2({
+                                data: visa_info
+                            });
+                        }
+                    })
+                }
+
+            });
+        });
+    </script>
 @endsection
