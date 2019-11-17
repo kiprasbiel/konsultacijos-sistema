@@ -24,7 +24,7 @@ Route::resource('klientai', 'ClientController');
 
 //Ajax paieska
 Route::post('/search','SearchController@search')->name('search');
-Route::get('/themesearch','SearchController@themeSearch');
+Route::post('/themesearch','SearchController@themeSearch');
 
 //Paprasta paieska
 Route::get('/con-search', 'SearchController@consultation_search');

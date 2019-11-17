@@ -135,7 +135,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     var skirtumas = (esamaData - ivestaData)/1000/60/60/24/365;
                     $('#contacts').val(klientas[0].contacts);
                     $.ajax({
-                        type: 'get',
+                        type: 'post',
                         url: '/themesearch',
                         data: {'theme':klientas[0].con_type, 'how_old':skirtumas},
                         success: function (data) {
