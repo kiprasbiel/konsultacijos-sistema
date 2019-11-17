@@ -5,12 +5,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
 @section('head-content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-{{--    <link href="{{ asset('css/select2.css') }}" rel="stylesheet">--}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
-
-
-    {{--    <script src="{{ asset('js/select2.js') }}" defer></script>--}}
-
 @endsection
 
 @section('content')
@@ -113,7 +108,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     delay: 500,
-                    url: '/search',
+                    url: '{{ route('search')}}',
                     dataType: 'json',
                     data: function (params) {
                         return {
