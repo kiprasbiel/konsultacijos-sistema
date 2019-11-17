@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/resources/views/consultations/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +37,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/web.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="191">
@@ -50,11 +49,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="137" column="35" selection-start-line="137" selection-start-column="35" selection-end-line="137" selection-end-column="35" />
+            <state relative-caret-position="357">
+              <caret line="139" column="26" selection-start-line="139" selection-start-column="26" selection-end-line="139" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -166,8 +165,8 @@
         <option value="$PROJECT_DIR$/resources/js/formValidation.js" />
         <option value="$PROJECT_DIR$/resources/views/ajax-test.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/TestAjaxController.php" />
-        <option value="$PROJECT_DIR$/resources/views/consultations/create.blade.php" />
         <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/resources/views/consultations/create.blade.php" />
       </list>
     </option>
   </component>
@@ -459,12 +458,12 @@
       <workItem from="1573565311026" duration="7474000" />
       <workItem from="1573641189624" duration="9681000" />
       <workItem from="1573813972079" duration="45819000" />
-      <workItem from="1574004040893" duration="5493000" />
+      <workItem from="1574004040893" duration="5581000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="314282000" />
+    <option name="totallyTimeSpent" value="314370000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -867,13 +866,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="137" column="35" selection-start-line="137" selection-start-column="35" selection-end-line="137" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/web.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="191">
@@ -881,6 +873,13 @@
           <folding>
             <element signature="e#7#389#0#PHP" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="139" column="26" selection-start-line="139" selection-start-column="26" selection-end-line="139" selection-end-column="26" />
         </state>
       </provider>
     </entry>
