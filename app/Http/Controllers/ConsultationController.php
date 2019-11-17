@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Exports\ConsultationExport;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
-use App\User;
 use Illuminate\Http\Request;
 use App\Consultation;
 use Illuminate\Support\Facades\Mail;
@@ -104,6 +103,7 @@ class ConsultationController extends Controller
 
         $changes = [];
         if ($request->input('action') == 'send') {
+
             Mail::to('test@test.com')->send(new ConsultationMail($new_data, $changes));
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir išsiųsta!';
             $consultation->is_sent = 1;
@@ -114,6 +114,9 @@ class ConsultationController extends Controller
             $consultation->is_sent = 0;
         }
         $consultation->save();
+        //Remove for production
+        //Only for TESTING PURPOSES
+        return Excel::download(new ConsultationExport($new_data, $changes),'konsultacijos.xlsx');
         return redirect('/konsultacijos')->with('success', $success_message);
     }
 

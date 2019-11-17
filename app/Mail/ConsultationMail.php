@@ -35,6 +35,6 @@ class ConsultationMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.consultations.email')
-            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data),'invoices.xlsx')->getFile(), ['as' => 'invoices.xlsx']);
+            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data),'konsultacijos.xlsx')->getFile(), ['as' => 'konsultacijos.xlsx']);
     }
 }

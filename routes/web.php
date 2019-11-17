@@ -42,8 +42,4 @@ Route::get('/generate-month', 'ExcelExportController@month');
 //Updatina konsultacija i Paid
 Route::get('/paid/{id}', 'ConsultationController@paid');
 
-//Test routes
-Route::get('ajax-test',function() {
-    return view('ajax-test');
-});
-Route::post('/getmsg','TestAjaxController@index');
+

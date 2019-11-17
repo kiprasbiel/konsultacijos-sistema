@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ConsultationExport;
+use App\Exports\ConsultationMonthExport;
 use App\Mail\ConsultationMonth;
 use App\Theme;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ class ExcelExportController extends Controller
 
         Consultation::where('is_sent', 0)->where('user_id', $user_id)->update(['is_sent' => 1]);
 
+        return Excel::download(new ConsultationExport($new_array, $changes),'konsultacijos.xlsx');
         return redirect('/konsultacijos')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos <strong>' . $total . '</strong> konsultacijos');
     }
 
@@ -142,6 +144,7 @@ class ExcelExportController extends Controller
 
         Mail::to('test@test.com')->send(new ConsultationMonth($all_data));
 
+        return Excel::download(new ConsultationMonthExport($all_data),'menesio-ataskaita.xlsx');
         return redirect('/')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos mėnesio konsultacijos');
     }
 }
