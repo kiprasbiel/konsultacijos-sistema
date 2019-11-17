@@ -14,7 +14,7 @@
                 type:'GET',
                 url:'/getmsg',
                 data:{
-                    pasisveikinimas: 'Labux'
+                    greeting: 'Hello'
                 },
                 success:function(data) {
                     $("#msg").html(data.msg);
