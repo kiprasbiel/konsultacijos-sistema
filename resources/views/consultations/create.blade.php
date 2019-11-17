@@ -103,7 +103,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 placeholder: "Veskite pavadinimą...",
                 minimumInputLength: 3,
                 ajax: {
-                    type: 'get',
+                    type: 'post',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },

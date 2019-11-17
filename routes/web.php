@@ -23,7 +23,7 @@ Route::resource('konsultacijos', 'ConsultationController');
 Route::resource('klientai', 'ClientController');
 
 //Ajax paieska
-Route::get('/search','SearchController@search')->name('search');
+Route::post('/search','SearchController@search')->name('search');
 Route::get('/themesearch','SearchController@themeSearch');
 
 //Paprasta paieska
