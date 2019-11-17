@@ -2,7 +2,7 @@
 <head>
     <title>Ajax Example</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
     </script>
 
     <script>
@@ -11,12 +11,12 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                type:'GET',
-                url:'/getmsg',
-                data:{
+                type: 'GET',
+                url: '/getmsg',
+                data: {
                     greeting: 'Hello'
                 },
-                success:function(data) {
+                success: function (data) {
                     $("#msg").html(data.msg);
                 }
             });
@@ -25,10 +25,11 @@
 </head>
 
 <body>
-<div id = 'msg'>This message will be replaced using Ajax.
-    Click the button to replace the message.</div>
+<div id='msg'>This message will be replaced using Ajax.
+    Click the button to replace the message.
+</div>
 <?php
-echo Form::button('Replace Message',['onClick'=>'getMessage()']);
+echo Form::button('Replace Message', ['onClick' => 'getMessage()']);
 ?>
 </body>
 
