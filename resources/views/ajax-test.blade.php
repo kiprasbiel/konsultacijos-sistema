@@ -11,7 +11,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                type: 'GET',
+                type: 'POST',
                 url: '/getmsg',
                 data: {
                     greeting: 'Hello'

@@ -46,4 +46,4 @@ Route::get('/paid/{id}', 'ConsultationController@paid');
 Route::get('ajax-test',function() {
     return view('ajax-test');
 });
-Route::get('/getmsg','TestAjaxController@index');
+Route::post('/getmsg','TestAjaxController@index');

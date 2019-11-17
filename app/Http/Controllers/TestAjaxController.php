@@ -8,6 +8,6 @@ use App\Http\Controllers\Controller;
 
 class TestAjaxController extends Controller {
     public function index(Request $request) {
-        return response()->json(array('msg'=> $request->query('greeting')), 200);
+        return response()->json(array('msg'=> $request->greeting), 200);
     }
 }
