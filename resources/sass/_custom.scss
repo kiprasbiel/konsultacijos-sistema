@@ -36,6 +36,14 @@
 .select2-container--default .select2-selection--single .select2-selection__rendered {
   line-height: unset !important;
 }
+.select2.select2-container.select2-container--default {
+  width: auto !important;
+}
+.select2-container {
+  display: block !important;
+}
+
+
 .container-aw{
   margin-top: 15px;
 }
@@ -55,4 +63,7 @@
 }
 .fa-euro-sign {
   color: #1cb500;
+}
+.aw-a-button {
+  color: #fff !important;
 }

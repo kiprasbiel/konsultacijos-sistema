@@ -74,4 +74,20 @@ class SearchController extends Controller
         $clients =  Client::orderBy('created_at', 'desc')->where('name', 'like', "%{$request->paieska}%")->paginate(50);
         return view('clients.index')->with('clients', $clients);
     }
+
+    public function themeListSearch(Request $request){
+        $id = $request->company_id;
+        $clients = Client::select('company_reg_date', 'con_type')->where('id', $id)->get();
+        foreach ($clients as $client){
+            $main_theme = $client->con_type;
+
+            $ivestaData = date_create($client->company_reg_date);
+            $esamaData = date("Y-m-d");
+//            $how_old = ($esamaData - $ivestaData) / 1000 / 60 / 60 / 24 / 365;
+            $how_old = date_diff($ivestaData, $esamaData);
+            return date_format($how_old, 'Y');
+            $themes = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "' . $main_theme .'" AND ((`min_old` < '. $how_old . ' AND `max_old`> '. $how_old . ') OR (ISNULL(`min_old`) AND `max_old`> '. $how_old . ') OR (`min_old` < '. $how_old . ' AND ISNULL(`max_old`)) OR (ISNULL(`min_old`) AND ISNULL(`max_old`)))');
+        }
+        return $themes;
+    }
 }

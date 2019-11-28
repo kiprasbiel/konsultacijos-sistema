@@ -38,7 +38,12 @@ class ConsultationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create(Request $request) {
+        if($request->session()->get('consultation_id')){
+//            dd($request->session()->get('consultation_id'));
+            $consultation = Consultation::find($request->session()->get('consultation_id'));
+            return view('consultations.create_duplicate')->with('consultation', $consultation);
+        }
         return view('consultations.create');
     }
 
@@ -100,16 +105,17 @@ class ConsultationController extends Controller
             $consultation->paid_date = date('Y-m-d');
         }
         $consultation->is_paid = $is_paid;
+        if($request->input('action') == 'duplicate') {
+            $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
+            $consultation->is_sent = 0;
+            $consultation->save();
 
-        $changes = [];
-        if ($request->input('action') == 'send') {
-
-            Mail::to('test@test.com')->send(new ConsultationMail($new_data, $changes));
-            $success_message = 'Nauja konsultacija sėkmingai sukurta ir išsiųsta!';
-            $consultation->is_sent = 1;
-            return Excel::download(new ConsultationExport($new_data, $changes),'konsultacijos.xlsx');
-
-        } else {
+            $consultation_id = $consultation->id;
+//            dd($consultation_id);
+//            return view('consultations.create')->with('consultation_id', $consultation_id)->with('notice', $success_message);
+            return redirect('/konsultacijos/create')->with('consultation_id', $consultation_id)->with('notice', $success_message);
+        }
+        else {
             $success_message = 'Nauja konsultacija sėkmingai sukurta!';
             $consultation->is_sent = 0;
 

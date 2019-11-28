@@ -21,19 +21,19 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('company_id', 'Įmonės pavadinimas')}}
-                        {{Form::select('company_id', [], null, ['class' => 'form-control select2 company_id', 'id' => 'company_id'])}}
+                        {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id'])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('contacts', 'Kontaktai')}}
-                        {{Form::text('contacts', '', ['class' => 'form-control'])}}
+                        {{Form::text('contacts', $consultation->contacts, ['class' => 'form-control'])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('theme', 'Tema')}}
-                        {{Form::select('theme', [], null, ['class' => 'form-control select2 theme', 'id' => 'theme'])}}
+                        {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme'])}}
                     </div>
                 </div>
             </div>
@@ -42,19 +42,19 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('reg_county', 'Paslaugų teikimo savivaldybė')}}
-                        {{Form::select('reg_county', $county_list, null, ['class' => 'select2 form-control reg_county', 'placeholder' => "Pasirinkite savivaldybę"])}}
+                        {{Form::select('reg_county', $county_list, $consultation->county, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę"])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('address', 'Paslaugų teikimo adresas')}}
-                        {{Form::text('address', '',   ['class' => 'form-control'])}}
+                        {{Form::text('address', $consultation->address, ['class' => 'form-control'])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_date', 'Konsultacijos data')}}
-                        {{Form::date('consultation_date', \Carbon\Carbon::now(), ['class' => 'form-control'])}}
+                        {{Form::date('consultation_date', $consultation->consultation_date, ['class' => 'form-control'])}}
                     </div>
                 </div>
             </div>
@@ -62,19 +62,19 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_start', 'Konsultacijos pradžia')}}
-                        {{Form::text('consultation_start', '',   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                        {{Form::text('consultation_start', $consultation->consultation_time,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_length', 'Konsultacijos trukmė')}}
-                        {{Form::text('consultation_length', '',   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                        {{Form::text('consultation_length', $consultation->consultation_length,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}
-                        {{Form::select('method', ['skype' => 'Skype', 'tel' => 'Telefonu', 'vietoje' => 'Vietoje'], null, ['class' => 'form-control method'])}}
+                        {{Form::select('method', ['skype' => 'Skype', 'tel' => 'Telefonu', 'vietoje' => 'Vietoje'], $consultation->method, ['class' => 'form-control'])}}
                     </div>
                 </div>
             </div>
@@ -100,4 +100,10 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @section('foot-content')
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>
+
+    <script>
+        jQuery(document).ready(function ($) {
+            $(".alert-info.alert").first().hide().fadeIn(500).delay(2000).fadeOut(1000);
+        });
+    </script>
 @endsection

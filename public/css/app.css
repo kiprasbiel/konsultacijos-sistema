@@ -13923,6 +13923,14 @@ a.text-dark:focus {
   line-height: unset !important;
 }
 
+.select2.select2-container.select2-container--default {
+  width: auto !important;
+}
+
+.select2-container {
+  display: block !important;
+}
+
 .container-aw {
   margin-top: 15px;
 }
@@ -13946,5 +13954,9 @@ a.text-dark:focus {
 
 .fa-euro-sign {
   color: #1cb500;
+}
+
+.aw-a-button {
+  color: #fff !important;
 }
 
