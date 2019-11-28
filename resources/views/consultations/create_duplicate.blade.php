@@ -87,7 +87,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
     </div>
     <div class="row">
-        <div class="col-md mt-5">
+        <div class="col-md">
             <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="duplicate">Išsaugoti ir duplikuoti</button>
             <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="save">Išsaugoti
             </button>
