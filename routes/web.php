@@ -43,4 +43,6 @@ Route::get('/generate-month', 'ExcelExportController@month');
 //Updatina konsultacija i Paid
 Route::get('/paid/{id}', 'ConsultationController@paid');
 
-
+//Apmokejimai
+Route::get('/apmokejimai', 'PaymentController@index');
+Route::put('/apmokejimai/update', 'PaymentController@update');

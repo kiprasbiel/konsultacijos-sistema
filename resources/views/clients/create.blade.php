@@ -10,62 +10,60 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
 @section('content')
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Pridėti naują klientą</h1>
-            </div>
+    <div class="row">
+        <div class="col">
+            <h1>Pridėti naują klientą</h1>
         </div>
-        {!! Form::open(['action' => 'ClientController@store', 'method' => 'POST']) !!}
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{Form::label('name', 'Įmonės pavadinimas')}}
-                    {{Form::text('name', '', ['class' => 'form-control'])}}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{Form::label('code', 'Įmonės kodas')}}
-                    {{Form::text('code', '', ['class' => 'form-control'])}}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{Form::label('company_reg_date', 'Įmonės registracijos data')}}
-                    {{Form::date('company_reg_date', \Carbon\Carbon::now(), ['class' => 'form-control'])}}
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{Form::label('reg_county', 'Registracijos sąvivaldybė')}}
-                    {{Form::select('reg_county', $county_list, null, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę"])}}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    {{Form::label('con_type', 'Konsultacijos tipas')}}
-                    {{Form::select('con_type', ['VKT' => 'VKT', 'EXPO' => 'EXPO', 'ECO' => 'ECO'], null,   ['class' => 'form-control', 'placeholder' => "Pasirinkite tipą"])}}
-                </div>
-            </div>
-        </div>
-        <div class="row aw-text-area-180">
-            <div class="col-md-6">
-                {{Form::label('contacts', 'Kontaktai')}}
-                {{Form::textarea('contacts', '', ['class' => 'form-control', 'style' => 'height: 30%'])}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md">
-                {{Form::submit('Sukurti', ['class'=> 'btn btn-primary float-right'])}}
-            </div>
-        </div>
-
-        {!! Form::close() !!}
     </div>
+    {!! Form::open(['action' => 'ClientController@store', 'method' => 'POST']) !!}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                {{Form::label('name', 'Įmonės pavadinimas')}}
+                {{Form::text('name', '', ['class' => 'form-control'])}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{Form::label('code', 'Įmonės kodas')}}
+                {{Form::text('code', '', ['class' => 'form-control'])}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{Form::label('company_reg_date', 'Įmonės registracijos data')}}
+                {{Form::date('company_reg_date', \Carbon\Carbon::now(), ['class' => 'form-control'])}}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                {{Form::label('reg_county', 'Registracijos sąvivaldybė')}}
+                {{Form::select('reg_county', $county_list, null, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę"])}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {{Form::label('con_type', 'Konsultacijos tipas')}}
+                {{Form::select('con_type', ['VKT' => 'VKT', 'EXPO' => 'EXPO', 'ECO' => 'ECO'], null,   ['class' => 'form-control', 'placeholder' => "Pasirinkite tipą"])}}
+            </div>
+        </div>
+    </div>
+    <div class="row aw-text-area-180">
+        <div class="col-md-6">
+            {{Form::label('contacts', 'Kontaktai')}}
+            {{Form::textarea('contacts', '', ['class' => 'form-control', 'style' => 'height: 30%'])}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md">
+            {{Form::submit('Sukurti', ['class'=> 'btn btn-primary float-right'])}}
+        </div>
+    </div>
+
+    {!! Form::close() !!}
 @endsection
 
 @section('foot-content')

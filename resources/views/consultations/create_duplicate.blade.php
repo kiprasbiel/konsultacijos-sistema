@@ -78,12 +78,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {{Form::label('is_paid', 'Ar apmokėta?')}}
-                    <input id="is_paid" type="checkbox" name="is_paid" value="1">
-                </div>
-            </div>
         </div>
     </div>
     <div class="row">

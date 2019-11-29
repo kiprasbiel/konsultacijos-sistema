@@ -40,9 +40,9 @@
                         <td>{{$consultation->method}}</td>
                         <td>
                             @if ($consultation->is_paid==1)
-                                Taip
+                                <span class="icons"><i class="far fa-money-bill-alt paid"></i></span>
                             @else
-                                Ne
+                                <span class="icons"><i class="far fa-money-bill-alt not-paid"></i></span>
                             @endif
                         </td>
                         <td>
@@ -54,11 +54,18 @@
                         </td>
                         <td>
                             <div class="d-inline-flex">
-                                <a href="/konsultacijos/{{$consultation->id}}/edit" class="btn btn-warning mx-1">Redaguoti</a>
-                                {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
-                                {{Form::hidden('_method', 'DELETE')}}
-                                {{Form::submit('Ištrinti', ['class' => 'btn btn-danger mx-1'])}}
-                                {{Form::close()}}
+                                <div class="d-inline-flex">
+                                    <a href="/konsultacijos/{{$consultation->id}}/edit" data-toggle="tooltip"
+                                       data-placement="top" title="Redaguoti konsultaciją">
+                                <span class="icons">
+                                    <i class="far fa-edit"></i>
+                                </span>
+                                    </a>
+                                    {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
+                                    {{Form::hidden('_method', 'DELETE')}}
+                                    {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją'])}}
+                                    {{Form::close()}}
+                                </div>
                             </div>
 
                         </td>

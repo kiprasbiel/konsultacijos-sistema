@@ -96,23 +96,14 @@ class ConsultationController extends Controller
         $consultation->consultation_time = $request->input('consultation_start');
         $consultation->consultation_length = $request->input('consultation_length');
         $consultation->method = $request->input('method');
+        $consultation->is_paid = 0;
 
-        if (is_null($request->input('is_paid'))){
-            $is_paid = 0;
-        }
-        else{
-            $is_paid = 1;
-            $consultation->paid_date = date('Y-m-d');
-        }
-        $consultation->is_paid = $is_paid;
         if($request->input('action') == 'duplicate') {
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
             $consultation->is_sent = 0;
             $consultation->save();
 
             $consultation_id = $consultation->id;
-//            dd($consultation_id);
-//            return view('consultations.create')->with('consultation_id', $consultation_id)->with('notice', $success_message);
             return redirect('/konsultacijos/create')->with('consultation_id', $consultation_id)->with('notice', $success_message);
         }
         else {
@@ -121,8 +112,6 @@ class ConsultationController extends Controller
 
         }
         $consultation->save();
-        //Remove for production
-        //Only for TESTING PURPOSES
 
         return redirect('/konsultacijos')->with('success', $success_message);
     }
@@ -196,15 +185,6 @@ class ConsultationController extends Controller
         $consultation->consultation_length = $request->input('consultation_length');
         $consultation->method = $request->input('method');
 
-        if (is_null($request->input('is_paid'))){
-            $is_paid = 0;
-        }
-        else{
-            $is_paid = 1;
-            $consultation->paid_date = date('Y-m-d');
-        }
-        $consultation->is_paid = $is_paid;
-
         //Gaunami laukai, kurie pasikeite
         $changes = array_keys($consultation->getDirty());
         Mail::to('test@test.com')->send(new ConsultationMail($new_data, $changes));
@@ -244,13 +224,13 @@ class ConsultationController extends Controller
     }
 
     //konsultacija pazymima kaip apmoketa
-    public function paid($id){
-        $consultation = Consultation::find($id);
-        $consultation->is_paid = 1;
-        $consultation->paid_date = date("Y-m-d");
-        $consultation->save();
-
-        return redirect('/konsultacijos')->with('success', 'Konsultacija apmokėta.');
-    }
+//    public function paid($id){
+//        $consultation = Consultation::find($id);
+//        $consultation->is_paid = 1;
+//        $consultation->paid_date = date("Y-m-d");
+//        $consultation->save();
+//
+//        return redirect('/konsultacijos')->with('success', 'Konsultacija apmokėta.');
+//    }
 
 }

@@ -78,19 +78,12 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {{Form::label('is_paid', 'Ar apmokėta?')}}
-                    <input id="is_paid" type="checkbox" name="is_paid" value="1">
-                </div>
-            </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md">
             <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="duplicate">Išsaugoti ir duplikuoti</button>
-            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="save">Išsaugoti
-            </button>
+            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="save">Išsaugoti</button>
         </div>
     </div>
 

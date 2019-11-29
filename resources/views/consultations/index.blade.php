@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('head-content')
+
+@endsection
+
 @section('content')
 
     <div class="row">
@@ -46,9 +50,9 @@
                     <td>{{$consultation->method}}</td>
                     <td>
                         @if ($consultation->is_paid==1)
-                            Taip
+                            <span class="icons"><i class="far fa-money-bill-alt paid"></i></span>
                         @else
-                            Ne
+                            <span class="icons"><i class="far fa-money-bill-alt not-paid"></i></span>
                         @endif
                     </td>
                     <td>
@@ -66,20 +70,11 @@
                                     <i class="far fa-edit"></i>
                                 </span>
                             </a>
-                            <a href="/paid/{{$consultation->id}}" data-toggle="tooltip"
-                               data-placement="top" title="Sumokėjo už konsultaciją">
-                                <span class="icons pl-2">
-                                    <i class="fas fa-euro-sign"></i>
-                                </span>
-                            </a>
                             {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
                             {{Form::hidden('_method', 'DELETE')}}
                             {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją'])}}
                             {{Form::close()}}
                         </div>
-{{--                        <div class="d-inline-flex">--}}
-{{--                            --}}
-{{--                        </div>--}}
                     </td>
                 </tr>
             @endforeach

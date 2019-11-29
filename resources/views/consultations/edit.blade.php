@@ -79,16 +79,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            {{Form::label('is_paid', 'Ar apmokėta?')}}
-            @if($consultation->is_paid == 1)
-                <input id="is_paid" type="checkbox" name="is_paid" value="1" checked>
-            @else
-                <input id="is_paid" type="checkbox" name="is_paid" value="1">
-            @endif
-        </div>
-    </div>
     {{Form::hidden('_method', 'PUT')}}
     <div class="row">
         <div class="col-md">

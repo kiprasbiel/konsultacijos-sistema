@@ -33,11 +33,11 @@
                                 Klientai
                             </a>
                         </li>
-{{--                        <li class="nav-item">--}}
-{{--                            <a id="payments" class="nav-link" href="/apmokejimai" role="button">--}}
-{{--                                Apmokejimai--}}
-{{--                            </a>--}}
-{{--                        </li>--}}
+                        <li class="nav-item">
+                            <a id="payments" class="nav-link" href="/apmokejimai" role="button">
+                                Apmokejimai
+                            </a>
+                        </li>
 
                         <!-- Authentication Links -->
                         @guest
