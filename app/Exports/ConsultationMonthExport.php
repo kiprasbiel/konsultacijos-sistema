@@ -12,15 +12,18 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
 {
     protected $data;
-    public function __construct($data)
-    {
+
+    public function __construct($data, $type, $month, $year) {
         $this->data = $data;
+        $this->type = $type;
+        $this->month = $month;
+        $this->year = $year;
     }
 
     public function array(): array {
         $all_data = [];
         $tarpine_array = [];
-        foreach ($this->data as $single_data){
+        foreach ($this->data as $single_data) {
 
             $tarpine_array[] = $single_data;
         }
@@ -29,60 +32,80 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
 
     }
 
-    public function headings(): array
-    {
-        $menesiai = ['sausis', 'vasaris', 'kovas', 'balandis', 'gegužė', 'birželis', 'liepa', 'rugpjūtis', 'rugsėjis', 'spalis', 'lapkritis', 'gruodis'];
-        return [
+    public function headings(): array {
+        switch ($this->type) {
+            case 'VKT':
+                $full_type = 'Verslo';
+                $additive = 1;
+                $header_text = "Konsultacijos tipas (jei verslo pradžios (iki 1 metų) - žymima \"PR\", jei verslo plėtros (nuo 1 metų iki 5 metų) - žymima \"PL\")";
+                break;
+            case 'EXPO':
+                $full_type = 'Expo';
+                $additive = 3;
+                $header_text = "Konsultacijos tipas (jei\niki 3 metų - žymima\n\"IKI3\", jei virš 3 metų -\nžymima \"PO3\")";
+                break;
+            case 'ECO':
+                $full_type = 'Eco';
+                $additive = 1;
+                $header_text = '';
+                break;
+        }
+        $menesiai = ['sausio', 'vasario', 'kovo', 'balandžio', 'gegužės', 'birželio', 'liepos', 'rugpjūčio', 'rugsėjo', 'spalio', 'lapkričio', 'gruodžio'];
+        $return_array = [
             [
                 ' ',
             ],
             [
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
                 '2016 m. liepos 1 d. bendradarbiavimo sutarties Nr. 1',
             ],
             [
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                '1 priedas'
+                ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+                $additive . ' priedas'
             ],
             [
                 ' ',
-                'Ataskaita apie apmokėtų per ataskaitinį laikotarpį konsultacijų pagal priemonę "Verslo konsultantas LT" teikimą',
+                'Ataskaita apie apmokėtų per ataskaitinį laikotarpį konsultacijų pagal priemonę "' . $full_type . ' konsultantas LT" teikimą',
             ],
             [
-                ' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
                 'Data',
-                ' ',' ',
+                ' ', ' ',
                 'Pirminė',
                 'x'
             ],
             [
-                ' ',' ',
-                'Atskaitinis laikotarpis: ' . date("Y") . 'm. ' . $menesiai[date("m")-1] . ' mėn.',
-                ' ',' ',' ',' ',' ',
+                ' ', ' ',
+                'Atskaitinis laikotarpis: ' . $this->year . 'm. ' . $menesiai[intval($this->month) - 1] . ' mėn.',
+                ' ', ' ', ' ', ' ', ' ',
                 date("Y.m.d"),
-                ' ',' ',
+                ' ', ' ',
                 'Taisyta'
             ],
             [
                 ' ',
             ],
-            [
+
+        ];
+
+        if($this->type == 'VKT' || $this->type == 'EXPO'){
+            $top_columns_headers = [
                 'Bendra informacija apie konsultantą',
                 ' ',
                 'Bendra informacija apie paslaugos gavėją',
                 ' ', ' ', ' ',
                 'Informacija apie dalyvavimą konsultacijose',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
                 'VL pastabos'
-            ],
-            [
+            ];
+            $columns_headers = [
                 "Konsultanto pavadinimas",
                 "Konsultanto kodas (įmonės\nkodas arba asmens kodas)",
                 "Paslaugos gavėjo\npavadinimas",
                 "Paslaugos gavėjo kodas\n(įmonės kodas arba asmens\nkodas)",
                 "Paslaugos gavėjo\nregistracijos data",
                 "Savivaldybė (kurioje\nregistruotas paslaugos\ngavėjas)",
-                "Konsultacijos tipas (jei verslo\npradžios (iki 1 metų) - žymima\n\"PR\", jei verslo plėtros (nuo 1\nmetų iki 5 metų) - žymima \"PL\"",
+                $header_text,
                 "Konsultacijos temos kodas",
                 "Data, kada paslaugų gavėjas\ndalyvavo konsultacijose\n(metai, mėnuo, diena)",
                 "Dalyvavo (žymima \"Taip\"\narba \"Ne\")",
@@ -98,19 +121,75 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
                 "Apmokėta už konsultaicjas\n(žymima \"Taip\" arba \"Ne\")",
                 "Pastaba",
                 "VL veiksmai",
-            ],
-            [
-                " ", " "," ", " "," ", " ", " ", " "," ",  " ", " ", " ",
+            ];
+
+            $colums_numbers = [
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'
+            ];
+
+            $lower_columns_headers = [
+                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
                 "Valandų skaičius",
                 "Minučių skaičius",
                 "Valanda",
                 "Minutės",
                 " ", " ", " ", " ",
-            ],
-            [
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'
-            ],
-        ];
+            ];
+        }
+        else{
+            $top_columns_headers = [
+                'Bendra informacija apie konsultantą',
+                ' ',
+                'Bendra informacija apie paslaugos gavėją',
+                ' ', ' ', ' ',
+                'Informacija apie dalyvavimą konsultacijose',
+                ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+                'VL pastabos'
+            ];
+            $columns_headers = [
+                "Konsultanto pavadinimas",
+                "Konsultanto kodas (įmonės\nkodas arba asmens kodas)",
+                "Paslaugos gavėjo\npavadinimas",
+                "Paslaugos gavėjo kodas\n(įmonės kodas arba asmens\nkodas)",
+                "Paslaugos gavėjo\nregistracijos data",
+                "Savivaldybė (kurioje\nregistruotas paslaugos\ngavėjas)",
+                "Konsultacijos temos kodas",
+                "Data, kada paslaugų gavėjas\ndalyvavo konsultacijose\n(metai, mėnuo, diena)",
+                "Dalyvavo (žymima \"Taip\"\narba \"Ne\")",
+                "Ar pateikta konsultanto ir\npaslaugų gavėjo pasirašyta\nsąskaita faktųra (žymima \"Taip\"\narba \"Ne\")",
+                "Savivaldybė, kurioje vyko\npaslauga",
+
+                "Konsultacijos\ntrukmė",
+                " ",
+                "Konsultacijos\nprad. laikas",
+                " ",
+
+                "Apmokėjimo už konsultacijas\ndata",
+                "Apmokėta už konsultaicjas\n(žymima \"Taip\" arba \"Ne\")",
+                "Pastaba",
+                "VL veiksmai",
+            ];
+
+            $colums_numbers = [
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19'
+            ];
+
+            $lower_columns_headers = [
+                " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ",
+                "Valandų skaičius",
+                "Minučių skaičius",
+                "Valanda",
+                "Minutės",
+                " ", " ", " ", " ",
+            ];
+        }
+        $return_array[] = $top_columns_headers;
+        $return_array[] = $columns_headers;
+        $return_array[] = $lower_columns_headers;
+        $return_array[] = $colums_numbers;
+
+
+        return $return_array;
     }
 
     /**
@@ -164,20 +243,74 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
 
         return [
             // Handle by a closure.
-            AfterSheet::class => function(AfterSheet $event) use ($styleArray, $styleArray3, $styleArray4, $row_color_array, $mini_tables){
+            AfterSheet::class => function (AfterSheet $event) use ($styleArray, $styleArray3, $styleArray4, $row_color_array, $mini_tables) {
                 $highestRow = $event->sheet->getHighestRow();
-
                 //Horizontalus mergas
                 $event->sheet->mergeCells('N2:S2');
                 $event->sheet->mergeCells('B4:I4');
                 $event->sheet->mergeCells('C6:E6');
                 $event->sheet->mergeCells('A8:B8');
                 $event->sheet->mergeCells('C8:F8');
-                $event->sheet->mergeCells('G8:R8');
-                $event->sheet->mergeCells('S8:T8');
 
-                $event->sheet->mergeCells('M9:N9');
-                $event->sheet->mergeCells('O9:P9');
+                if ($this->type == 'VKT' ||$this->type == 'EXPO'){
+                    $event->sheet->mergeCells('G8:R8');
+                    $event->sheet->mergeCells('S8:T8');
+                    $event->sheet->mergeCells('M9:N9');
+                    $event->sheet->mergeCells('O9:P9');
+                    $event->sheet->mergeCells('T9:T10');
+
+                    //Vertikalus
+                    $event->sheet->mergeCells('L9:L10');
+
+                    //Teksto sukimas
+                    $event->sheet->getStyle('A9:L9')->getAlignment()->setTextRotation(90);
+                    $event->sheet->getStyle('Q9:T9')->getAlignment()->setTextRotation(90);
+
+                    //Spalvinimas
+                    $event->sheet->getStyle('A11:T11')->applyFromArray($row_color_array);
+
+                    //Borders
+                    $event->sheet->getStyle('A8:T' . $highestRow)->applyFromArray($styleArray3);
+                    $event->sheet->getStyle('G8:R' . $highestRow)->applyFromArray($styleArray3);
+                    $event->sheet->getStyle('S8:T' . $highestRow)->applyFromArray($styleArray3);
+
+                    //Fonts
+                    $event->sheet->getColumnDimension('H')->setWidth(8);
+                    $event->sheet->getColumnDimension('I')->setWidth(13);
+                    $event->sheet->getColumnDimension('L')->setWidth(15);
+                    $event->sheet->getColumnDimension('Q')->setWidth(13);
+                }
+                else{
+                    $event->sheet->mergeCells('G8:Q8');
+                    $event->sheet->mergeCells('R8:S8');
+                    $event->sheet->mergeCells('L9:M9');
+                    $event->sheet->mergeCells('N9:O9');
+
+                    //Vertikalus
+                    $event->sheet->mergeCells('P9:P10');
+
+                    //Teksto sukimas
+                    $event->sheet->getStyle('A9:K9')->getAlignment()->setTextRotation(90);
+                    $event->sheet->getStyle('P9:T9')->getAlignment()->setTextRotation(90);
+
+                    //Spalvinimas
+                    $event->sheet->getStyle('A11:S11')->applyFromArray($row_color_array);
+
+                    //Borders
+                    $event->sheet->getStyle('A8:S' . $highestRow)->applyFromArray($styleArray3);
+                    $event->sheet->getStyle('G8:Q' . $highestRow)->applyFromArray($styleArray3);
+                    $event->sheet->getStyle('R8:S' . $highestRow)->applyFromArray($styleArray3);
+
+                    //Fonts
+                    $event->sheet->getColumnDimension('H')->setWidth(13);
+                    $event->sheet->getColumnDimension('K')->setWidth(15);
+                    $event->sheet->getColumnDimension('P')->setWidth(13);
+                    $event->sheet->getColumnDimension('I')->setWidth(10);
+                }
+
+
+
+
 
                 //Vertikalus mergas
                 $event->sheet->mergeCells('A9:A10');
@@ -191,34 +324,32 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
                 $event->sheet->mergeCells('I9:I10');
                 $event->sheet->mergeCells('J9:J10');
                 $event->sheet->mergeCells('K9:K10');
-                $event->sheet->mergeCells('L9:L10');
+
                 $event->sheet->mergeCells('Q9:Q10');
                 $event->sheet->mergeCells('R9:R10');
                 $event->sheet->mergeCells('S9:S10');
-                $event->sheet->mergeCells('T9:T10');
+
 
                 //Kiti pakeitimai
                 $event->sheet->getStyle('A1:L6')->applyFromArray($styleArray);
-                $event->sheet->getStyle('A1:T'.$highestRow)->getAlignment()->setWrapText(true);
-                $event->sheet->getStyle('A8:T'.$highestRow)->applyFromArray($styleArray4);
-                $event->sheet->getStyle('A8:T'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('A8:B'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('C8:F'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('G8:R'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('S8:T'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('A11:T11')->applyFromArray($row_color_array);
+                $event->sheet->getStyle('A1:T' . $highestRow)->getAlignment()->setWrapText(true);
+                $event->sheet->getStyle('A8:T' . $highestRow)->applyFromArray($styleArray4);
+
+                $event->sheet->getStyle('A8:B' . $highestRow)->applyFromArray($styleArray3);
+                $event->sheet->getStyle('C8:F' . $highestRow)->applyFromArray($styleArray3);
+
+
 
                 //Mini tables top
                 $event->sheet->getStyle('I5:I6')->applyFromArray($mini_tables);
                 $event->sheet->getStyle('L5:M6')->applyFromArray($mini_tables);
 
-                //Teksto sukimas
-                $event->sheet->getStyle('A9:L9')->getAlignment()->setTextRotation(90);
-                $event->sheet->getStyle('Q9:T9')->getAlignment()->setTextRotation(90);
+
+
                 $event->sheet->getRowDimension('9')->setRowHeight(100);
 
                 //Fonto keitimas
-                $event->sheet->getStyle('A12:A'.$highestRow)->getFont()->setSize(9);
+                $event->sheet->getStyle('A12:A' . $highestRow)->getFont()->setSize(9);
 
                 //Columns resize
                 $event->sheet->getColumnDimension('A')->setWidth(20);
@@ -227,11 +358,11 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
                 $event->sheet->getColumnDimension('D')->setWidth(10);
                 $event->sheet->getColumnDimension('E')->setWidth(13);
                 $event->sheet->getColumnDimension('F')->setWidth(15);
-                $event->sheet->getColumnDimension('H')->setWidth(8);
-                $event->sheet->getColumnDimension('I')->setWidth(13);
-                $event->sheet->getColumnDimension('L')->setWidth(15);
-                $event->sheet->getColumnDimension('L')->setWidth(15);
-                $event->sheet->getColumnDimension('Q')->setWidth(13);
+
+
+
+
+
             },
         ];
     }

@@ -72,11 +72,19 @@ class ExcelExportController extends Controller
         return redirect('/konsultacijos')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos <strong>' . $total . '</strong> konsultacijos');
     }
 
-    public function month(){
-        $currant_date = date("Y-m");
-        $consultations = Consultation::where('paid_date', 'like', $currant_date.'%')->where('is_paid', 1)->get();
+    public function month($ex_date, $con_type, $action){
+//        dd(date_create($ex_date));
+        $month = date_format(date_create($ex_date), 'm');
+        $year = date_format(date_create($ex_date), 'Y');
+        $currant_date = $ex_date;
+        $consultations = Consultation::where('paid_date', 'like', $currant_date.'%')
+            ->where('is_paid', 1)
+            ->whereHas('client', function ($query) use ($con_type){
+                $query->where('con_type', $con_type);
+            })
+            ->get();
         if (count($consultations) == 0){
-            return redirect('/')->with('error', 'Nei viena šio mėnesio konsultacija nėra apmokėta!');
+            return redirect('/conf-month-gen')->with('error', 'Nei viena šio mėnesio konsultacija nėra apmokėta!');
         }
         $consultations_array = $consultations->toArray();
         $all_data = [];
@@ -116,35 +124,76 @@ class ExcelExportController extends Controller
                 $kon_pradzia[1] = (int)$kon_pradzia[1];
             }
 
+            if($con_type == 'ECO'){
+                $data = [
+                    'konsultanto_pavadinimas' => "Viešoji įstsaiga\n Promas",
+                    'konsultanto_kodas' => '304690879',
+                    'paslaugos_gavejas' => $client->name,
+                    'imones_kodas' => $client->code,
+                    'imones_reg_data' => $client->company_reg_date,
+                    'imones_reg_apskrt' => $imones_reg_apskrt,
+                    'temos_kodas' => Theme::find($consultation['theme_id'])->theme_number,
+                    'konsultacijos_data' => str_replace("-", ".", $consultation['consultation_date']),
+                    'dalyvavo' => 'Taip',
+                    'pasirase_sf' => 'Taip',
+                    'kons_saviv' => $konsultacijos_apskrt,
+                    'kon_trukme_h' =>$kons_trukme[0],
+                    'kon_trukme_min' =>$kons_trukme[1],
+                    'kon_prad_h' => $kon_pradzia[0],
+                    'kon_prad_min' => $kon_pradzia[1],
+                    'apmokejimo_data' => $consultation['paid_date'],
+                    'ar_apmoketa' => 'Taip',
+                    'pastaba' => ucfirst($consultation['method']),
+                    'vl_veiksmai' => ' '
+                ];
+            } else{
+                $data = [
+                    'konsultanto_pavadinimas' => "Viešoji įstsaiga\n Promas",
+                    'konsultanto_kodas' => '304690879',
+                    'paslaugos_gavejas' => $client->name,
+                    'imones_kodas' => $client->code,
+                    'imones_reg_data' => $client->company_reg_date,
+                    'imones_reg_apskrt' => $imones_reg_apskrt,
+                    'konsultacijos_tipas' => $client->con_o_type,
+                    'temos_kodas' => Theme::find($consultation['theme_id'])->theme_number,
+                    'konsultacijos_data' => str_replace("-", ".", $consultation['consultation_date']),
+                    'dalyvavo' => 'Taip',
+                    'pasirase_sf' => 'Taip',
+                    'kons_saviv' => $konsultacijos_apskrt,
+                    'kon_trukme_h' =>$kons_trukme[0],
+                    'kon_trukme_min' =>$kons_trukme[1],
+                    'kon_prad_h' => $kon_pradzia[0],
+                    'kon_prad_min' => $kon_pradzia[1],
+                    'apmokejimo_data' => $consultation['paid_date'],
+                    'ar_apmoketa' => 'Taip',
+                    'pastaba' => ucfirst($consultation['method']),
+                    'vl_veiksmai' => ' '
+                ];
+            }
+
             //Info formavimas excel'iui
-            $data = [
-                'konsultanto_pavadinimas' => "Asociacija \"Visuomenės\npažangos institutas\"",
-                'konsultanto_kodas' => '302537169',
-                'paslaugos_gavejas' => $client->name,
-                'imones_kodas' => $client->code,
-                'imones_reg_data' => $client->company_reg_date,
-                'imones_reg_apskrt' => $imones_reg_apskrt,
-                'konsultacijos_tipas' => 'NEAISKU',
-                'temos_kodas' => Theme::find($consultation['theme_id'])->theme_number,
-                'konsultacijos_data' => str_replace("-", ".", $consultation['consultation_date']),
-                'dalyvavo' => 'Taip',
-                'pasirase_sf' => 'Taip',
-                'kons_saviv' => $konsultacijos_apskrt,
-                'kon_trukme_h' =>$kons_trukme[0],
-                'kon_trukme_min' =>$kons_trukme[1],
-                'kon_prad_h' => $kon_pradzia[0],
-                'kon_prad_min' => $kon_pradzia[1],
-                'apmokejimo_data' => $consultation['paid_date'],
-                'ar_apmoketa' => 'Taip',
-                'pastaba' => ucfirst($consultation['method']),
-                'vl_veiksmai' => ' '
-            ];
+
             $all_data[] = $data;
         }
 
-        Mail::to('test@test.com')->send(new ConsultationMonth($all_data));
+        if ($action == 'download'){
+            return Excel::download(new ConsultationMonthExport($all_data, $con_type, $month, $year),'menesio-ataskaita.xlsx');
+        }
+        else {
+            Mail::to('test@test.com')->send(new ConsultationMonth($all_data));
+            return redirect('/conf-month-gen')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos mėnesio konsultacijos');
+        }
+    }
 
-        return Excel::download(new ConsultationMonthExport($all_data),'menesio-ataskaita.xlsx');
-        return redirect('/')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos mėnesio konsultacijos');
+    public function index(){
+        return view('exports.index');
+    }
+
+    public function configure(Request $request){
+        $this->validate($request, [
+            'ex-date' => 'required',
+            'con_type' => 'required',
+        ]);
+        return $this->month($request->input('ex-date'), $request->input('con_type'), $request->input('action'));
     }
 }

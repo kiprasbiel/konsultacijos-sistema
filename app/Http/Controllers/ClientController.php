@@ -54,6 +54,31 @@ class ClientController extends Controller
             'company_reg_date' => 'required',
             'con_type' => 'required',
         ]);
+        $now = date_create(date("Y-m-d"));
+        $registered_at = date_create($request->input('company_reg_date'));
+        $how_old = date_diff($now,$registered_at)->y;
+
+        switch ($request->input('con_type')){
+            case 'VKT':
+                if ($how_old < 1){
+                    $con_o_type = 'PR';
+                }
+                elseif ($how_old >= 1 && $how_old < 5){
+                    $con_o_type = 'PL';
+                }
+                break;
+            case 'EXPO':
+                if ($how_old < 3){
+                    $con_o_type = 'IKI3';
+                }
+                elseif ($how_old >= 3){
+                    $con_o_type = 'PO3';
+                }
+                break;
+            case 'ECO':
+                $con_o_type = '';
+                break;
+        }
 
         $client = new Client;
         $client->name = $request->input('name');
@@ -63,6 +88,7 @@ class ClientController extends Controller
         $client->con_type = $request->input('con_type');
         $client->contacts = $request->input('contacts');
         $client->user_id = auth()->user()->id;
+        $client->con_o_type = $con_o_type;
         $client->save();
 
         return redirect('/klientai')->with('success', 'Naujas klientas sėkmingai sukurtas!');

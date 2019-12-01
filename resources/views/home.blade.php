@@ -7,7 +7,7 @@
             <h1>Būsimos konsultacijos</h1>
         </div>
         <div class="col-md-6 text-right">
-            <a href="/generate-month" class="btn btn-primary">Generuoti mėnesio ataskaitą</a>
+            <a href="/conf-month-gen" class="btn btn-primary">Konfigūruoti mėnesio ataskaitą</a>
         </div>
     </div>
         @if(count($consultations)>0)

@@ -183,29 +183,22 @@ jQuery(document).ready(function ($) {
   ;
   $('#company_id').change(function () {
     themeListUpdate(this);
-  }); // $("#duplicate").click(function () {
-  //     //Getting the total amount of elements
-  //     let elementCount = $('.aw-form-group').length;
-  //
-  //     // $("#aw-form-group-" + (elementCount - 1) + " > div > div > div > #company_id").select2("destroy");
-  //     //Cloning the last element from the aw-group-nest div
-  //     $("#aw-form-group-" + (elementCount - 1) + " > .row > .col-md-4 > .form-group > select.company_id").select2("destroy");
-  //     $('#company_id').select2("destroy");
-  //     $clone = $("#aw-form-group-" + (elementCount - 1))
-  //         .clone(true)
-  //         .attr('id', 'aw-form-group-' + elementCount);
-  //     // $clone.find("span.select2").remove();
-  //     // $clone.find("select.select2").select2();
-  //     $clone.appendTo("#aw-group-nest");
-  //     $('#reg_county').select2();
-  //     $('#company_id').select2();
-  //     // $('#aw-form-group-' + (elementCount - 1) + ' > div > div > div > span').select2();
-  //
-  //     //Enabling select2 for new elements
-  //     // $('#aw-form-group-1 > div > div > div > span').select2();
-  //     // $('#aw-form-group-2 > div > div > div > span').select2();
-  //
-  // });
+  });
+  $('#ex-date').change(function () {
+    getConsultations();
+  });
+  $('#con_type').change(function () {
+    getConsultations();
+  });
+
+  function getConsultations() {
+    if ($('#con_type').val() && $('#ex-date').val()) {
+      console.log("Abu laukeliai uzpildyti");
+      console.log($('#con_type').val());
+      console.log($('#ex-date').val());
+      $.ajax({});
+    }
+  }
 });
 
 /***/ }),

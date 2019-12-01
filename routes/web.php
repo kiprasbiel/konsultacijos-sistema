@@ -38,7 +38,9 @@ Route::get('/store', 'ExcelExportController@store');
 Route::resource('mail', 'MailController');
 
 //Menesio ataskaitos generavimas
-Route::get('/generate-month', 'ExcelExportController@month');
+Route::get('/conf-month-gen', 'ExcelExportController@index');
+Route::post('/configure', 'ExcelExportController@configure');
+//Route::get('/generate-month', 'ExcelExportController@month');
 
 //Updatina konsultacija i Paid
 Route::get('/paid/{id}', 'ConsultationController@paid');

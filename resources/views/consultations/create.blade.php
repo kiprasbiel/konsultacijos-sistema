@@ -4,7 +4,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @extends('layouts.app')
 
 @section('head-content')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet"/>
 @endsection
 
@@ -91,6 +90,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js" defer></script>
     <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>
 @endsection

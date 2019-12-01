@@ -71,8 +71,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
-    <script src="{{ asset('js/select2.js') }}" defer></script>
-    <script src="https://cdn.rawgit.com/JDMcKinstry/JavaScriptDateFormat/master/dateFormat.min.js" type="text/javascript"></script>
-    <script src="{{ asset('js/formValidation.js') }}" defer></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js" defer></script>
+    <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>
 @endsection
