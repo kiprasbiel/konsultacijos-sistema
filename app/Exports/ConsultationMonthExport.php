@@ -279,6 +279,7 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
                     $event->sheet->getColumnDimension('I')->setWidth(13);
                     $event->sheet->getColumnDimension('L')->setWidth(15);
                     $event->sheet->getColumnDimension('Q')->setWidth(13);
+                    $event->sheet->getColumnDimension('S')->setWidth(13);
                 }
                 else{
                     $event->sheet->mergeCells('G8:Q8');
@@ -306,6 +307,7 @@ class ConsultationMonthExport implements WithHeadings, FromArray, WithEvents
                     $event->sheet->getColumnDimension('K')->setWidth(15);
                     $event->sheet->getColumnDimension('P')->setWidth(13);
                     $event->sheet->getColumnDimension('I')->setWidth(10);
+                    $event->sheet->getColumnDimension('R')->setWidth(13);
                 }
 
 

@@ -13968,3 +13968,7 @@ a.text-dark:focus {
   color: #a5a5a5;
 }
 
+.aw-checkbox {
+  width: 50% !important;
+}
+

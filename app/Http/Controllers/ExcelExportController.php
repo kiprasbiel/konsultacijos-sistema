@@ -73,14 +73,14 @@ class ExcelExportController extends Controller
     }
 
     public function month($ex_date, $con_type, $action){
-//        dd(date_create($ex_date));
+        $con_type_lower = strtolower($con_type);
         $month = date_format(date_create($ex_date), 'm');
         $year = date_format(date_create($ex_date), 'Y');
         $currant_date = $ex_date;
         $consultations = Consultation::where('paid_date', 'like', $currant_date.'%')
             ->where('is_paid', 1)
             ->whereHas('client', function ($query) use ($con_type){
-                $query->where('con_type', $con_type);
+                $query->whereNotNull($con_type);
             })
             ->get();
         if (count($consultations) == 0){
@@ -89,6 +89,7 @@ class ExcelExportController extends Controller
         $consultations_array = $consultations->toArray();
         $all_data = [];
         foreach ($consultations_array as $consultation){
+
             $client = Client::find($consultation['client_id']);
             $imones_reg_apskrt = strtoupper(str_replace("-", "_", $client->reg_county));
             $konsultacijos_apskrt = strtoupper(str_replace("-", "_", $consultation['county']));
@@ -154,7 +155,7 @@ class ExcelExportController extends Controller
                     'imones_kodas' => $client->code,
                     'imones_reg_data' => $client->company_reg_date,
                     'imones_reg_apskrt' => $imones_reg_apskrt,
-                    'konsultacijos_tipas' => $client->con_o_type,
+                    'konsultacijos_tipas' => $client->$con_type_lower,
                     'temos_kodas' => Theme::find($consultation['theme_id'])->theme_number,
                     'konsultacijos_data' => str_replace("-", ".", $consultation['consultation_date']),
                     'dalyvavo' => 'Taip',
@@ -195,5 +196,14 @@ class ExcelExportController extends Controller
             'con_type' => 'required',
         ]);
         return $this->month($request->input('ex-date'), $request->input('con_type'), $request->input('action'));
+    }
+
+    public function send_reviewed(Request $request){
+        if ($request->input('action') == 'export'){
+
+        }
+        elseif ($request->input('action') == 'send'){
+
+        }
     }
 }

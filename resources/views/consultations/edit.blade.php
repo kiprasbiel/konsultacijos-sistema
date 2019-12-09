@@ -32,7 +32,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('theme', 'Tema')}}
-{{--                {{Form::text('theme', $consultation->theme, ['class' => 'form-control'])}}--}}
                 {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable', 'readonly'])}}
             </div>
         </div>
@@ -42,7 +41,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('reg_county', 'Registracijos sąvivaldybė')}}
-{{--                {{Form::text('reg_county', $consultation->county, ['class' => 'form-control'])}}--}}
                 {{Form::select('reg_county', $county_list, $consultation->county, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę"])}}
             </div>
         </div>
@@ -53,13 +51,17 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             </div>
         </div>
         <div class="col-md-4">
+            {{Form::label('user_id', 'Konsultantas')}}
+            {{Form::select('user_id', $users, $consultation->user_id, ['class' => 'form-control user_id', 'id' => 'user_id', 'placeholder' => "Pasirinkite konsultantą"])}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('consultation_date', 'Konsultacijos data')}}
                 {{Form::date('consultation_date', $consultation->consultation_date, ['class' => 'form-control'])}}
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('consultation_start', 'Konsultacijos pradžia')}}
@@ -72,10 +74,12 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 {{Form::text('consultation_length', $consultation->consultation_length,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('method', 'Metodas')}}
-                {{Form::select('method', ['skype' => 'Skype', 'tel' => 'Telefonu', 'vietoje' => 'Vietoje'], $consultation->method, ['class' => 'form-control'])}}
+                {{Form::select('method', ['Skype' => 'Skype', 'Telefonu' => 'Telefonu', 'Susitikimas' => 'Susitikimas'], $consultation->method, ['class' => 'form-control'])}}
             </div>
         </div>
     </div>
