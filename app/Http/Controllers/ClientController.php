@@ -49,46 +49,48 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'name' => 'required|unique:clients',
             'code' => 'required|unique:clients|digits_between:7,9',
             'company_reg_date' => 'required',
             'con_type' => 'required',
+            'contacts' => 'required'
         ]);
         $now = date_create(date("Y-m-d"));
         $registered_at = date_create($request->input('company_reg_date'));
         $how_old = date_diff($now,$registered_at)->y;
 
-        switch ($request->input('con_type')){
-            case 'VKT':
-                if ($how_old < 1){
-                    $con_o_type = 'PR';
-                }
-                elseif ($how_old >= 1 && $how_old < 5){
-                    $con_o_type = 'PL';
-                }
-                break;
-            case 'EXPO':
-                if ($how_old < 3){
-                    $con_o_type = 'IKI3';
-                }
-                elseif ($how_old >= 3){
-                    $con_o_type = 'PO3';
-                }
-                break;
-            case 'ECO':
-                $con_o_type = '';
-                break;
-        }
 
         $client = new Client;
+
+
+        if (in_array('VKT', $request->input('con_type'))) {
+            if ($how_old < 1) {
+                $client->vkt = 'PR';
+            } elseif ($how_old >= 1 && $how_old < 5) {
+                $client->vkt = 'PL';
+            }
+        }
+
+        if (in_array('EXPO', $request->input('con_type'))) {
+            if ($how_old < 3) {
+                $client->expo = 'IKI3';
+            } elseif ($how_old >= 3) {
+                $client->expo = 'PO3';
+            }
+        }
+
+        if (in_array('ECO', $request->input('con_type'))) {
+            $client->eco = 1;
+        }
+
+
+
         $client->name = $request->input('name');
         $client->code = $request->input('code');
         $client->company_reg_date = $request->input('company_reg_date');
         $client->reg_county = $request->input('reg_county');
-        $client->con_type = $request->input('con_type');
         $client->contacts = $request->input('contacts');
         $client->user_id = auth()->user()->id;
-        $client->con_o_type = $con_o_type;
         $client->save();
 
         return redirect('/klientai')->with('success', 'Naujas klientas sėkmingai sukurtas!');
@@ -131,14 +133,48 @@ class ClientController extends Controller
             'code' => 'required',
             'company_reg_date' => 'required',
             'con_type' => 'required',
+            'contacts' => 'required'
         ]);
 
+        $now = date_create(date("Y-m-d"));
+        $registered_at = date_create($request->input('company_reg_date'));
+        $how_old = date_diff($now,$registered_at)->y;
+
         $client = Client::find($id);
+
+        if (in_array('VKT', $request->input('con_type'))) {
+            if ($how_old < 1) {
+                $client->vkt = 'PR';
+            } elseif ($how_old >= 1 && $how_old < 5) {
+                $client->vkt = 'PL';
+            }
+        }
+        else{
+            $client->vkt = null;
+        }
+        
+        if (in_array('EXPO', $request->input('con_type'))) {
+            if ($how_old < 3) {
+                $client->expo = 'IKI3';
+            } elseif ($how_old >= 3) {
+                $client->expo = 'PO3';
+            }
+        }
+        else{
+            $client->expo = null;
+        }
+
+        if (in_array('ECO', $request->input('con_type'))) {
+            $client->eco = 1;
+        }
+        else{
+            $client->eco = null;
+        }
+
         $client->name = $request->input('name');
         $client->code = $request->input('code');
         $client->company_reg_date = $request->input('company_reg_date');
         $client->reg_county = $request->input('reg_county');
-        $client->con_type = $request->input('con_type');
         $client->contacts = $request->input('contacts');
         $client->user_id = auth()->user()->id;
         $client->save();
@@ -154,7 +190,9 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
+
         $client = Client::find($id);
+        $client->consultations()->delete();
         $client->delete();
 
         return redirect('/klientai')->with('success', 'Klientas sėkmingai ištrintas!');

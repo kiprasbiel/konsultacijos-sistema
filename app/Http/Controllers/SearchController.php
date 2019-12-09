@@ -27,7 +27,10 @@ class SearchController extends Controller
                 'code' => $client->code,
                 'company_reg_date' => $client->company_reg_date,
                 'con_type' => $client->con_type,
-                'contacts' => $client->contacts
+                'contacts' => $client->contacts,
+                'vkt' => $client->vkt,
+                'expo' => $client->expo,
+                'eco' => $client->eco,
             ];
         }
         return Response::json($formatted_clients);
@@ -35,25 +38,50 @@ class SearchController extends Controller
 
     //Ajax temu filtravimas pagal imones registracijos data ir pagrindine tema
     public function themeSearch(Request $request){
-        $main_theme = $request->theme;
-        $how_old = $request->how_old;
+        $full_array = [];
 
-        //Gaunam visas temas, kurios atitinka imones registracijos pagrindine tema
-        $themes = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "' . $main_theme .'" AND ((`min_old` < '. $how_old . ' AND `max_old`> '. $how_old . ') OR (ISNULL(`min_old`) AND `max_old`> '. $how_old . ') OR (`min_old` < '. $how_old . ' AND ISNULL(`max_old`)) OR (ISNULL(`min_old`) AND ISNULL(`max_old`)))');
-        $formatted_themes = [];
-        foreach ($themes as $theme) {
-            $formatted_themes[] = [
-                'id' => $theme->id,
-                'name' => $theme->name,
-                'theme_number' => $theme->theme_number,
-                'min_old' => $theme->min_old,
-                'max_old' => $theme->max_old
-            ];
+        if (!is_null($request->vkt)){
+            $themes_vkt = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->vkt .'"');
+            $tarpinis_vkt = [];
+            foreach ($themes_vkt as $theme_vkt){
+                $vidus = [
+                    'theme_number' => $theme_vkt->theme_number,
+                    'id' => $theme_vkt->id,
+                    'text' => $theme_vkt->name,
+                    'theme' => 'VKT'
+                ];
+                $full_array[] = $vidus;
+            }
         }
-        return $themes;
 
-        //Issifiltruojam temas kurios atitinka imones registracijos data
+        if (!is_null($request->expo)){
+            $themes_expo = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->expo .'"');
+            $tarpinis_expo = [];
+            foreach ($themes_expo as $theme_expo){
+                $vidus = [
+                    'theme_number' => $theme_expo->theme_number,
+                    'id' => $theme_expo->id,
+                    'text' => $theme_expo->name,
+                    'theme' => 'EXPO'
+                ];
+                $full_array[] = $vidus;
+            }
+        }
 
+        if (!is_null($request->eco)){
+            $themes_eco = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "ECO"');
+            $tarpinis_eco = [];
+            foreach ($themes_eco as $theme_eco){
+                $vidus = [
+                    'theme_number' => $theme_eco->theme_number,
+                    'id' => $theme_eco->id,
+                    'text' => $theme_eco->name,
+                    'theme' => 'ECO'
+                ];
+                $full_array[] = $vidus;
+            }
+        }
+        return $full_array;
 
     }
 

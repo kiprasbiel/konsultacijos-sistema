@@ -112,7 +112,7 @@ jQuery(document).ready(function ($) {
       success: function success(data) {
         return data;
       }
-    }); // themeListUpdate('#company_id');
+    });
   }
 
   $('#company_id').select2({
@@ -143,7 +143,6 @@ jQuery(document).ready(function ($) {
   function themeListUpdate($this) {
     $("#theme").html('');
     var klientas = $($this).select2('data');
-    console.log(klientas);
 
     if (klientas != null) {
       var ivestaData = new Date(klientas[0].company_reg_date);
@@ -158,20 +157,60 @@ jQuery(document).ready(function ($) {
         url: '/themesearch',
         data: {
           'theme': klientas[0].con_type,
-          'how_old': skirtumas
+          'how_old': skirtumas,
+          'vkt': klientas[0].vkt,
+          'expo': klientas[0].expo,
+          'eco': klientas[0].eco
         },
         success: function success(data) {
           var visa_info = [];
+          var vkt_array = [];
+          var expo_array = [];
+          var eco_array = [];
           data.forEach(funkcija);
 
           function funkcija(item, index) {
-            visa_info.push({
-              id: item.id,
-              text: item.theme_number + '. ' + item.name
-            });
+            if (item.theme == "VKT") {
+              vkt_array.push({
+                id: item.id,
+                text: item.theme_number + '. ' + item.text
+              });
+            } else if (item.theme == 'EXPO') {
+              expo_array.push({
+                id: item.id,
+                text: item.theme_number + '. ' + item.text
+              });
+            } else {
+              eco_array.push({
+                id: item.id,
+                text: item.theme_number + '. ' + item.text
+              });
+            }
           }
 
           ;
+
+          if (vkt_array.length > 0) {
+            visa_info.push({
+              text: 'VKT',
+              children: vkt_array
+            });
+          }
+
+          if (expo_array.length > 0) {
+            visa_info.push({
+              text: 'EXPO',
+              children: expo_array
+            });
+          }
+
+          if (eco_array.length > 0) {
+            visa_info.push({
+              text: 'ECO',
+              children: eco_array
+            });
+          }
+
           $("#theme").select2({
             data: visa_info
           });

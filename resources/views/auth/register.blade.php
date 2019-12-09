@@ -26,10 +26,10 @@
                         </div>
 
                         <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('Prisijungimo vardas') }}</label>
+                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Prisijungimo vardas') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username">
+                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username">
 
                                 @error('username')
                                     <span class="invalid-feedback" role="alert">
@@ -60,6 +60,19 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
+
+{{--                        @if(Auth::user())--}}
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label text-md-right">Pareigos</label>
+
+                            <div class="col-md-6">
+                                <select required name="role" id="role" class="form-control">
+                                    <option value="2">Konsultantas</option>
+                                    <option value="1">Administratorius</option>
+                                </select>
+                            </div>
+                        </div>
+{{--                        @endif--}}
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">

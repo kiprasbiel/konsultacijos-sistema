@@ -51,13 +51,17 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     </div>
                 </div>
                 <div class="col-md-4">
+                    {{Form::label('user_id', 'Konsultantas')}}
+                    {{Form::select('user_id', $users, null, ['class' => 'form-control user_id', 'id' => 'user_id', 'placeholder' => "Pasirinkite konsultantą"])}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_date', 'Konsultacijos data')}}
                         {{Form::date('consultation_date', \Carbon\Carbon::now(), ['class' => 'form-control'])}}
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_start', 'Konsultacijos pradžia')}}
@@ -70,6 +74,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                         {{Form::text('consultation_length', '',   ['class' => 'form-control', 'placeholder' => '00:00'])}}
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}

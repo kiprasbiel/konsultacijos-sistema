@@ -47,7 +47,11 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('con_type', 'Konsultacijos tipas')}}
-                {{Form::select('con_type', ['VKT' => 'VKT', 'EXPO' => 'EXPO', 'ECO' => 'ECO'], null,   ['class' => 'form-control', 'placeholder' => "Pasirinkite tipą"])}}
+                <select multiple class="form-control" id="con_type" name="con_type[]">
+                    <option>VKT</option>
+                    <option>EXPO</option>
+                    <option>ECO</option>
+                </select>
             </div>
         </div>
     </div>

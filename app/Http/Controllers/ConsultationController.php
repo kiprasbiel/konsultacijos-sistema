@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\ConsultationExport;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
+use App\User;
 use Illuminate\Http\Request;
 use App\Consultation;
 use Illuminate\Support\Facades\Mail;
@@ -27,9 +28,9 @@ class ConsultationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        $user_id = auth()->user()->id;
-        $unsent = Consultation::where('user_id', $user_id)->where('is_sent', 0)->count();
-        $consultations = Consultation::where('user_id', $user_id)->orderBy('id', 'desc')->paginate(50);
+        $created_by = auth()->user()->id;
+        $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
+        $consultations = Consultation::where('created_by', $created_by)->orderBy('id', 'desc')->paginate(50);
         return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
     }
 
@@ -39,12 +40,17 @@ class ConsultationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) {
+        $users = User::where('role', 2)->get();
+        $formatted_users = [];
+        foreach ($users as $user){
+            $formatted_users[$user->id] =  $user->name;
+        }
         if($request->session()->get('consultation_id')){
 //            dd($request->session()->get('consultation_id'));
             $consultation = Consultation::find($request->session()->get('consultation_id'));
-            return view('consultations.create_duplicate')->with('consultation', $consultation);
+            return view('consultations.create_duplicate')->with('consultation', $consultation)->with('users', $formatted_users);
         }
-        return view('consultations.create');
+        return view('consultations.create')->with('users', $formatted_users);
     }
 
     /**
@@ -64,30 +70,16 @@ class ConsultationController extends Controller
             'consultation_length' => 'required',
             'consultation_start' => 'required',
             'method' => 'required',
+            'user_id' => 'required',
         ]);
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
 
         $consultation_start = explode(":", $data['consultation_start']);
 
-        $new_data = [
-            'nr' => 1,
-            'company_id' => Client::find($data['company_id'])->name,
-            'contacts' => $data['contacts'],
-            'theme' => Theme::find($data['theme'])->name . "\n(" . auth()->user()->name . ")",
-            'address' => $data['address'] . "\n" . $county_list[$data['reg_county']],
-            'consultation_date' => str_replace("-", ".", $data['consultation_date']),
-            'consultation_start' => $consultation_start[0] . " val. " . $consultation_start[1] . " min.",
-            'consultation_length' => $data['consultation_length'],
-            'method' => $data['method'],
-        ];
-
-//        dd(Client::find($data['company_id'])->name);
-
-
         $consultation = new Consultation;
         $consultation->client_id = $request->input('company_id');
-        $consultation->user_id = auth()->user()->id;
+        $consultation->user_id = $request->input('user_id');
         $consultation->contacts = $request->input('contacts');
         $consultation->theme_id = $request->input('theme');
         $consultation->county = $request->input('reg_county');
@@ -97,6 +89,7 @@ class ConsultationController extends Controller
         $consultation->consultation_length = $request->input('consultation_length');
         $consultation->method = $request->input('method');
         $consultation->is_paid = 0;
+        $consultation->created_by = auth()->user->id;
 
         if($request->input('action') == 'duplicate') {
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
@@ -155,6 +148,7 @@ class ConsultationController extends Controller
             'consultation_length' => 'required',
             'consultation_start' => 'required',
             'method' => 'required',
+            'user_id' => 'required',
         ]);
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
@@ -165,7 +159,7 @@ class ConsultationController extends Controller
             'nr' => 1,
             'company_id' => Client::find($data['company_id'])->name,
             'contacts' => $data['contacts'],
-            'theme' => Theme::find($data['theme'])->name . "\n(" . auth()->user()->name . ")",
+            'theme' => Theme::find($data['theme'])->name . "\n(" . User::find($data['user_id'])->name . ")",
             'address' => $data['address'] . "\n" . $county_list[$data['reg_county']],
             'consultation_date' => str_replace("-", ".", $data['consultation_date']),
             'consultation_start' => $consultation_start[0] . " val. " . $consultation_start[1] . " min.",
@@ -175,7 +169,7 @@ class ConsultationController extends Controller
 
         $consultation = Consultation::find($id);
         $consultation->client_id = $request->input('company_id');
-        $consultation->user_id = auth()->user()->id;
+        $consultation->user_id = $request->input('user_id');
         $consultation->contacts = $request->input('contacts');
         $consultation->theme_id = $request->input('theme');
         $consultation->county = $request->input('reg_county');
@@ -222,15 +216,5 @@ class ConsultationController extends Controller
 
         return redirect('/konsultacijos')->with('success', 'Konsultacija ištrinta.');
     }
-
-    //konsultacija pazymima kaip apmoketa
-//    public function paid($id){
-//        $consultation = Consultation::find($id);
-//        $consultation->is_paid = 1;
-//        $consultation->paid_date = date("Y-m-d");
-//        $consultation->save();
-//
-//        return redirect('/konsultacijos')->with('success', 'Konsultacija apmokėta.');
-//    }
 
 }

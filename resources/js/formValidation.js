@@ -3,7 +3,6 @@
 
 //Jei imonei daugiau nei 5 metai, tai pasalina VKT is dropdown
 jQuery(document).ready(function($){
-    console.log("as veikiu!!!!");
     $("#company_reg_date").change(function () {
         var ivestaData = new Date($("#company_reg_date").val());
         var esamaData = new Date();

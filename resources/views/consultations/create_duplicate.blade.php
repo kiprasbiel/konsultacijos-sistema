@@ -52,13 +52,17 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     </div>
                 </div>
                 <div class="col-md-4">
+                    {{Form::label('user_id', 'Konsultantas')}}
+                    {{Form::select('user_id', $users, $consultation->user_id, ['class' => 'form-control user_id', 'id' => 'user_id', 'placeholder' => "Pasirinkite konsultantą"])}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_date', 'Konsultacijos data')}}
                         {{Form::date('consultation_date', $consultation->consultation_date, ['class' => 'form-control'])}}
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('consultation_start', 'Konsultacijos pradžia')}}
@@ -71,6 +75,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                         {{Form::text('consultation_length', $consultation->consultation_length,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}
@@ -82,7 +88,9 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
     </div>
     <div class="row">
         <div class="col-md">
-            <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="duplicate">Išsaugoti ir duplikuoti</button>
+            <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action"
+                    value="duplicate">Išsaugoti ir duplikuoti
+            </button>
             <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="save">Išsaugoti
             </button>
         </div>

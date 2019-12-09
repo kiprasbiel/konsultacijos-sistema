@@ -8,73 +8,46 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
     <div class="row">
         <div class="col-md-6">
-            <h1>Klientai</h1>
+            <h1>Vartotojai</h1>
         </div>
         <div class="col-md-6">
-            <a href="/klientai/create" class="btn btn-success float-right">Kurti naują klientą</a>
+            <a href="/create-user" class="btn btn-success float-right">Kurti naują vartoją</a>
         </div>
     </div>
 
-    {{--    Paieska--}}
-    @include('inc.search', ['controller' => 'client_search'])
 
-    @if(count($clients)>0)
+    @if(count($users)>0)
         <table class="table">
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Pavadinimas</th>
-                <th scope="col">Įm. kodas</th>
+                <th scope="col">Vardas</th>
+                <th scope="col">Prisijungimo vardas</th>
                 <th scope="col">Reg. data</th>
-                <th scope="col">Reg. apskritis</th>
-                <th scope="col">Konsultacijų tipas</th>
-                <th scope="col">Konsultantas</th>
-                <th scope="col">Kontaktai</th>
-                <th scope="col"></th>
+                <th scope="col">Rolė</th>
             </tr>
             </thead>
             <tbody>
-            @foreach($clients as $client)
+            @foreach($users as $user)
                 <tr>
-                    <th scope="row">{{$client->id}}</th>
-                    <td>{{$client->name}}</td>
-                    <td>{{$client->code}}</td>
-                    <td>{{$client->company_reg_date}}</td>
-                    <td>{{$county_list[$client->reg_county]}}</td>
+                    <th scope="row">{{$user->id}}</th>
+                    <td>{{$user->name}}</td>
+                    <td>{{$user->username}}</td>
+                    <td>{{$user->created_at}}</td>
                     <td>
-                        @if (!is_null($client->vkt))
-                            VKT
+                        @if ($user->role == 1)
+                            Administratorius
+                        @elseif ($user->role == 2)
+                            Konsultantas
                         @endif
-                        @if (!is_null($client->expo))
-                            EXPO
-                        @endif
-                        @if (!is_null($client->eco))
-                            ECO
-                        @endif
-                    </td>
-                    <td>{{$client->user->name}}</td>
-                    <td>{{$client->contacts}}</td>
-                    <td>
-                        <div class="d-inline-flex">
-                            <a href="/klientai/{{$client->id}}/edit" data-toggle="tooltip"
-                               data-placement="top" title="Redaguoti klientą">
-                                <span class="icons">
-                                    <i class="far fa-edit"></i>
-                                </span>
-                            </a>
-                            {{Form::open(['action' => ['ClientController@destroy', $client->id], 'method' => 'POST'])}}
-                            {{Form::hidden('_method', 'DELETE')}}
-                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti klientą', 'onclick' => "return confirm('Ištrinant klientą bus ištrintos ir visos jo konsultacijos. Ar tikrai norite ištrinti klientą?')"])}}
-                            {{Form::close()}}
-                        </div>
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        {{$clients->links()}}
+        {{$users->links()}}
     @else
-        <p>Klientų nerasta</p>
+        <p>Vartotojų nerasta</p>
     @endif
 
 @endsection

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                {{Form::label('ex-date', 'Pasirinkite apmokėjimo metus ir mėnesį')}}
+                {{Form::label('ex-date', 'Pasirinkite apmokėjim metus ir mėnesį')}}
                 <input type="month" id="ex-date" name="ex-date" class="form-control">
             </div>
         </div>

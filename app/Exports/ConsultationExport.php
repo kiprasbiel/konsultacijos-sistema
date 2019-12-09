@@ -149,7 +149,6 @@ class ConsultationExport implements WithHeadings, FromArray, WithEvents, ShouldA
                 $event->sheet->getStyle('A7:I'.$highestRow)->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray4);
                 $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray3);
-//                $event->sheet->getStyle('B8')->applyFromArray($color_array);
                 if (!empty($color_array)){
                     foreach ($column_names as $column){
                         $event->sheet->getStyle($column . '8')->applyFromArray($color_array);

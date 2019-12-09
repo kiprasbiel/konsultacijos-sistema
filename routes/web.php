@@ -48,3 +48,7 @@ Route::get('/paid/{id}', 'ConsultationController@paid');
 //Apmokejimai
 Route::get('/apmokejimai', 'PaymentController@index');
 Route::put('/apmokejimai/update', 'PaymentController@update');
+
+//Konsultantai
+Route::get('/vartotojai', 'UserController@index');
+Route::get('/create-user', 'UserController@create');
