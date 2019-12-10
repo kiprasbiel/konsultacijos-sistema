@@ -85,7 +85,9 @@ class ConsultationExport implements WithHeadings, FromArray, WithEvents, ShouldA
             'consultation_time' => 'G',
             'consultation_length' => 'H',
             'method' => 'I',
-            'county' => 'E'
+            'county' => 'E',
+            'break_start' => 'G',
+            'break_end' => 'G',
         ];
 
         $changes_column_array = array_intersect_key($change_collumns_names, array_flip($this->updated_data));

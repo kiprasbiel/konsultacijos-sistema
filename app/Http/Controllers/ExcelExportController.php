@@ -29,6 +29,7 @@ class ExcelExportController extends Controller
         $selection = Consultation::wherein('id', $request->input('send'))->get();
         $total = $selection->count();
         $all_data = $selection->toArray();
+
         $new_array = [];
         //Pridedamas numeravimas
         $index = 1;
@@ -45,13 +46,22 @@ class ExcelExportController extends Controller
 
             $consultation_start = explode(":", $data['consultation_time']);
 
+            if(!is_null($data['break_start']) && !is_null($data['break_end'])){
+                $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
+            }
+            else{
+                $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+            }
+
+
+
             $new_data = [
                 'company_id' => Client::find($data['client_id'])->name,
                 'contacts' => $data['contacts'],
                 'theme' => Theme::find($data['theme_id'])->name . "\n(" . User::find($data['user_id'])->name . ")",
                 'address' => $data['address']. "\n" . $county_list[$data['county']],
                 'consultation_date' => str_replace("-", ".", $data['consultation_date']),
-                'consultation_start' => $consultation_start[0] . " val. " . $consultation_start[1] . " min.",
+                'consultation_start' => $consultation_start_str,
                 'consultation_length' => $data['consultation_length'],
                 'method' => $data['method'],
             ];

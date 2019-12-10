@@ -76,6 +76,18 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
     </div>
     <div class="row">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-8 col-sm-5 form-group">
+                    {{Form::label('break_start', 'Pertraukos pradžia')}}
+                    {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                </div>
+                <div class="col-4 col-sm-5 form-group">
+                    {{Form::label('break_end', 'Pertraukos pabaiga')}}
+                    {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                </div>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('method', 'Metodas')}}
@@ -86,7 +98,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
     {{Form::hidden('_method', 'PUT')}}
     <div class="row">
         <div class="col-md">
-            {{Form::submit('Atnaujinti', ['class'=> 'btn btn-primary float-right'])}}
+            {{Form::submit('Atnaujinti', ['class'=> 'btn btn-primary float-right', 'onclick' => "return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')"])}}
         </div>
     </div>
 
