@@ -4,26 +4,24 @@
 
 @endsection
 
-@section('content')
 
+@section('content')
+    {!! Form::open(['action' => 'ExcelExportController@store', 'method' => 'POST']) !!}
     <div class="row">
         <div class="col-md-6">
-            <h1>Konsultacijos</h1>
+            <h1>Neišsiųstos konsultacijos</h1>
         </div>
         <div class="col-md-6">
-            <a href="/konsultacijos/create" class="btn btn-primary float-right mx-1">Kurti naują konsultaciją</a>
-            <a href="/review" class="btn btn-success float-right mx-1">Generuoti ir išsiųsti <span
-                        class="badge badge-light">{{$unsent}}</span></a>
+            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="send" onclick="return confirm('Ar tikrai norite išsiųsti konsultacijas?')">Siųsti</button>
+            <button class="btn btn-secondary float-right mx-1" type="submit" name="action" value="export">Peržiūrėti XLSX</button>
         </div>
     </div>
-
-    {{--    Paieska--}}
-    @include('inc.search', ['controller' => 'consultation_search'])
 
     @if(count($consultations)>0)
         <table class="table">
             <thead>
             <tr>
+                <th scope="col">Siųsti?</th>
                 <th scope="col">#</th>
                 <th scope="col">Įmonės pavadinimas</th>
                 <th scope="col">Kontaktai</th>
@@ -40,6 +38,9 @@
             <tbody>
             @foreach($consultations as $consultation)
                 <tr>
+                    <td>
+                        <input name="send[]" type="checkbox" class="form-control aw-checkbox" id="send-checkbox" value="{{$consultation->id}}">
+                    </td>
                     <th scope="row">{{$consultation->id}}</th>
                     <td>{{$consultation->client->name}}</td>
                     <td>{{$consultation->contacts}}</td>
@@ -70,10 +71,6 @@
                                     <i class="far fa-edit"></i>
                                 </span>
                             </a>
-                            {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
-                            {{Form::hidden('_method', 'DELETE')}}
-                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją'])}}
-                            {{Form::close()}}
                         </div>
                     </td>
                 </tr>
@@ -85,5 +82,15 @@
         <p>Konsultacijų nerasta</p>
     @endif
 
+    <div class="row">
+        <div class="col-md-4">
 
+        </div>
+    </div>
+
+    {!! Form::close() !!}
+@endsection
+
+
+@section('foot-content')
 @endsection

@@ -4,14 +4,8 @@
     <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/_custom.scss" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/_custom.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/consultations/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/consultations/create_duplicate.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/create_duplicate.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/consultations/edit.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/edit.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
@@ -41,25 +35,6 @@
     <expand />
     <select />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/resources/views/consultations/create_duplicate.blade.php">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="424">
-                    <caret line="82" column="127" selection-start-line="82" selection-start-column="127" selection-end-line="82" selection-end-column="127" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FavoritesManager">
     <favorites_list name="konsultacijos">
       <favorite_root url="file://$PROJECT_DIR$/resources/js/formValidation.js" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
@@ -68,100 +43,22 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
+        <entry file="file://$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="81" column="127" selection-start-line="81" selection-start-column="49" selection-end-line="81" selection-end-column="127" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/consultations/edit.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1500">
-              <caret line="81" column="119" selection-start-line="81" selection-start-column="119" selection-end-line="81" selection-end-column="119" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
-              <folding>
-                <element signature="e#40#70#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="144">
-              <caret line="180" column="52" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="62" />
-              <folding>
-                <element signature="e#40#75#0#PHP" expanded="true" />
-              </folding>
+            <state relative-caret-position="160">
+              <caret line="8" column="60" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="60" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="309" column="71" selection-start-line="309" selection-start-column="71" selection-end-line="309" selection-end-column="71" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/exports/index.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-96">
-              <caret column="23" lean-forward="true" selection-start-column="23" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-196">
-              <caret line="14" column="166" selection-start-line="14" selection-start-column="166" selection-end-line="14" selection-end-column="166" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/web.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="41" column="27" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="27" />
+            <state relative-caret-position="-3076">
+              <caret line="31" selection-start-line="31" selection-end-line="31" />
               <folding>
-                <element signature="e#7#389#0#PHP" expanded="true" />
+                <element signature="e#40#75#0#PHP" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/sass/_custom.scss">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/consultations/index.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -241,13 +138,13 @@
         <option value="$PROJECT_DIR$/resources/views/consultations/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/sass/_custom.scss" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" />
-        <option value="$PROJECT_DIR$/routes/web.php" />
-        <option value="$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" />
         <option value="$PROJECT_DIR$/resources/views/consultations/create.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/consultations/create_duplicate.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/consultations/edit.blade.php" />
         <option value="$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php" />
+        <option value="$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php" />
+        <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" />
       </list>
     </option>
   </component>
@@ -352,8 +249,9 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-10" />
-    <option name="width" value="1945" />
+    <option name="x" value="-213" />
+    <option name="y" value="-22" />
+    <option name="width" value="1938" />
     <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -590,7 +488,8 @@
       <workItem from="1575745990385" duration="1266000" />
       <workItem from="1575826240012" duration="3675000" />
       <workItem from="1575890177746" duration="3960000" />
-      <workItem from="1575900771245" duration="8295000" />
+      <workItem from="1575900771245" duration="10085000" />
+      <workItem from="1575981907458" duration="2786000" />
     </task>
     <task id="LOCAL-00001" summary="Perziurai paruosta svetaine. Visi ecel yra atsiunciami i pc">
       <created>1574016038277</created>
@@ -648,11 +547,18 @@
       <option name="project" value="LOCAL" />
       <updated>1575901134578</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Bug fix menesio generavime: teisingai ispausdina con_o_type ir metodus">
+      <created>1575909731945</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1575909731945</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="445145000" />
+    <option name="totallyTimeSpent" value="449721000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -667,7 +573,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4955357" visible="true" weight="0.22281879" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4955357" visible="true" weight="0.2261745" />
       <window_info id="Structure" order="1" sideWeight="0.5021097" side_tool="true" weight="0.24966443" />
       <window_info id="npm" order="2" sideWeight="0.50446427" side_tool="true" weight="0.28322148" />
       <window_info id="Favorites" order="3" sideWeight="0.50446427" side_tool="true" weight="0.2872483" />
@@ -726,7 +632,8 @@
     <MESSAGE value="Apmokejimu update. Naujas apmokejimu langas. Liedzia pasirinkti imone, uz kurias konsultacijas apmoketi, kada apmoketa." />
     <MESSAGE value="Patobulintas menesio ataskaitos generavimas" />
     <MESSAGE value="Klientai gali tureti kelias konsultaciju rusis. Galimybe sukurti konsultantus. Galimybe priskirti konsultantus konsultacijoms. DB redagavimas" />
-    <option name="LAST_COMMIT_MESSAGE" value="Klientai gali tureti kelias konsultaciju rusis. Galimybe sukurti konsultantus. Galimybe priskirti konsultantus konsultacijoms. DB redagavimas" />
+    <MESSAGE value="Bug fix menesio generavime: teisingai ispausdina con_o_type ir metodus" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bug fix menesio generavime: teisingai ispausdina con_o_type ir metodus" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/database/migrations/2019_11_10_201348_add_paid_date_to_consultations.php">
@@ -983,13 +890,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/sass/_custom.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/PostController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -1004,16 +904,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/consultations/index.blade.php">
+    <entry file="file://$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="78" column="21" lean-forward="true" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
+        <state relative-caret-position="6080">
+          <caret line="309" column="71" selection-start-line="309" selection-start-column="71" selection-end-line="309" selection-end-column="71" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
+        <state relative-caret-position="1378">
           <caret line="226" column="5" selection-start-line="226" selection-start-column="5" selection-end-line="226" selection-end-column="5" />
           <folding>
             <element signature="e#40#70#0#PHP" expanded="true" />
@@ -1021,27 +921,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/web.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="41" column="27" selection-start-line="41" selection-start-column="13" selection-end-line="41" selection-end-column="27" />
-          <folding>
-            <element signature="e#7#389#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="1620">
+          <caret line="81" column="127" selection-start-line="81" selection-start-column="49" selection-end-line="81" selection-end-column="127" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/consultations/edit.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-196">
-          <caret line="14" column="166" selection-start-line="14" selection-start-column="166" selection-end-line="14" selection-end-column="166" />
+        <state relative-caret-position="1620">
+          <caret line="81" column="119" selection-start-line="81" selection-start-column="119" selection-end-line="81" selection-end-column="119" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/exports/index.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-96">
-          <caret column="23" lean-forward="true" selection-start-column="23" selection-end-column="23" />
+        <state>
+          <caret column="23" selection-start-column="23" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/sass/_custom.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1540">
+          <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/consultations/index.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1560">
+          <caret line="78" column="21" selection-start-line="78" selection-start-column="21" selection-end-line="78" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -1052,34 +963,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/consultations/create.blade.php">
+    <entry file="file://$PROJECT_DIR$/routes/web.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="81" column="127" selection-start-line="81" selection-start-column="49" selection-end-line="81" selection-end-column="127" />
+        <state relative-caret-position="160">
+          <caret line="35" column="11" selection-start-line="35" selection-start-column="11" selection-end-line="35" selection-end-column="11" />
+          <folding>
+            <element signature="e#7#389#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/consultations/edit.blade.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/exports/new_edited_consultation_review.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1500">
-          <caret line="81" column="119" selection-start-line="81" selection-start-column="119" selection-end-line="81" selection-end-column="119" />
+        <state relative-caret-position="160">
+          <caret line="8" column="60" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="60" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="180" column="52" selection-start-line="180" selection-start-column="39" selection-end-line="180" selection-end-column="62" />
+        <state relative-caret-position="-3076">
+          <caret line="31" selection-start-line="31" selection-end-line="31" />
           <folding>
             <element signature="e#40#75#0#PHP" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Exports/ConsultationMonthExport.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="309" column="71" selection-start-line="309" selection-start-column="71" selection-end-line="309" selection-end-column="71" />
         </state>
       </provider>
     </entry>

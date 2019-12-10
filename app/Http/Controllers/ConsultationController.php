@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\ConsultationExport;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
 use App\User;
 use Illuminate\Http\Request;
 use App\Consultation;
 use Illuminate\Support\Facades\Mail;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Client;
 use App\Theme;
 
@@ -126,8 +124,14 @@ class ConsultationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
+        $users = User::where('role', 2)->get();
+        $formatted_users = [];
+        foreach ($users as $user){
+            $formatted_users[$user->id] =  $user->name;
+        }
+
         $consultation = Consultation::find($id);
-        return view('consultations.edit')->with('consultation', $consultation);
+        return view('consultations.edit')->with('consultation', $consultation)->with('users', $formatted_users);
     }
 
     /**
@@ -215,6 +219,11 @@ class ConsultationController extends Controller
         $consultation->delete();
 
         return redirect('/konsultacijos')->with('success', 'Konsultacija ištrinta.');
+    }
+
+    public function review(){
+        $not_sent = Consultation::where('is_sent', 0)->paginate(50);
+        return view('exports.new_edited_consultation_review')->with('consultations', $not_sent);
     }
 
 }

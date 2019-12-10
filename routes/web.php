@@ -32,7 +32,8 @@ Route::get('/con-search', 'SearchController@consultation_search');
 Route::get('/cl-search', 'SearchController@client_search');
 
 //Excel generavimas
-Route::get('/store', 'ExcelExportController@store');
+//Anksciau budavo kreipimasis tiesiai is konsultaciju index view
+Route::post('/store', 'ExcelExportController@store');
 
 //Laisku siuntimas
 Route::resource('mail', 'MailController');
@@ -52,3 +53,7 @@ Route::put('/apmokejimai/update', 'PaymentController@update');
 //Konsultantai
 Route::get('/vartotojai', 'UserController@index');
 Route::get('/create-user', 'UserController@create');
+
+//Nauju ir redaguotu konsultaciju siuntimo logika
+Route::get('/review', 'ConsultationController@review');
+Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
