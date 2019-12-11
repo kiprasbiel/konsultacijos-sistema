@@ -7,7 +7,6 @@ use App\Exports\ConsultationMonthExport;
 use App\Mail\ConsultationMonth;
 use App\Theme;
 use Illuminate\Http\Request;
-//use Maatwebsite\Excel\Excel;
 Use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConsultationMail;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
+use App\Rules\ValidConsultationDate;
 use App\User;
 use Illuminate\Http\Request;
 use App\Consultation;
@@ -64,7 +65,7 @@ class ConsultationController extends Controller
             'theme' => 'required',
             'reg_county' => 'required',
             'address' => 'required',
-            'consultation_date' => 'required',
+            'consultation_date' => ['required', 'date', 'after:tomorrow' , new ValidConsultationDate],
             'consultation_length' => 'required',
             'consultation_start' => 'required',
             'method' => 'required',
@@ -153,7 +154,7 @@ class ConsultationController extends Controller
             'theme' => 'required',
             'reg_county' => 'required',
             'address' => 'required',
-            'consultation_date' => 'required',
+            'consultation_date' => ['required', 'date'],
             'consultation_length' => 'required',
             'consultation_start' => 'required',
             'method' => 'required',
