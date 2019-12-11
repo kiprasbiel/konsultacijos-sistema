@@ -8,7 +8,10 @@ jQuery(document).ready(function($){
         var esamaData = new Date();
         var skirtumas = (esamaData - ivestaData)/1000/60/60/24/365;
         if(skirtumas >= 5){
-            $('#con_type option[value="VKT"]').css("display", "none");
+            $('#con_type > option:nth-child(1)').css("display", "none");
+        }
+        else {
+            $('#con_type > option:nth-child(1)').css("display", "block");
         }
     });
 });

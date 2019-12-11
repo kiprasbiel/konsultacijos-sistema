@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\ValidateCompanyCode;
 use Illuminate\Http\Request;
 use App\Client;
 
@@ -50,7 +51,7 @@ class ClientController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|unique:clients',
-            'code' => 'required|unique:clients|digits_between:7,9',
+            'code' => ['required', 'unique:clients', new ValidateCompanyCode],
             'company_reg_date' => 'required',
             'con_type' => 'required',
             'contacts' => 'required'
