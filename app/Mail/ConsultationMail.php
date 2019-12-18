@@ -3,8 +3,8 @@
 namespace App\Mail;
 
 use App\Exports\ConsultationExport;
-use http\Env\Request;
-//use Illuminate\Http\Request;
+//use http\Env\Request;
+use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -34,7 +34,15 @@ class ConsultationMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.consultations.email')
-            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data),'konsultacijos.xlsx')->getFile(), ['as' => 'konsultacijos.xlsx']);
+        if (empty($this->updated_data)){
+            $view = 'emails.consultations.email';
+        }
+        else {
+            $view = 'emails.consultations.email-change';
+        }
+        return $this->markdown($view)
+            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data),'konsultacijos.xlsx')
+                ->getFile(), ['as' => 'konsultacijos.xlsx'])
+            ->subject('Naujos konsultacijos');
     }
 }

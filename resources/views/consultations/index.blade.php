@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('head-content')
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>
 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
 @endsection
 
 @section('content')
@@ -86,4 +88,12 @@
     @endif
 
 
+@endsection
+
+@section('foot-content')
+    <script type="javascript">
+    jQuery(document).ready( function ($) {
+        $('#myTable').DataTable();
+    } );
+    </script>
 @endsection

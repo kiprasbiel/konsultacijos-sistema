@@ -30,8 +30,13 @@
 
     <div class="row">
         <div class="col-md">
-            <button class="btn btn-primary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="send" onclick="return confirm('Ar tikrai norite išsiųsti mėnesio atsakaitą?')">Generuoti ir išsiųsti</button>
-            <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="download">Atsisiųsti XLSX</button>
+            <button class="btn btn-primary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action"
+                    value="send" onclick="return confirm('Ar tikrai norite išsiųsti mėnesio atsakaitą?')">Generuoti ir
+                išsiųsti
+            </button>
+            <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action"
+                    value="download">Atsisiųsti XLSX
+            </button>
         </div>
     </div>
 

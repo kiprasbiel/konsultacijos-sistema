@@ -57,3 +57,8 @@ Route::get('/create-user', 'UserController@create');
 //Nauju ir redaguotu konsultaciju siuntimo logika
 Route::get('/review', 'ConsultationController@review');
 Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
+
+Route::get('/settings', 'SettingsController@index');
+Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@email');
+
+

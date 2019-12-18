@@ -26,7 +26,7 @@ class ValidConsultationDate implements Rule
      */
     public function passes($attribute, $value)
     {
-        $consultation_date = new Carbon($value);
+        $consultation_date = Carbon::now();;
         $consultation_date->addDay();
         return (new Carbon($consultation_date))->isWeekDay();
     }

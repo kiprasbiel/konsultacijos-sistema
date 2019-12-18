@@ -18,9 +18,12 @@ class ConsultationMonth extends Mailable
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, $type, $month, $year)
     {
         $this->data = $data;
+        $this->type = $type;
+        $this->month = $month;
+        $this->year = $year;
     }
 
 
@@ -31,7 +34,9 @@ class ConsultationMonth extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.consultations.email')
-            ->attach(Excel::download(new ConsultationMonthExport($this->data),'menesio-ataskaita.xlsx')->getFile(), ['as' => 'menesio-ataskaita.xlsx']);
+        return $this->markdown('emails.consultations.email-month')
+            ->attach(Excel::download(new ConsultationMonthExport($this->data, $this->type, $this->month, $this->year),'menesio-ataskaita.xlsx')
+                ->getFile(), ['as' => 'menesio-ataskaita.xlsx'])
+            ->subject('Konsultacijų mėnesio ataskaita');
     }
 }

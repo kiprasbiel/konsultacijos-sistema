@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
+use App\Option;
 use App\Rules\ValidConsultationDate;
 use App\User;
 use Illuminate\Http\Request;
@@ -21,11 +22,8 @@ class ConsultationController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
     public function index() {
         $created_by = auth()->user()->id;
         $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
@@ -33,11 +31,7 @@ class ConsultationController extends Controller
         return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create(Request $request) {
         $users = User::where('role', 2)->get();
         $formatted_users = [];
@@ -52,12 +46,7 @@ class ConsultationController extends Controller
         return view('consultations.create')->with('users', $formatted_users);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request) {
         $data = $this->validate($request, [
             'company_id' => 'required',
@@ -113,22 +102,12 @@ class ConsultationController extends Controller
         return redirect('/konsultacijos')->with('success', $success_message);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id) {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id) {
         $users = User::where('role', 2)->get();
         $formatted_users = [];
@@ -140,13 +119,7 @@ class ConsultationController extends Controller
         return view('consultations.edit')->with('consultation', $consultation)->with('users', $formatted_users);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id) {
         $data = $this->validate($request, [
             'company_id' => 'required',
@@ -205,19 +178,15 @@ class ConsultationController extends Controller
             return redirect('/konsultacijos')->with('notice', 'Konsultacija neišsiųsta, nes niekas nebuvo pakeista.');
         }
 
-        Mail::to('test@test.com')->send(new ConsultationMail($new_data, $changes));
+        $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
+        Mail::to($emails_arr)->send(new ConsultationMail($new_data, $changes));
 
         $consultation->save();
 
         return redirect('/konsultacijos')->with('success', 'Konsultacija sėkmingai atnaujinta!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id) {
         $consultation = Consultation::find($id);
 

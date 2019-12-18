@@ -2,18 +2,18 @@
 
 namespace App\Exports;
 
-use App\Consultation;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ConsultationExport implements WithHeadings, FromArray, WithEvents, ShouldAutoSize
+class ConsultationExport extends DefaultValueBinder  implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder
 {
     protected $data;
     protected $updated_data;
@@ -21,6 +21,18 @@ class ConsultationExport implements WithHeadings, FromArray, WithEvents, ShouldA
     {
         $this->data = $data;
         $this->updated_data = $updated_data;
+    }
+
+    public function bindValue(Cell $cell, $value)
+    {
+        if (is_numeric($value)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        // else return default behavior
+        return parent::bindValue($cell, $value);
     }
 
     public function array(): array {

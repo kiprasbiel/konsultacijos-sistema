@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+    }
+
     //Ajax gauti imones slect laukeliui konsultacijos pasirinkime
     public function search(Request $request){
 
