@@ -12,9 +12,9 @@ class MailController extends Controller
 
     }
 
-    public function store(Request $request){
-        Mail::to('test@test.com')->send(new ConsultationMail($data))->attach('storage/app/konsultacijos2019-10-31-04-10.xlsx');
-    }
+//    public function store(Request $request){
+//        Mail::to('test@test.com')->send(new ConsultationMail($data))->attach('storage/app/konsultacijos2019-10-31-04-10.xlsx');
+//    }
 
 
 }

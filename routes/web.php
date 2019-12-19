@@ -36,7 +36,7 @@ Route::get('/cl-search', 'SearchController@client_search');
 Route::post('/store', 'ExcelExportController@store');
 
 //Laisku siuntimas
-Route::resource('mail', 'MailController');
+//Route::resource('mail', 'MailController');
 
 //Menesio ataskaitos generavimas
 Route::get('/conf-month-gen', 'ExcelExportController@index');
