@@ -1,52 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="Sukonfiguruotas SMTP serveris, sutvarkytos laisku temos, pridetas nustatymu puslapis, prideta galimybe irasyti laisku gaveju el. adresus, galimybe redaguoti laisku teksta, galimybe vienu metu siusti laiskus keliems gavejams.">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/kunfu.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/SettingsController.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Option.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2019_12_18_123855_create_options_table.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2019_12_18_131426_add_created_at_to_options.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/emails/consultations/email-change.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/emails/consultations/email-month.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/settings/index.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/footer.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/header.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/layout.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/message.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/promotion/button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/subcopy.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/table.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/html/themes/default.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/footer.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/header.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/layout.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/message.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/panel.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/promotion.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/promotion/button.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/subcopy.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/vendor/mail/text/table.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/konsultacijos.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/konsultacijos.iml" afterDir="false" />
+    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Exports/ConsultationExport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exports/ConsultationExport.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ExcelExportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PaymentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/PaymentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SearchController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SearchController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/ConsultationMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ConsultationMail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Mail/ConsultationMonth.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ConsultationMonth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Rules/ValidConsultationDate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Rules/ValidConsultationDate.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/emails/consultations/email.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/emails/consultations/email.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/exports/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/exports/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -338,7 +295,9 @@
       <workItem from="1576587424826" duration="929000" />
       <workItem from="1576588366023" duration="273000" />
       <workItem from="1576588708430" duration="8614000" />
-      <workItem from="1576661574051" duration="20056000" />
+      <workItem from="1576661574051" duration="21192000" />
+      <workItem from="1576687018159" duration="5363000" />
+      <workItem from="1576758451408" duration="924000" />
     </task>
     <task id="LOCAL-00001" summary="Perziurai paruosta svetaine. Visi ecel yra atsiunciami i pc">
       <created>1574016038277</created>
@@ -445,7 +404,13 @@
       <option name="project" value="LOCAL" />
       <updated>1576066751337</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL−00016" summary="Sukonfiguruotas SMTP serveris, sutvarkytos laisku temos, pridetas nustatymu puslapis, prideta galimybe irasyti laisku gaveju el. adresus, galimybe redaguoti laisku teksta, galimybe vienu metu siusti laiskus keliems gavejams.">
+      <created>1576686115496</created>
+      <option name="number" value="LOCAL−00016" />
+      <option name="presentableId" value="LOCAL−00016" />
+      <updated>1576686115496</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TodoView">
@@ -514,10 +479,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="338" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576662738885" />
-    <state x="0" y="5" key="CommitChangelistDialog2" timestamp="1576685990357">
+    <state x="0" y="5" key="CommitChangelistDialog2" timestamp="1576686114827">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="0" y="5" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576685990357" />
+    <state x="0" y="5" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576686114827" />
     <state x="548" y="166" key="FileChooserDialogImpl" timestamp="1576585044482">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -526,26 +491,32 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="54" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576586697653" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1576686130149">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576686130149" />
     <state x="93" y="93" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1576685864442">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576685864442" />
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1576661579980">
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1576758453195">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576661579980" />
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576758453195" />
     <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1576098328948" />
-    <state x="1920" y="0" width="1111" height="812" maximized="true" key="dock-window-1" timestamp="1576680898496">
+    <state x="2343" y="-19" width="1106" height="812" key="dock-window-1" timestamp="1576759699323">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="1920" y="0" width="1111" height="812" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576680898496" />
+    <state x="2343" y="-19" width="1106" height="812" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576687619034" />
+    <state x="2343" y="-19" width="1106" height="812" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1576759699323" />
     <state x="463" y="17" width="609" height="789" key="find.popup" timestamp="1576682888730">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="463" y="17" width="609" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576682888730" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1576686056199">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="2459" y="183" width="840" height="856" key="search.everywhere.popup" timestamp="1576759608753">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576686056199" />
+    <state x="2459" y="183" width="840" height="856" key="search.everywhere.popup/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1576759608753" />
   </component>
 </project>
