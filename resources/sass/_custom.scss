@@ -47,13 +47,16 @@
 .container-aw{
   margin-top: 15px;
 }
+.container-aw > .row > .col-md-6{
+    padding-left: 0 !important;
+}
 
 //Icons
 .icons, .aw-trash-button {
   font-size: 25px;
 }
 .aw-trash-button{
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 .fa-edit {
   color: #fca91f !important;
@@ -77,3 +80,8 @@
 .aw-checkbox {
   width: 50% !important;
 }
+
+.aw-options > textarea{
+    max-height: 100px !important;
+}
+
