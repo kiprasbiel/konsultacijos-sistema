@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="Sutvarkytas nustatymu psl stilius">
+    <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Exports/ConsultationDeleteExport.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exports/ConsultationDeleteExport.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Mail/ConsultationDeleteMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/ConsultationDeleteMail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Rules/ValidConsultationDate.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Rules/ValidConsultationDate.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -301,7 +304,10 @@
       <workItem from="1576765909056" duration="1446000" />
       <workItem from="1576770673976" duration="4277000" />
       <workItem from="1577964081242" duration="1800000" />
-      <workItem from="1578056583380" duration="1445000" />
+      <workItem from="1578056583380" duration="2201000" />
+      <workItem from="1578133480297" duration="4048000" />
+      <workItem from="1578141507033" duration="1579000" />
+      <workItem from="1578143804571" duration="1557000" />
     </task>
     <task id="LOCAL-00001" summary="Perziurai paruosta svetaine. Visi ecel yra atsiunciami i pc">
       <created>1574016038277</created>
@@ -432,7 +438,13 @@
       <option name="presentableId" value="LOCAL−00019" />
       <updated>1576773272070</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL−00020" summary="Pasalintas kuriant nauja vartotoja automatinis priregristravimas">
+      <created>1578058160000</created>
+      <option name="number" value="LOCAL−00020" />
+      <option name="presentableId" value="LOCAL−00020" />
+      <updated>1578058160000</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TodoView">
@@ -493,7 +505,8 @@
     <MESSAGE value="Sena el. pasto konfiguracija mail.php faile" />
     <MESSAGE value="Removing mail from routes" />
     <MESSAGE value="Sutvarkytas nustatymu psl stilius" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sutvarkytas nustatymu psl stilius" />
+    <MESSAGE value="Pasalintas kuriant nauja vartotoja automatinis priregristravimas" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pasalintas kuriant nauja vartotoja automatinis priregristravimas" />
   </component>
   <component name="WindowStateProjectService">
     <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1576682909350">
@@ -504,10 +517,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="338" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576662738885" />
-    <state x="0" y="5" key="CommitChangelistDialog2" timestamp="1576776282193">
+    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2" timestamp="1578058159366">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="0" y="5" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576776282193" />
+    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578058159366" />
     <state x="548" y="166" key="FileChooserDialogImpl" timestamp="1576585044482">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -521,28 +534,28 @@
     </state>
     <state x="277" y="54" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576586697653" />
     <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1577968875043" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1576773273555">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1578058162994">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576773273555" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578058162994" />
     <state x="93" y="93" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1576761485660">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576761485660" />
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1578056592240">
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1578143804730">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578056592240" />
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578143804730" />
     <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1577964084976" />
     <state x="2343" y="-19" width="1106" height="812" key="dock-window-1" timestamp="1576759699323">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2343" y="-19" width="1106" height="812" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576687619034" />
     <state x="2343" y="-19" width="1106" height="812" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1576759699323" />
-    <state x="463" y="17" width="609" height="789" key="find.popup" timestamp="1576682888730">
+    <state x="463" y="17" width="609" height="789" key="find.popup" timestamp="1578134493529">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="463" y="17" width="609" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576682888730" />
+    <state x="463" y="17" width="609" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578134493529" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1576773671557">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

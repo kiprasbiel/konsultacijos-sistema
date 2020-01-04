@@ -12,6 +12,7 @@ use App\Consultation;
 use Illuminate\Support\Facades\Mail;
 use App\Client;
 use App\Theme;
+use Carbon\Carbon;
 
 class ConsultationController extends Controller
 {
@@ -20,9 +21,6 @@ class ConsultationController extends Controller
         $this->middleware('auth');
 
     }
-
-
-
 
     public function index() {
         $created_by = auth()->user()->id;
@@ -179,7 +177,14 @@ class ConsultationController extends Controller
         }
 
         $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
-        Mail::to($emails_arr)->send(new ConsultationMail($new_data, $changes));
+
+        //Tikrinama ar konsultacija jau praejus
+        $now = Carbon::now('Europe/Vilnius');
+        $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
+        if ($con_date->greaterThan($now)){
+            $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
+            Mail::to($emails_arr)->send(new ConsultationMail($new_data, $changes));
+        }
 
         $consultation->save();
 
@@ -203,7 +208,13 @@ class ConsultationController extends Controller
             'method' => $consultation->method,
         ];
 
-        Mail::to('test@test.com')->send(new ConsultationDeleteMail($data));
+        //Tikrinama ar konsultacija jau praejus
+        $now = Carbon::now('Europe/Vilnius');
+        $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
+        if ($con_date->greaterThan($now)){
+            $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
+            Mail::to($emails_arr)->send(new ConsultationDeleteMail($data));
+        }
 
         $consultation->delete();
 

@@ -26,9 +26,22 @@ class ValidConsultationDate implements Rule
      */
     public function passes($attribute, $value)
     {
-        $consultation_date = Carbon::now();;
-        $consultation_date->addDay();
-        return (new Carbon($consultation_date))->isWeekDay();
+        $now = Carbon::now();
+        $carbon_value = Carbon::createFromFormat('Y-m-d', $value);
+        $diff = $now->diffInDays($carbon_value);
+
+        //Tikrinam ar yra bent viena darbo diena tarp dabar ir konsultacijos datos
+        for ($i = 1; $i <= $diff; $i++) {
+            $carbon_value->subDay();
+            if ($carbon_value->isWeekDay() && $carbon_value->notEqualTo($now)){
+                return true;
+            }
+            else{
+                continue;
+            }
+        }
+
+        return false;
     }
 
     /**

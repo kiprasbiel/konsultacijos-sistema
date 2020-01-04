@@ -37,7 +37,7 @@ class ConsultationDeleteExport implements WithHeadings, FromArray, WithEvents, S
             ],
             [
                 ' ',
-                'Ataskaita apie būsimas konsultacijas',
+                'Atšauktos konsultacijos',
             ],
             [
                 ' ',

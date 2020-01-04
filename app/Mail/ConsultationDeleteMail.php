@@ -31,6 +31,8 @@ class ConsultationDeleteMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.consultations.email')
-            ->attach(Excel::download(new ConsultationDeleteExport($this->data),'invoices.xlsx')->getFile(), ['as' => 'invoices.xlsx']);
+            ->attach(Excel::download(new ConsultationDeleteExport($this->data),'atsaukta.xlsx')
+                ->getFile(), ['as' => 'atsaukta.xlsx'])
+            ->subject('Atšauktos konsultacijos');
     }
 }
