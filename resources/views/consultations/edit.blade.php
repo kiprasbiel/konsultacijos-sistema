@@ -10,8 +10,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col">
+    <div class="row align-items-center">
+        <div class="col-md-auto">
             <h1>Redaguoti konsultaciją</h1>
         </div>
     </div>

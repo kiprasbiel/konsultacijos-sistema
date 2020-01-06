@@ -8,12 +8,18 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col">
+    <div class="row align-items-center">
+        <div class="col-md-auto">
             <h1>Nauja konsultacija</h1>
         </div>
+        <div class="col-md-auto">
+            <div class="custom-control custom-checkbox">
+                <input form="consultation-create" type="checkbox" class="custom-control-input" id="old-con" name="old">
+                <label class="custom-control-label" for="old-con">Praėjusi konsultacija</label>
+            </div>
+        </div>
     </div>
-    {!! Form::open(['action' => 'ConsultationController@store', 'method' => 'POST']) !!}
+    {!! Form::open(['action' => 'ConsultationController@store', 'method' => 'POST', 'id' => 'consultation-create']) !!}
     <div class="aw-group-nest" id="aw-group-nest">
         <div class="aw-form-group" id="aw-form-group-0">
             <div class="row">
@@ -36,7 +42,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">

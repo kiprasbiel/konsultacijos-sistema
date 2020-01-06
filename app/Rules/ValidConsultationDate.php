@@ -12,9 +12,9 @@ class ValidConsultationDate implements Rule
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($old)
     {
-        //
+       $this->is_old = $old;
     }
 
     /**
@@ -26,6 +26,11 @@ class ValidConsultationDate implements Rule
      */
     public function passes($attribute, $value)
     {
+        //Jei konsultacija sena - praleisti tikrinima
+        if ($this->is_old == 'on') {
+            return true;
+        }
+
         $now = Carbon::now();
         $carbon_value = Carbon::createFromFormat('Y-m-d', $value);
         $diff = $now->diffInDays($carbon_value);

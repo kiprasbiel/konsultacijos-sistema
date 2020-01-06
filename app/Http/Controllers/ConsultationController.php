@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
 use App\Option;
+use App\Rules\AfterTomorrow;
 use App\Rules\ValidConsultationDate;
 use App\User;
 use Illuminate\Http\Request;
@@ -39,7 +40,7 @@ class ConsultationController extends Controller
         if($request->session()->get('consultation_id')){
 //            dd($request->session()->get('consultation_id'));
             $consultation = Consultation::find($request->session()->get('consultation_id'));
-            return view('consultations.create_duplicate')->with('consultation', $consultation)->with('users', $formatted_users);
+            return view('consultations.create_duplicate')->with('consultation', $consultation)->with('users', $formatted_users)->with('is_old_bup', $request->session()->get('is_old_bup'));
         }
         return view('consultations.create')->with('users', $formatted_users);
     }
@@ -52,8 +53,8 @@ class ConsultationController extends Controller
             'theme' => 'required',
             'reg_county' => 'required',
             'address' => 'required',
-            'consultation_date' => ['required', 'date', 'after:tomorrow' , new ValidConsultationDate],
-            'consultation_length' => 'required',
+            'consultation_date' => ['required', 'date', new AfterTomorrow($request->input('old')) , new ValidConsultationDate($request->input('old'))],
+            'consultation_length' => ['required'],
             'consultation_start' => 'required',
             'method' => 'required',
             'user_id' => 'required',
@@ -81,18 +82,27 @@ class ConsultationController extends Controller
         $consultation->break_start = $request->input('break_start');
         $consultation->break_end = $request->input('break_end');
 
+        if ($request->input('old') == 'on'){
+            $consultation->is_sent = 1;
+        }
+        else{
+            $consultation->is_sent = 0;
+        }
+
 
         if($request->input('action') == 'duplicate') {
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
-            $consultation->is_sent = 0;
             $consultation->save();
 
             $consultation_id = $consultation->id;
-            return redirect('/konsultacijos/create')->with('consultation_id', $consultation_id)->with('notice', $success_message);
+
+            return redirect('/konsultacijos/create')
+                ->with('consultation_id', $consultation_id)
+                ->with('notice', $success_message)
+                ->with('is_old_bup', $request->input('old'));
         }
         else {
             $success_message = 'Nauja konsultacija sėkmingai sukurta!';
-            $consultation->is_sent = 0;
 
         }
         $consultation->save();
