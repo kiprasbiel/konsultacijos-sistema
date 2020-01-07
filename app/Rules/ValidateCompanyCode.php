@@ -25,7 +25,7 @@ class ValidateCompanyCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(strlen($value) == 7 || strlen($value) == 9 ){
+        if(strlen($value) == 7 || strlen($value) == 9 || strlen($value) == 11){
             return true;
         }
     }
