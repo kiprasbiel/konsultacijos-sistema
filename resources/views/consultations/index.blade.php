@@ -1,6 +1,3 @@
-<?php
-    use \App\Http\Controllers\ConsultationController;
-?>
 @extends('layouts.app')
 
 @section('head-content')
@@ -47,12 +44,12 @@
                 <tr>
                     <th scope="row">{{$consultation->id}}</th>
                     <td>{{$consultation->client->name}}</td>
-                    <td style="{{ConsultationController::color_index_table($consultation->id, 'contacts')}}">{{$consultation->contacts}}</td>
+                    <td style="{{\App\Http\Controllers\ConsultationController::color_index_table($consultation->id, 'contacts')}}">{{$consultation->contacts}}</td>
                     <td>{{$consultation->theme->name}}</td>
-                    <td style="{{ConsultationController::color_index_table($consultation->id, 'address')}}">{{$consultation->address}}</td>
-                    <td style="{{ConsultationController::color_index_table($consultation->id, 'consultation_date')}}">{{$consultation->consultation_date}}</td>
-                    <td style="{{ConsultationController::color_index_table($consultation->id, 'consultation_length')}}">{{$consultation->consultation_length}}</td>
-                    <td style="{{ConsultationController::color_index_table($consultation->id, 'method')}}">{{$consultation->method}}</td>
+                    <td style="{{\App\Http\Controllers\ConsultationController::color_index_table($consultation->id, 'address')}}">{{$consultation->address}}</td>
+                    <td style="{{\App\Http\Controllers\ConsultationController::color_index_table($consultation->id, 'consultation_date')}}">{{$consultation->consultation_date}}</td>
+                    <td style="{{\App\Http\Controllers\ConsultationController::color_index_table($consultation->id, 'consultation_length')}}">{{$consultation->consultation_length}}</td>
+                    <td style="{{\App\Http\Controllers\ConsultationController::color_index_table($consultation->id, 'method')}}">{{$consultation->method}}</td>
                     <td>
                         @if ($consultation->is_paid==1)
                             <span class="icons"><i class="far fa-money-bill-alt paid"></i></span>
