@@ -2,18 +2,19 @@
 
 namespace App\Rules;
 
+use App\User;
 use Illuminate\Contracts\Validation\Rule;
 
-class ValidateCompanyCode implements Rule
+class ValidateUsername implements Rule
 {
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($id)
     {
-        //
+        $this->id = $id;
     }
 
     /**
@@ -25,8 +26,17 @@ class ValidateCompanyCode implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(strlen($value) == 7 || strlen($value) == 9 || strlen($value) == 11){
+        $user = User::find($this->id);
+        $username = $user->username;
+        if ($value == $username){
             return true;
+        }
+        $to_check = User::where('username', $value)->count();
+        if($to_check == 0){
+            return true;
+        }
+        else{
+            return false;
         }
     }
 
@@ -37,6 +47,6 @@ class ValidateCompanyCode implements Rule
      */
     public function message()
     {
-        return 'Įmonės kodą turi sudaryti 7, 9 arba 11 skaitmenų.';
+        return 'Toks prisijungimo vardas jau egzistuoja.';
     }
 }

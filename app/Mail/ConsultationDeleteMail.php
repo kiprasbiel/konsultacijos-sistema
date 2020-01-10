@@ -18,9 +18,10 @@ class ConsultationDeleteMail extends Mailable
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, $main_theme)
     {
         $this->data = $data;
+        $this->main_theme = $main_theme;
     }
 
     /**
@@ -30,8 +31,8 @@ class ConsultationDeleteMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.consultations.email')
-            ->attach(Excel::download(new ConsultationDeleteExport($this->data),'atsaukta.xlsx')
+        return $this->markdown('emails.consultations.email-delete')
+            ->attach(Excel::download(new ConsultationDeleteExport($this->data, $this->main_theme),'atsaukta.xlsx')
                 ->getFile(), ['as' => 'atsaukta.xlsx'])
             ->subject('Atšauktos konsultacijos');
     }

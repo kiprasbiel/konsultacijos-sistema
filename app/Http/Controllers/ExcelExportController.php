@@ -7,6 +7,7 @@ use App\Exports\ConsultationMonthExport;
 use App\Mail\ConsultationMonth;
 use App\Option;
 use App\Theme;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 Use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Mail;
@@ -29,60 +30,75 @@ class ExcelExportController extends Controller
             return redirect('/review')->with('notice', '<strong>' . 0 . '</strong> konsultacijų išsiųsta. Pažymėkite konsultacijas, kurias norite išsiųsti.');
         }
 
-        $user_id = auth()->user()->id;
-        $selection = Consultation::wherein('id', $request->input('send'))->get();
-        $total = $selection->count();
-        $all_data = $selection->toArray();
+        $themes = ['VKT', 'EXPO', 'ECO'];
+        $big_arr = [];
+        $total =0;
+        foreach ($themes as $theme) {
+            $selection = Consultation::wherein('id', $request->input('send'))
+                ->whereHas('theme', function ($query) use ($theme) {
+                    $query->where('main_theme', $theme);
+                })->get();
+            if ($selection->count() > 0) {
+                $total += $selection->count();
+                $big_arr[$theme] = $selection->toArray();
+            }
+        }
 
-        $new_array = [];
+        $all_con_arr = [];
         //Pridedamas numeravimas
-        $index = 1;
+
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
+        foreach ($big_arr as $key=>$all_data) {
+            $index = 1;
+            $single_theme_cons_arr = [];
+            foreach ($all_data as $data) {
+                unset(
+                    $data['id'],
+                    $data['created_at'],
+                    $data['updated_at'],
+                    $data['is_sent'],
+                );
 
-        foreach ($all_data as $data) {
-            unset(
-                $data['id'],
-                $data['created_at'],
-                $data['updated_at'],
-                $data['is_sent'],
-            );
+                $consultation_start = explode(":", $data['consultation_time']);
 
-            $consultation_start = explode(":", $data['consultation_time']);
+                if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
+                    $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
+                } else {
+                    $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+                }
 
-            if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
-                $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
-            } else {
-                $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+
+                $new_data = [
+                    'company_id' => Client::find($data['client_id'])->name,
+                    'contacts' => $data['contacts'],
+                    'theme' => Theme::find($data['theme_id'])->name . "\n(" . User::find($data['user_id'])->name . ")",
+                    'address' => $data['address'] . "\n" . $county_list[$data['county']],
+                    'consultation_date' => str_replace("-", ".", $data['consultation_date']),
+                    'consultation_start' => $consultation_start_str,
+                    'consultation_length' => $data['consultation_length'],
+                    'method' => $data['method'],
+                ];
+
+                $array_values = array_values($new_data);
+                array_unshift($array_values, $index);
+                $single_theme_cons_arr[] = $array_values;
+                $index++;
             }
-
-
-            $new_data = [
-                'company_id' => Client::find($data['client_id'])->name,
-                'contacts' => $data['contacts'],
-                'theme' => Theme::find($data['theme_id'])->name . "\n(" . User::find($data['user_id'])->name . ")",
-                'address' => $data['address'] . "\n" . $county_list[$data['county']],
-                'consultation_date' => str_replace("-", ".", $data['consultation_date']),
-                'consultation_start' => $consultation_start_str,
-                'consultation_length' => $data['consultation_length'],
-                'method' => $data['method'],
-            ];
-
-            $array_values = array_values($new_data);
-            array_unshift($array_values, $index);
-            $new_array[] = $array_values;
-            $index++;
+            $all_con_arr[$key] = $single_theme_cons_arr;
         }
 
         //Nera jokiu pokyciu
         $changes = [];
 
+
         if ($request->input('action') == 'export') {
-            return Excel::download(new ConsultationExport($new_array, $changes), 'konsultacijos.xlsx');
+            return Excel::download(new ConsultationExport($all_con_arr, $changes), 'konsultacijos.xlsx');
         } elseif ($request->input('action') == 'send') {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
-            Mail::to($emails_arr)->send(new ConsultationMail($new_array, $changes));
+            Mail::to($emails_arr)->send(new ConsultationMail($all_con_arr, $changes));
             Consultation::wherein('id', $request->input('send'))->update(['is_sent' => 1]);
+            Consultation::wherein('id', $request->input('send'))->update(['email_sent_at' => Carbon::now()]);
             return redirect('/konsultacijos')->with('success', 'Sėkmingai sugeneruotos ir išsiųstos <strong>' . $total . '</strong> konsultacijos');
         }
     }

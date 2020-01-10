@@ -13,18 +13,17 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ConsultationExport extends DefaultValueBinder  implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder
+class ConsultationExport extends DefaultValueBinder implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder
 {
     protected $data;
     protected $updated_data;
-    public function __construct($data, $updated_data)
-    {
+
+    public function __construct($data, $updated_data) {
         $this->data = $data;
         $this->updated_data = $updated_data;
     }
 
-    public function bindValue(Cell $cell, $value)
-    {
+    public function bindValue(Cell $cell, $value) {
         if (is_numeric($value)) {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
@@ -36,19 +35,49 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
     }
 
     public function array(): array {
+
+
         $all_data = [];
-        $tarpine_array = [];
-        foreach ($this->data as $single_data){
 
-            $tarpine_array[] = $single_data;
+
+        $i = 0;
+        foreach ($this->data as $key => $single_theme) {
+            if ($key == 'VKT') {
+                $key = 'Verslo';
+            }
+
+            $theme_head = [[
+                ' ',
+                $key . ' konsultacijos',
+            ],
+                ["Eil.\nNr.",
+                    "Paslaugos gavėjas\n(Pavadinimas/ Vardas pavardė)",
+                    "Paslaugų gavėjo kontaktinė\ninformacija (el. paštas/\ntelefonas)",
+                    "Konsultacijos tema",
+                    "Paslaugų teikimo\nsavivaldybė (tikslus\nadresas)",
+                    "Numatoma\nkonsultacijos\ndata",
+                    "Numatomas\nkonsultacijos\npradžios laikas\n(val.:min.)",
+                    "Numatoma\nkonsultacijos\ntrukmė\n(val.:min.)",
+                    "Numatomas\nkonsultacijos būdas\n(Susitikimas, telefonu,\nSkype)",]];
+
+            if ($i == 0) {
+                $all_data[] = $theme_head;
+            } else {
+                array_push($all_data[0], $theme_head[0]);
+                array_push($all_data[0], $theme_head[1]);
+            }
+
+            foreach ($single_theme as $single_data) {
+                array_push($all_data[0], $single_data);
+            }
+            $i++;
         }
-        $all_data[] = $tarpine_array;
-        return $all_data;
 
+
+        return $all_data;
     }
 
-    public function headings(): array
-    {
+    public function headings(): array {
         return [
             [
                 ' ',
@@ -70,19 +99,19 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
             [
                 ' ',
             ],
-            [
-                ' ',
-                'Eksporto konsultacijos',
-            ],
-            ["Eil.\nNr.",
-            "Paslaugos gavėjas\n(Pavadinimas/ Vardas pavardė)",
-            "Paslaugų gavėjo kontaktinė\ninformacija (el. paštas/\ntelefonas)",
-            "Konsultacijos tema",
-            "Paslaugų teikimo\nsavivaldybė (tikslus\nadresas)",
-            "Numatoma\nkonsultacijos\ndata",
-            "Numatomas\nkonsultacijos\npradžios laikas\n(val.:min.)",
-            "Numatoma\nkonsultacijos\ntrukmė\n(val.:min.)",
-            "Numatomas\nkonsultacijos būdas\n(Susitikimas, telefonu,\nSkype)",]
+//            [
+//                ' ',
+//                'Eksporto konsultacijos',
+//            ],
+//            ["Eil.\nNr.",
+//                "Paslaugos gavėjas\n(Pavadinimas/ Vardas pavardė)",
+//                "Paslaugų gavėjo kontaktinė\ninformacija (el. paštas/\ntelefonas)",
+//                "Konsultacijos tema",
+//                "Paslaugų teikimo\nsavivaldybė (tikslus\nadresas)",
+//                "Numatoma\nkonsultacijos\ndata",
+//                "Numatomas\nkonsultacijos\npradžios laikas\n(val.:min.)",
+//                "Numatoma\nkonsultacijos\ntrukmė\n(val.:min.)",
+//                "Numatomas\nkonsultacijos būdas\n(Susitikimas, telefonu,\nSkype)",]
         ];
     }
 
@@ -90,6 +119,11 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
      * @return array
      */
     public function registerEvents(): array {
+        $count_arr = [];
+        foreach ($this->data as $key => $single_theme) {
+            $count_arr[] = count($single_theme);
+        }
+
         $change_collumns_names = [
             'contacts' => 'C',
             'address' => 'E',
@@ -100,11 +134,12 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
             'county' => 'E',
             'break_start' => 'G',
             'break_end' => 'G',
+            'user_id' => 'D'
         ];
 
         $changes_column_array = array_intersect_key($change_collumns_names, array_flip($this->updated_data));
         $column_names = array_values($changes_column_array);
-        if (!empty($this->updated_data)){
+        if (!empty($this->updated_data)) {
             $color_array = [
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
@@ -113,8 +148,7 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
                     ],
                 ],
             ];
-        }
-        else {
+        } else {
             $color_array = [];
         }
 
@@ -155,16 +189,27 @@ class ConsultationExport extends DefaultValueBinder  implements WithHeadings, Fr
 
         return [
             // Handle by a closure.
-            AfterSheet::class => function(AfterSheet $event) use ($styleArray, $styleArray2, $styleArray3, $styleArray4, $color_array, $column_names){
+            AfterSheet::class => function (AfterSheet $event) use ($styleArray, $styleArray2, $styleArray3, $styleArray4, $color_array, $column_names, $count_arr) {
                 $highestRow = $event->sheet->getHighestRow();
                 $event->sheet->getStyle('A1:L6')->applyFromArray($styleArray);
                 $event->sheet->getStyle('B4')->applyFromArray($styleArray2);
                 $event->sheet->getStyle('E4')->applyFromArray($styleArray2);
-                $event->sheet->getStyle('A7:I'.$highestRow)->getAlignment()->setWrapText(true);
-                $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray4);
-                $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray3);
-                if (!empty($color_array)){
-                    foreach ($column_names as $column){
+
+                $current_start = 7;
+                $current_end = 7;
+                for ($x = 1; $x <= count($count_arr); $x++) {
+                    $current_end += $count_arr[$x - 1];
+                    $event->sheet->getStyle('A' . $current_start . ':I' . $current_end)->getAlignment()->setWrapText(true);
+                    $event->sheet->getStyle('A' . $current_start . ':I' . $current_end)->applyFromArray($styleArray4);
+                    $event->sheet->getStyle('A' . $current_start . ':I' . $current_end)->applyFromArray($styleArray3);
+                    $event->sheet->getStyle('A'.($current_end+1).':L'.($current_end+1))->applyFromArray($styleArray);
+                    $current_start = $current_end + 2;
+                    $current_end = $current_start;
+                }
+
+
+                if (!empty($color_array)) {
+                    foreach ($column_names as $column) {
                         $event->sheet->getStyle($column . '8')->applyFromArray($color_array);
                     }
 

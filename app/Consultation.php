@@ -15,4 +15,7 @@ class Consultation extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+    public function consultation_meta(){
+        return $this->hasMany(Consultation_meta::class);
+    }
 }

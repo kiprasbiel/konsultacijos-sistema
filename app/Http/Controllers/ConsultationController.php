@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\consultation_meta;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
 use App\Option;
@@ -34,11 +35,10 @@ class ConsultationController extends Controller
     public function create(Request $request) {
         $users = User::where('role', 2)->get();
         $formatted_users = [];
-        foreach ($users as $user){
-            $formatted_users[$user->id] =  $user->name;
+        foreach ($users as $user) {
+            $formatted_users[$user->id] = $user->name;
         }
-        if($request->session()->get('consultation_id')){
-//            dd($request->session()->get('consultation_id'));
+        if ($request->session()->get('consultation_id')) {
             $consultation = Consultation::find($request->session()->get('consultation_id'));
             return view('consultations.create_duplicate')->with('consultation', $consultation)->with('users', $formatted_users)->with('is_old_bup', $request->session()->get('is_old_bup'));
         }
@@ -53,7 +53,7 @@ class ConsultationController extends Controller
             'theme' => 'required',
             'reg_county' => 'required',
             'address' => 'required',
-            'consultation_date' => ['required', 'date', new AfterTomorrow($request->input('old')) , new ValidConsultationDate($request->input('old'))],
+            'consultation_date' => ['required', 'date', new AfterTomorrow($request->input('old')), new ValidConsultationDate($request->input('old'))],
             'consultation_length' => ['required'],
             'consultation_start' => 'required',
             'method' => 'required',
@@ -82,15 +82,14 @@ class ConsultationController extends Controller
         $consultation->break_start = $request->input('break_start');
         $consultation->break_end = $request->input('break_end');
 
-        if ($request->input('old') == 'on'){
+        if ($request->input('old') == 'on') {
             $consultation->is_sent = 1;
-        }
-        else{
+        } else {
             $consultation->is_sent = 0;
         }
 
 
-        if($request->input('action') == 'duplicate') {
+        if ($request->input('action') == 'duplicate') {
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
             $consultation->save();
 
@@ -100,8 +99,7 @@ class ConsultationController extends Controller
                 ->with('consultation_id', $consultation_id)
                 ->with('notice', $success_message)
                 ->with('is_old_bup', $request->input('old'));
-        }
-        else {
+        } else {
             $success_message = 'Nauja konsultacija sėkmingai sukurta!';
 
         }
@@ -119,8 +117,8 @@ class ConsultationController extends Controller
     public function edit($id) {
         $users = User::where('role', 2)->get();
         $formatted_users = [];
-        foreach ($users as $user){
-            $formatted_users[$user->id] =  $user->name;
+        foreach ($users as $user) {
+            $formatted_users[$user->id] = $user->name;
         }
 
         $consultation = Consultation::find($id);
@@ -147,10 +145,9 @@ class ConsultationController extends Controller
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
 
         $consultation_start = explode(":", $data['consultation_start']);
-        if(!is_null($data['break_start']) && !is_null($data['break_end'])){
+        if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
             $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
-        }
-        else{
+        } else {
             $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
         }
 
@@ -181,9 +178,11 @@ class ConsultationController extends Controller
 
         //Gaunami laukai, kurie pasikeite
         $changes = array_keys($consultation->getDirty());
-
-        if (empty($changes)){
-            return redirect('/konsultacijos')->with('notice', 'Konsultacija neišsiųsta, nes niekas nebuvo pakeista.');
+        if (empty($changes) && $consultation->consultation_meta->where('type', 'draft_changes')->first() == null) {
+            return redirect('/konsultacijos')->with('notice', 'Konsultacija neišsiųsta/neatnaujinta, nes niekas nebuvo pakeista.');
+        } elseif (empty($changes) && $consultation->consultation_meta->where('type', 'draft_changes')->first() != null) {
+            $values = $consultation->consultation_meta->where('type', 'draft_changes')->first()->value;
+            $changes = explode(', ', $values);
         }
 
         $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
@@ -191,9 +190,26 @@ class ConsultationController extends Controller
         //Tikrinama ar konsultacija jau praejus
         $now = Carbon::now('Europe/Vilnius');
         $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
-        if ($con_date->greaterThan($now)){
+        if ($con_date->greaterThan($now) && $consultation->is_sent == 1 && $request->input('action') == 'update') {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
-            Mail::to($emails_arr)->send(new ConsultationMail($new_data, $changes));
+
+            //Sutvarkoma struktura pries pateikiant rasymui i Excel
+            $main_theme = Theme::find($data['theme'])->main_theme;
+            $tarpine_arr = [];
+            array_push($tarpine_arr, $new_data);
+            $data_arr[$main_theme] = $tarpine_arr;
+
+            Mail::to($emails_arr)->send(new ConsultationMail($data_arr, $changes));
+            $consultation->email_sent_at = Carbon::now();
+
+        } elseif ($request->input('action') == 'draft') {
+            $this->create_meta($id, 'draft_changes', $changes);
+            $consultation->save();
+            return redirect('/konsultacijos')->with('success', 'Konsultacijos juodraštis sėkmingai išsaugotas!');
+        }
+
+        if ($request->input('action') == 'update') {
+            $this->destroy_meta($consultation->consultation_meta->first()->id);
         }
 
         $consultation->save();
@@ -204,6 +220,7 @@ class ConsultationController extends Controller
 
     public function destroy($id) {
         $consultation = Consultation::find($id);
+        $con_main_theme = $consultation->theme->main_theme;
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
         $data = [
@@ -221,9 +238,9 @@ class ConsultationController extends Controller
         //Tikrinama ar konsultacija jau praejus
         $now = Carbon::now('Europe/Vilnius');
         $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
-        if ($con_date->greaterThan($now)){
+        if ($con_date->greaterThan($now) && $consultation->is_sent == 1) {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
-            Mail::to($emails_arr)->send(new ConsultationDeleteMail($data));
+            Mail::to($emails_arr)->send(new ConsultationDeleteMail($data, $con_main_theme));
         }
 
         $consultation->delete();
@@ -231,9 +248,44 @@ class ConsultationController extends Controller
         return redirect('/konsultacijos')->with('success', 'Konsultacija ištrinta.');
     }
 
-    public function review(){
+    public function review() {
         $not_sent = Consultation::where('is_sent', 0)->paginate(50);
         return view('exports.new_edited_consultation_review')->with('consultations', $not_sent);
+    }
+
+    public function create_meta($id, $type, $value) {
+        //Tikrinama ar meta irasas jau egzistuoja
+        $consultation_meta = Consultation_meta::where('consultation_id', $id)->where('type', $type)->first();
+        if ($consultation_meta == null) {
+            //Kuriama naujas meta irasas
+            $consultation_meta = new Consultation_meta;
+            $consultation_meta->consultation_id = $id;
+            $consultation_meta->type = $type;
+            $consultation_meta->value = implode(', ', $value);
+        } else {
+            $old_values = $consultation_meta->value;
+            $old_values_arr = explode(', ', $old_values);
+            $combined_values = array_merge($old_values_arr, $value);
+            $consultation_meta->value = implode(', ', $combined_values);
+        }
+        $consultation_meta->save();
+    }
+
+    public function destroy_meta($id) {
+        $consultation_meta = Consultation_meta::find($id);
+        $consultation_meta->delete();
+    }
+
+    public static function color_index_table($id, $column) {
+        $consultation_meta = Consultation_meta::where('consultation_id', $id)
+            ->where('type', 'draft_changes')
+            ->where('value', 'like', '%' . $column . '%')->first();
+        if($consultation_meta != null){
+            return 'background-color: #ffff005e';
+        }
+        else{
+            return '';
+        }
     }
 
 }

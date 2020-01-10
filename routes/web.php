@@ -50,9 +50,12 @@ Route::get('/paid/{id}', 'ConsultationController@paid');
 Route::get('/apmokejimai', 'PaymentController@index');
 Route::put('/apmokejimai/update', 'PaymentController@update');
 
-//Konsultantai
+//Konsultantai ir kiti vartotojai
 Route::get('/vartotojai', 'UserController@index');
 Route::get('/create-user', 'UserController@create');
+Route::get('/vartotojai/{id}/edit', 'UserController@edit');
+Route::put('/vartotojai/{id}/', 'UserController@update');
+//Route::match(['put', 'patch'],'/vartotojai/{id}/', 'UserController@update');
 
 //Nauju ir redaguotu konsultaciju siuntimo logika
 Route::get('/review', 'ConsultationController@review');
@@ -60,5 +63,3 @@ Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
 
 Route::get('/settings', 'SettingsController@index');
 Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@email');
-
-

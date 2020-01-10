@@ -28,6 +28,10 @@
                 {{Form::textarea('email_text_edited_con', \App\Option::where('name', 'email_text_edited_con')->value('value'), ['class' => 'form-control'])}}
             </div>
             <div class="col-md-6 aw-options">
+                {{Form::label('email_text_delete_con', 'Ištrintos konsultacijos el. laiško tekstas')}}
+                {{Form::textarea('email_text_delete_con', \App\Option::where('name', 'email_text_delete_con')->value('value'), ['class' => 'form-control'])}}
+            </div>
+            <div class="col-md-6 aw-options">
                 {{Form::label('email_text_month_con', 'Mėnesio ataskaitos el. laiško tekstas')}}
                 {{Form::textarea('email_text_month_con', \App\Option::where('name', 'email_text_month_con')->value('value'), ['class' => 'form-control'])}}
             </div>

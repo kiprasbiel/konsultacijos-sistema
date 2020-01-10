@@ -12,9 +12,13 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 class ConsultationDeleteExport implements WithHeadings, FromArray, WithEvents, ShouldAutoSize
 {
     protected $data;
-    public function __construct($data)
+    public function __construct($data, $main_theme)
     {
         $this->data = $data;
+        $this->main_theme = $main_theme;
+        if ($main_theme == 'VKT'){
+            $this->main_theme = 'Verslo';
+        }
     }
 
     public function array(): array {
@@ -54,7 +58,7 @@ class ConsultationDeleteExport implements WithHeadings, FromArray, WithEvents, S
             ],
             [
                 ' ',
-                'Eksporto konsultacijos',
+                $this->main_theme . ' konsultacijos',
             ],
             ["Eil.\nNr.",
                 "Paslaugos gavėjas\n(Pavadinimas/ Vardas pavardė)",

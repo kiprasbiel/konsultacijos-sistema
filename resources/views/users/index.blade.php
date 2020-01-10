@@ -25,6 +25,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 <th scope="col">Prisijungimo vardas</th>
                 <th scope="col">Reg. data</th>
                 <th scope="col">Rolė</th>
+                <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -40,6 +41,20 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                         @elseif ($user->role == 2)
                             Konsultantas
                         @endif
+                    </td>
+                    <td>
+                        <div class="d-inline-flex">
+                            <a href="/vartotojai/{{$user->id}}/edit" data-toggle="tooltip"
+                               data-placement="top" title="Redaguoti vartotoją">
+                                <span class="icons">
+                                    <i class="far fa-edit"></i>
+                                </span>
+                            </a>
+{{--                            {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}--}}
+{{--                            {{Form::hidden('_method', 'DELETE')}}--}}
+{{--                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją', 'onclick' => "return confirm('Ar tikrai norite ištrinti konsultaciją?')"])}}--}}
+{{--                            {{Form::close()}}--}}
+                        </div>
                     </td>
                 </tr>
             @endforeach

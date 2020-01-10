@@ -1,3 +1,6 @@
+<?php
+    use \App\Http\Controllers\ConsultationController;
+?>
 @extends('layouts.app')
 
 @section('head-content')
@@ -15,7 +18,7 @@
         <div class="col-md-6">
             <a href="/konsultacijos/create" class="btn btn-primary float-right mx-1">Kurti naują konsultaciją</a>
             <a href="/review" class="btn btn-success float-right mx-1">Generuoti ir išsiųsti <span
-                        class="badge badge-light">{{$unsent}}</span></a>
+                    class="badge badge-light">{{$unsent}}</span></a>
         </div>
     </div>
 
@@ -44,12 +47,12 @@
                 <tr>
                     <th scope="row">{{$consultation->id}}</th>
                     <td>{{$consultation->client->name}}</td>
-                    <td>{{$consultation->contacts}}</td>
+                    <td style="{{ConsultationController::color_index_table($consultation->id, 'contacts')}}">{{$consultation->contacts}}</td>
                     <td>{{$consultation->theme->name}}</td>
-                    <td>{{$consultation->address}}</td>
-                    <td>{{$consultation->consultation_date}}</td>
-                    <td>{{$consultation->consultation_length}}</td>
-                    <td>{{$consultation->method}}</td>
+                    <td style="{{ConsultationController::color_index_table($consultation->id, 'address')}}">{{$consultation->address}}</td>
+                    <td style="{{ConsultationController::color_index_table($consultation->id, 'consultation_date')}}">{{$consultation->consultation_date}}</td>
+                    <td style="{{ConsultationController::color_index_table($consultation->id, 'consultation_length')}}">{{$consultation->consultation_length}}</td>
+                    <td style="{{ConsultationController::color_index_table($consultation->id, 'method')}}">{{$consultation->method}}</td>
                     <td>
                         @if ($consultation->is_paid==1)
                             <span class="icons"><i class="far fa-money-bill-alt paid"></i></span>
@@ -63,6 +66,10 @@
                         @else
                             Ne
                         @endif
+
+                        @if($consultation->consultation_meta->where('type', 'draft_changes')->first())
+                            <br><strong>Redaguota</strong>
+                        @endif
                     </td>
                     <td>
                         <div class="d-inline-flex">
@@ -74,7 +81,7 @@
                             </a>
                             {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
                             {{Form::hidden('_method', 'DELETE')}}
-                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją'])}}
+                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją', 'onclick' => "return confirm('Ar tikrai norite ištrinti konsultaciją?')"])}}
                             {{Form::close()}}
                         </div>
                     </td>
@@ -92,8 +99,8 @@
 
 @section('foot-content')
     <script type="javascript">
-    jQuery(document).ready( function ($) {
-        $('#myTable').DataTable();
-    } );
+        jQuery(document).ready(function ($) {
+            $('#myTable').DataTable();
+        });
     </script>
 @endsection

@@ -98,7 +98,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
     {{Form::hidden('_method', 'PUT')}}
     <div class="row">
         <div class="col-md">
-            {{Form::submit('Atnaujinti', ['class'=> 'btn btn-primary float-right', 'onclick' => "return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')"])}}
+            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="update" onclick="return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')">Atnaujinti ir paskelbti</button>
+            <button class="btn btn-secondary float-right mx-1 aw-a-button" type="submit" name="action" value="draft">Išsaugoti kaip juodraštį</button>
         </div>
     </div>
 
