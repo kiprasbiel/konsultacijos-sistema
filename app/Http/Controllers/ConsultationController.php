@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\consultation_meta;
+use App\Consultation_meta;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
 use App\Option;
