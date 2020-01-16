@@ -13,6 +13,7 @@
         "barryvdh/laravel-cors": "^0.11.4",
         "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
+        "kyslik/column-sortable": "^6.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.0",

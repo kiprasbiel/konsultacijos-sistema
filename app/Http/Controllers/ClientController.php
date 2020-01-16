@@ -23,7 +23,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $clients =  Client::orderBy('created_at', 'desc')->paginate(50);
+        $clients =  Client::sortable(['id' => 'desc'])->paginate(50);
         return view('clients.index')->with('clients', $clients);
     }
 
@@ -153,7 +153,7 @@ class ClientController extends Controller
         else{
             $client->vkt = null;
         }
-        
+
         if (in_array('EXPO', $request->input('con_type'))) {
             if ($how_old < 3) {
                 $client->expo = 'IKI3';

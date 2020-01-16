@@ -22,15 +22,15 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Pavadinimas</th>
-                <th scope="col">Įm. kodas</th>
-                <th scope="col">Reg. data</th>
+                <th scope="col">@sortablelink('id', '#')</th>
+                <th scope="col">@sortablelink('name', 'Pavadinimas')</th>
+                <th scope="col">@sortablelink('code', 'Įm. kodas')</th>
+                <th scope="col">@sortablelink('company_reg_date', 'Reg. data')</th>
                 <th scope="col">Reg. apskritis</th>
                 <th scope="col">Konsultacijų tipas</th>
-                <th scope="col">Konsultantas</th>
+                <th scope="col">@sortablelink('user.name', 'Konsultantas')</th>
                 <th scope="col">Kontaktai</th>
-                <th scope="col"></th>
+            <th scope="col"></th>
             </tr>
             </thead>
             <tbody>
@@ -72,7 +72,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             @endforeach
             </tbody>
         </table>
-        {{$clients->links()}}
+        {!! $clients->appends(\Request::except('page'))->render() !!}
     @else
         <p>Klientų nerasta</p>
     @endif

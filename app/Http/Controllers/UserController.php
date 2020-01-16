@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public function index(){
-        $users =  User::orderBy('created_at', 'desc')->paginate(50);
+        $users =  User::sortable(['id' => 'desc'])->paginate(50);
         return view('users.index')->with('users', $users);
     }
 

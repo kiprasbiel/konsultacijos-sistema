@@ -20,11 +20,11 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Vardas</th>
-                <th scope="col">Prisijungimo vardas</th>
-                <th scope="col">Reg. data</th>
-                <th scope="col">Rolė</th>
+                <th scope="col">@sortablelink('id', '#')</th>
+                <th scope="col">@sortablelink('name', 'Vardas')</th>
+                <th scope="col">@sortablelink('username', 'Prisijungimo vardas')</th>
+                <th scope="col">@sortablelink('created_at', 'Reg. data')</th>
+                <th scope="col">@sortablelink('role', 'Rolė')</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -50,17 +50,13 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                                     <i class="far fa-edit"></i>
                                 </span>
                             </a>
-{{--                            {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}--}}
-{{--                            {{Form::hidden('_method', 'DELETE')}}--}}
-{{--                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją', 'onclick' => "return confirm('Ar tikrai norite ištrinti konsultaciją?')"])}}--}}
-{{--                            {{Form::close()}}--}}
                         </div>
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        {{$users->links()}}
+        {!! $users->appends(\Request::except('page'))->render() !!}
     @else
         <p>Vartotojų nerasta</p>
     @endif

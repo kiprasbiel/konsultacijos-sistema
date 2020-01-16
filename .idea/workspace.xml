@@ -2,9 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/database/seeds/ThemesTableSeeder.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/symfony2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/columnsortable.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/konsultacijos.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/konsultacijos.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/seeds/DatabaseSeeder.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Client.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Client.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Consultation.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Consultation.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ConsultationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/clients/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/clients/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/consultations/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/users/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/users/index.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +44,30 @@
     <option name="HIDDEN_KINDS">
       <set />
     </option>
-    <expand />
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MySQL - konsultacijos@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MySQL - konsultacijos@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MySQL - konsultacijos@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="konsultacijos: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="MySQL - konsultacijos@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="konsultacijos: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+        <item name="consultations: table" type="dbc44a63:MariaImplModel$Table" />
+      </path>
+    </expand>
     <select />
   </component>
   <component name="FavoritesManager">
@@ -70,7 +109,6 @@
       <path value="$PROJECT_DIR$/vendor/symfony/process" />
       <path value="$PROJECT_DIR$/vendor/symfony/mime" />
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
-      <path value="$PROJECT_DIR$/vendor/erusev/parsedown" />
       <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
       <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
       <path value="$PROJECT_DIR$/vendor/symfony/var-dumper" />
@@ -143,6 +181,10 @@
       <path value="$PROJECT_DIR$/vendor/markbaker/complex" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-cors" />
       <path value="$PROJECT_DIR$/vendor/asm89/stack-cors" />
+      <path value="$PROJECT_DIR$/vendor/kyslik/column-sortable" />
+      <path value="$PROJECT_DIR$/vendor/league/commonmark-ext-table" />
+      <path value="$PROJECT_DIR$/vendor/league/commonmark" />
+      <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
     </include_path>
   </component>
   <component name="ProjectId" id="1UqyCsPW50U2TBvQmK3peuXC82o" />
@@ -156,10 +198,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/emails/consultations" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../adeoweb" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -169,7 +212,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="sshConsole" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -209,7 +252,12 @@
       <list>
         <serviceView>
           <treeState>
-            <expand />
+            <expand>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="root:MySQL - konsultacijos@localhost" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              </path>
+            </expand>
             <select />
           </treeState>
         </serviceView>
@@ -314,7 +362,17 @@
       <workItem from="1578481122079" duration="18415000" />
       <workItem from="1578566797883" duration="7913000" />
       <workItem from="1578585431637" duration="11514000" />
-      <workItem from="1578647934489" duration="15360000" />
+      <workItem from="1578647934489" duration="16058000" />
+      <workItem from="1578911618969" duration="197000" />
+      <workItem from="1578912248162" duration="15000" />
+      <workItem from="1578913367632" duration="9733000" />
+      <workItem from="1578940699026" duration="5826000" />
+      <workItem from="1578993407273" duration="9073000" />
+      <workItem from="1579079658721" duration="5304000" />
+      <workItem from="1579112792146" duration="687000" />
+      <workItem from="1579164591377" duration="614000" />
+      <workItem from="1579171428370" duration="2696000" />
+      <workItem from="1579175767986" duration="7868000" />
     </task>
     <task id="LOCAL-00001" summary="Perziurai paruosta svetaine. Visi ecel yra atsiunciami i pc">
       <created>1574016038277</created>
@@ -487,7 +545,13 @@
       <option name="presentableId" value="LOCAL−00026" />
       <updated>1578659374748</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL−00027" summary="Themes Seederis. Uztikrina teisinga temu ikelima i serveri.">
+      <created>1578668945451</created>
+      <option name="number" value="LOCAL−00027" />
+      <option name="presentableId" value="LOCAL−00027" />
+      <updated>1578668945451</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TodoView">
@@ -555,9 +619,14 @@
     <MESSAGE value="Prideta galimybe redaguoti vartotoju informacija. Prideti konsultacijus juodrasciai. Atvaizduojami pakeitimai konsultaciju sarase. Sukurtos naujos DB talpinti radaguota informacija." />
     <MESSAGE value="BUG FIX. consultation index teisingai importuojama klase atsakinga uz redaguotu laukeliu spalvinima." />
     <MESSAGE value="BUG FIX. ConsultationController.php consultation_meta klases teisingas importavimas" />
-    <option name="LAST_COMMIT_MESSAGE" value="BUG FIX. ConsultationController.php consultation_meta klases teisingas importavimas" />
+    <MESSAGE value="Themes Seederis. Uztikrina teisinga temu ikelima i serveri." />
+    <option name="LAST_COMMIT_MESSAGE" value="Themes Seederis. Uztikrina teisinga temu ikelima i serveri." />
   </component>
   <component name="WindowStateProjectService">
+    <state x="361" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1579175829939">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="361" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579175829939" />
     <state x="499" y="167" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1578487341584">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -566,18 +635,27 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="338" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576662738885" />
-    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2" timestamp="1578659374104">
+    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2" timestamp="1579182754302">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578659374104" />
+    <state x="0" y="5" width="1232" height="814" key="CommitChangelistDialog2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579182754302" />
+    <state x="545" y="325" key="ComposerInitDialogKey" timestamp="1579180325417">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="545" y="325" key="ComposerInitDialogKey/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579180325417" />
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog" timestamp="1578488302079">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578488302079" />
-    <state x="548" y="166" key="FileChooserDialogImpl" timestamp="1576585044482">
+    <state x="2605" y="210" key="FileChooserDialogImpl" timestamp="1579164603795">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="548" y="166" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578993493333" />
+    <state x="2605" y="210" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1579164603795" />
+    <state width="189" height="457" key="HiddenNamespacesPopup" timestamp="1579175853266">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="548" y="166" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576585044482" />
+    <state width="189" height="457" key="HiddenNamespacesPopup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579175853266" />
     <state x="531" y="226" key="NewPhpClassDialog" timestamp="1578488072960">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -586,46 +664,51 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="595" y="134" key="RollbackChangesDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1576773344633" />
-    <state x="277" y="54" key="SettingsEditor" timestamp="1578663691038">
+    <state x="277" y="54" key="SettingsEditor" timestamp="1579175758303">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="54" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578663691038" />
+    <state x="277" y="54" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579175758303" />
     <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1577968875043" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1578659379109">
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1578668948430">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578659379109" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578668948430" />
     <state x="2268" y="176" width="1350" height="638" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog" timestamp="1578488302079">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
     <state x="2268" y="176" width="1350" height="638" key="com.intellij.history.integration.ui.views.DirectoryHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578488302079" />
-    <state x="1789" y="-9" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1578668681502">
+    <state x="1789" y="-9" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1579177465510">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="1789" y="-9" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578668681502" />
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1578647953061">
+    <state x="1789" y="-9" width="1350" height="638" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579177465510" />
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1579175768139">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578647953061" />
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579175768139" />
+    <state x="2495" y="298" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1579171431238" />
     <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1578566800072" />
-    <state x="1920" y="0" width="1022" height="812" maximized="true" key="dock-window-1" timestamp="1578653471860">
+    <state x="2005" y="-10" width="1069" height="812" maximized="true" key="dock-window-1" timestamp="1579182767439">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="1920" y="0" width="1022" height="812" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578653471860" />
+    <state x="2005" y="-10" width="1069" height="812" maximized="true" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579182767439" />
     <state x="2343" y="-19" width="1106" height="812" key="dock-window-1/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1576759699323" />
-    <state x="185" y="0" width="843" height="644" key="dock-window-2" timestamp="1578393220026">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state x="1938" y="-15" width="1069" height="721" maximized="true" key="dock-window-2" timestamp="1579183271651">
+      <screen x="1920" y="0" width="1920" height="1040" />
     </state>
-    <state x="2151" y="0" width="1053" height="812" key="dock-window-2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578328584245" />
+    <state x="1938" y="-15" width="1069" height="721" maximized="true" key="dock-window-2/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579183271651" />
     <state x="185" y="0" width="843" height="644" key="dock-window-2/0.0.1536.824@0.0.1536.824" timestamp="1578393220026" />
+    <state x="2165" y="-21" width="1069" height="721" maximized="true" key="dock-window-3" timestamp="1579183593252">
+      <screen x="1920" y="0" width="1920" height="1040" />
+    </state>
+    <state x="2165" y="-21" width="1069" height="721" maximized="true" key="dock-window-3/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579183593252" />
     <state x="121" y="28" width="908" height="789" key="find.popup" timestamp="1578497434344">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="121" y="28" width="908" height="789" key="find.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578497434344" />
-    <state x="425" y="187" key="run.anything.popup" timestamp="1578657986072">
+    <state x="425" y="187" key="run.anything.popup" timestamp="1579183097959">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1578657986072" />
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579183097959" />
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1578588000825">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

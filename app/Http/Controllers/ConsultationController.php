@@ -24,10 +24,10 @@ class ConsultationController extends Controller
 
     }
 
-    public function index() {
+    public function index(Consultation $consultation) {
         $created_by = auth()->user()->id;
         $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
-        $consultations = Consultation::where('created_by', $created_by)->orderBy('id', 'desc')->paginate(50);
+        $consultations = Consultation::where('created_by', $created_by)->sortable(['id' => 'desc'])->paginate(50);
         return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
     }
 
@@ -280,10 +280,9 @@ class ConsultationController extends Controller
         $consultation_meta = Consultation_meta::where('consultation_id', $id)
             ->where('type', 'draft_changes')
             ->where('value', 'like', '%' . $column . '%')->first();
-        if($consultation_meta != null){
+        if ($consultation_meta != null) {
             return 'background-color: #ffff005e';
-        }
-        else{
+        } else {
             return '';
         }
     }

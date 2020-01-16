@@ -1,9 +1,6 @@
 @extends('layouts.app')
 
 @section('head-content')
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>
-
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
 @endsection
 
 @section('content')
@@ -26,16 +23,16 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Įmonės pavadinimas</th>
+                <th scope="col">@sortablelink('id', '#')</th>
+                <th scope="col">@sortablelink('client.name', 'Įmonės pavadinimas')</th>
                 <th scope="col">Kontaktai</th>
-                <th scope="col">Tema</th>
+                <th scope="col">@sortablelink('theme.name', 'Tema')</th>
                 <th scope="col">Adresas</th>
-                <th scope="col">Konsultacijos data</th>
-                <th scope="col">Konsultacijos trukmė</th>
+                <th scope="col">@sortablelink('consultation_date', 'Konsultacijos data')</th>
+                <th scope="col">@sortablelink('consultation_length', 'Konsultacijos trukmė')</th>
                 <th scope="col">Metodas</th>
-                <th scope="col">Apmokėta?</th>
-                <th scope="col">Išsiųsta?</th>
+                <th scope="col">@sortablelink('is_paid', 'Apmokėta?')</th>
+                <th scope="col">@sortablelink('is_sent', 'Išsiųsta?')</th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -86,7 +83,7 @@
             @endforeach
             </tbody>
         </table>
-        {{$consultations->links()}}
+        {!! $consultations->appends(\Request::except('page'))->render() !!}
     @else
         <p>Konsultacijų nerasta</p>
     @endif
@@ -95,9 +92,4 @@
 @endsection
 
 @section('foot-content')
-    <script type="javascript">
-        jQuery(document).ready(function ($) {
-            $('#myTable').DataTable();
-        });
-    </script>
 @endsection
