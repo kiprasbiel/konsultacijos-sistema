@@ -24,7 +24,7 @@ class ConsultationController extends Controller
 
     }
 
-    public function index(Consultation $consultation) {
+    public function index() {
         $created_by = auth()->user()->id;
         $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
         $consultations = Consultation::where('created_by', $created_by)->sortable(['id' => 'desc'])->paginate(50);

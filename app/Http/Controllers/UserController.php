@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+
+    }
     public function index(){
         $users =  User::sortable(['id' => 'desc'])->paginate(50);
         return view('users.index')->with('users', $users);
