@@ -18,7 +18,8 @@ Route::get('/', 'HomeController@index')->name('home');
 
 Route::resource('konsultacijos', 'ConsultationController');
 
-Route::resource('klientai', 'ClientController');
+Route::resource('klientai', 'ClientController', ['except' => ['index']]);
+Route::match(['post', 'get'],'/klientai', 'ClientController@index');
 
 //Ajax paieska
 Route::post('/search','SearchController@search')->name('search');
