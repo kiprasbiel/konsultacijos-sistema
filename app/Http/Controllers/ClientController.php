@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomClasses\SearchTableColumns;
+use App\CustomClasses\TableSort;
+use App\Option;
 use App\Rules\ValidateCompanyCode;
 use Illuminate\Http\Request;
 use App\Client;
@@ -9,9 +12,12 @@ use App\Client;
 class ClientController extends Controller
 {
 
+    private $pagination_int;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->pagination_int = Option::where('name', 'pagination_per_page')->value('value');
 
     }
 
@@ -21,10 +27,32 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients =  Client::sortable(['id' => 'desc'])->paginate(50);
-        return view('clients.index')->with('clients', $clients);
+        //Default sorting
+        $column = 'id';
+        $column_sort = 'desc';
+
+        //Checking if there is additional sorting passed
+        if ($request->column !== null && $request->sort !== null) {
+            $sorting = new TableSort;
+            $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
+            $pagination_sort = $request->input('sort');
+            $column =  $request->input('column');
+            $column_sort = $sorting->sort_toggle($request->input('sort'));
+        }
+        else{
+            $clients =  Client::orderBy($column, $column_sort)->paginate($this->pagination_int);
+            return view('clients.index')
+                ->with('clients', $clients)
+                ->with('column_sort', $column_sort);
+        }
+
+        return view('clients.index')
+            ->with('clients', $clients)
+            ->with('column_sort', $column_sort)
+            ->with('pagination_sort', $pagination_sort)
+            ->with('pagination_column', $column);
     }
 
     /**
@@ -197,5 +225,17 @@ class ClientController extends Controller
         $client->delete();
 
         return redirect('/klientai')->with('success', 'Klientas sėkmingai ištrintas!');
+    }
+
+    public function display_table_search_results(Request $request){
+        $searchTableColumns = new SearchTableColumns();
+        $clients = $searchTableColumns->tableSearchColumn($request->model, $request->column, $request->search);
+
+        return view('clients.index')
+            ->with('clients', $clients)
+            ->with('column_sort', 'desc')
+            ->with('table_search_model', $request->model)
+            ->with('table_search_column', $request->column)
+            ->with('table_search', $request->search);
     }
 }

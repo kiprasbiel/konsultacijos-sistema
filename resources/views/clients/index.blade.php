@@ -15,23 +15,46 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
     </div>
 
-    {{--    Paieska--}}
-    @include('inc.search', ['controller' => 'client_search'])
-
     @if(count($clients)>0)
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">@sortablelink('id', '#')</th>
-                <th scope="col">@sortablelink('name', 'Pavadinimas')</th>
-                <th scope="col">@sortablelink('code', 'Įm. kodas')</th>
-                <th scope="col">@sortablelink('company_reg_date', 'Reg. data')</th>
+                <th scope="col">@sortingLink(['column' => 'id', 'column_name' => '#', 'sort' => $column_sort])
+                    @endsortingLink
+                </th>
+                <th scope="col">@sortingLink(['column' => 'name', 'column_name' => 'Pavadinimas', 'sort' =>
+                    $column_sort]) @endsortingLink
+                </th>
+                <th scope="col">Įm. kodas</th>
+                <th scope="col">@sortingLink(['column' => 'company_reg_date', 'column_name' => 'Reg. data', 'sort' =>
+                    $column_sort]) @endsortingLink
+                </th>
                 <th scope="col">Reg. apskritis</th>
                 <th scope="col">Konsultacijų tipas</th>
-                <th scope="col">@sortablelink('user.name', 'Konsultantas')</th>
+                <th scope="col">@sortingLink(['column' => 'user.name', 'column_name' => 'Sukūrė', 'sort' =>
+                    $column_sort]) @endsortingLink
+                </th>
                 <th scope="col">Kontaktai</th>
-            <th scope="col"></th>
+                <th scope="col">
+                    <a class="btn" data-toggle="collapse" href="#searchArea" role="button" aria-expanded="false"
+                       aria-controls="searchArea">
+                        <i class="fas fa-search aw-search-plus" data-toggle="tooltip" data-placement="right" title="Išplėsti paieškos lauką"></i>
+                    </a>
+                </th>
             </tr>
+
+            <tr class="search-area collapse @if(isset($table_search_model) && isset($table_search_column) && isset($table_search)) show @endif" id="searchArea">
+                <th class="align-middle"><a href="/klientai"><i class="fas fa-times aw-reload-page"></i></a></th>
+                <th scope="col">@include('inc.search', ['model' => 'Client', 'column' => 'name'])</th>
+                <th scope="col">@include('inc.search', ['model' => 'Client', 'column' => 'code'])</th>
+                <th scope="col">@include('inc.search', ['model' => 'Client', 'column' => 'company_reg_date'])</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">@include('inc.search', ['model' => 'Client', 'column' => 'user.name'])</th>
+                <th scope="col">@include('inc.search', ['model' => 'Client', 'column' => 'contacts'])</th>
+                <th class="align-middle text-center"><i class="far fa-question-circle aw-question-circle" data-toggle="tooltip" data-placement="right" title="Įveskite į vieną iš laukelių paieškos raktažodį ir spauskite ENTER"></i></th>
+            </tr>
+
             </thead>
             <tbody>
             @foreach($clients as $client)
@@ -72,7 +95,13 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             @endforeach
             </tbody>
         </table>
-        {!! $clients->appends(\Request::except('page'))->render() !!}
+        @if(isset($pagination_column) && isset($pagination_sort))
+            {{ $clients->appends(['column' => $pagination_column, 'sort'=>$pagination_sort])->links() }}
+        @elseif(isset($table_search_model) && isset($table_search_column) && isset($table_search))
+            {{ $clients->appends(['model' => $table_search_model, 'column'=>$table_search_column, 'search' => $table_search])->links() }}
+        @else
+            {{$clients->links()}}
+        @endif
     @else
         <p>Klientų nerasta</p>
     @endif

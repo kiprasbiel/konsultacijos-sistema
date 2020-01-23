@@ -101,7 +101,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}
-                        {{Form::select('method', ['Skype' => 'Skype', 'Telefonu' => 'Telefonu', 'Susitikimas' => 'Susitikimas'], $consultation->method, ['class' => 'form-control'])}}
+                        {{Form::select('method', ['Telefonu' => 'Telefonu', 'Skype' => 'Skype', 'Susitikimas' => 'Susitikimas'], $consultation->method, ['class' => 'form-control'])}}
                     </div>
                 </div>
             </div>

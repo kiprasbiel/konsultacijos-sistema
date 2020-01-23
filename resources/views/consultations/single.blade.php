@@ -5,17 +5,23 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @extends('layouts.app')
 
 @section('head-content')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <link href="{{ asset('css/select2.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
     <div class="row align-items-center">
-        <div class="col-md-auto">
-            <h1>Redaguoti konsultaciją</h1>
+        <div class="col-md-6">
+            <h1>Konsultacija <strong>#{{$consultation->id}}</strong></h1>
+        </div>
+        <div class="col-md-6">
+            <a class="float-right" href="/konsultacijos/{{$consultation->id}}/edit" data-toggle="tooltip"
+               data-placement="top" title="Redaguoti konsultaciją"><span class="icons"><i class="far fa-edit"></i></span>
+            </a>
+            {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
+            {{Form::hidden('_method', 'DELETE')}}
+            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button float-right', 'data-toggle' => 'tooltip', 'data-placement' => 'top', 'title' => 'Ištrinti konsultaciją', 'onclick' => "return confirm('Ar tikrai norite ištrinti konsultaciją? Jei konsultacija dar nepraėjusi ir išsiųsta - bus išsiųsta atąskaita.')"])}}
+            {{Form::close()}}
         </div>
     </div>
-    {!! Form::open(['action' => ['ConsultationController@update', $consultation->id], 'method' => 'POST']) !!}
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -26,7 +32,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('contacts', 'Kontaktai')}}
-                {{Form::text('contacts', $consultation->contacts, ['class' => 'form-control'])}}
+                {{Form::text('contacts', $consultation->contacts, ['class' => 'form-control', 'readonly'])}}
             </div>
         </div>
         <div class="col-md-4">
@@ -41,37 +47,37 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('reg_county', 'Registracijos sąvivaldybė')}}
-                {{Form::select('reg_county', $county_list, $consultation->county, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę"])}}
+                {{Form::select('reg_county', $county_list, $consultation->county, ['class' => 'select2 form-control', 'placeholder' => "Pasirinkite savivaldybę", 'readonly'])}}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('address', 'Adresas')}}
-                {{Form::text('address', $consultation->address, ['class' => 'form-control'])}}
+                {{Form::text('address', $consultation->address, ['class' => 'form-control', 'readonly'])}}
             </div>
         </div>
         <div class="col-md-4">
             {{Form::label('user_id', 'Konsultantas')}}
-            {{Form::select('user_id', $users, $consultation->user_id, ['class' => 'form-control user_id', 'id' => 'user_id', 'placeholder' => "Pasirinkite konsultantą"])}}
+            {{Form::select('user_id', $users, $consultation->user_id, ['class' => 'form-control user_id', 'id' => 'user_id', 'placeholder' => "Pasirinkite konsultantą", 'readonly'])}}
         </div>
     </div>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('consultation_date', 'Konsultacijos data')}}
-                {{Form::date('consultation_date', $consultation->consultation_date, ['class' => 'form-control'])}}
+                {{Form::date('consultation_date', $consultation->consultation_date, ['class' => 'form-control', 'readonly'])}}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('consultation_start', 'Konsultacijos pradžia')}}
-                {{Form::text('consultation_start', $consultation->consultation_time,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                {{Form::text('consultation_start', $consultation->consultation_time,   ['class' => 'form-control', 'placeholder' => '00:00', 'readonly'])}}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('consultation_length', 'Konsultacijos trukmė')}}
-                {{Form::text('consultation_length', $consultation->consultation_length,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                {{Form::text('consultation_length', $consultation->consultation_length,   ['class' => 'form-control', 'placeholder' => '00:00','readonly'])}}
             </div>
         </div>
     </div>
@@ -80,35 +86,23 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             <div class="row">
                 <div class="col-8 col-sm-5 form-group">
                     {{Form::label('break_start', 'Pertraukos pradžia')}}
-                    {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                    {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00', 'readonly'])}}
                 </div>
                 <div class="col-4 col-sm-5 form-group">
                     {{Form::label('break_end', 'Pertraukos pabaiga')}}
-                    {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
+                    {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00', 'readonly'])}}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('method', 'Metodas')}}
-                {{Form::select('method', ['Telefonu' => 'Telefonu', 'Skype' => 'Skype', 'Susitikimas' => 'Susitikimas'], $consultation->method, ['class' => 'form-control'])}}
+                {{Form::select('method', ['Skype' => 'Skype', 'Telefonu' => 'Telefonu', 'Susitikimas' => 'Susitikimas'], $consultation->method, ['class' => 'form-control', 'readonly'])}}
             </div>
         </div>
     </div>
-    {{Form::hidden('_method', 'PUT')}}
-    <div class="row">
-        <div class="col-md">
-            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="update" onclick="return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')">Atnaujinti ir paskelbti</button>
-            <button class="btn btn-secondary float-right mx-1 aw-a-button" type="submit" name="action" value="draft">Išsaugoti kaip juodraštį</button>
-        </div>
-    </div>
-
-    {!! Form::close() !!}
-
 
 @endsection
 
 @section('foot-content')
-    <script src="{{ asset('js/select2.js') }}" defer></script>
-    <script src="{{ asset('js/formValidation.js') }}" defer></script>
 @endsection

@@ -55,7 +55,7 @@
 .icons, .aw-trash-button {
   font-size: 25px;
 }
-.aw-trash-button{
+.aw-trash-button, .aw-bars-button{
   padding-top: 0 !important;
 }
 .fa-edit {
@@ -66,6 +66,17 @@
 }
 .fa-euro-sign {
   color: #1cb500;
+}
+.aw-search-plus, .aw-bars {
+    font-size: 25px;
+    color: #3490dc;
+}
+.aw-reload-page{
+    font-size: 25px !important;
+    color: #fc0003 !important;
+}
+.aw-question-circle{
+    font-size: 20px !important;
 }
 .aw-a-button {
   color: #fff !important;
@@ -85,3 +96,7 @@
     max-height: 100px !important;
 }
 
+.search-area {
+    background-color: #f1f1f1;
+    transition: 0s !important;
+}

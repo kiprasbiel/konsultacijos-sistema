@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Consultation_meta;
+use App\CustomClasses\SearchTableColumns;
+use App\CustomClasses\TableSort;
 use App\Mail\ConsultationMail;
 use App\Mail\ConsultationDeleteMail;
 use App\Option;
@@ -19,16 +21,41 @@ use Carbon\Carbon;
 class ConsultationController extends Controller
 {
 
+    private $pagination_int;
+
     public function __construct() {
         $this->middleware('auth');
-
+        $this->pagination_int = Option::where('name', 'pagination_per_page')->value('value');
     }
 
-    public function index() {
+    public function index(Request $request) {
+        $column = 'id';
+        $column_sort = 'desc';
+
         $created_by = auth()->user()->id;
         $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
-        $consultations = Consultation::where('created_by', $created_by)->sortable(['id' => 'desc'])->paginate(50);
-        return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
+
+        if ($request->column !== null && $request->sort !== null) {
+            $sorting = new TableSort;
+            $consultations = $sorting->sort_model('Consultation', $request->input('column'), $request->input('sort'), ['created_by' => $created_by]);
+            $pagination_sort = $request->input('sort');
+            $column =  $request->input('column');
+            $column_sort = $sorting->sort_toggle($request->input('sort'));
+        }
+        else{
+            $consultations = Consultation::where('created_by', $created_by)->orderBy('id', 'desc')->paginate($this->pagination_int);
+            return view('consultations.index')
+                ->with('consultations', $consultations)
+                ->with('unsent', $unsent)
+                ->with('column_sort', $column_sort);
+        }
+
+        return view('consultations.index')
+            ->with('consultations', $consultations)
+            ->with('unsent', $unsent)
+            ->with('column_sort', $column_sort)
+            ->with('pagination_sort', $pagination_sort)
+            ->with('pagination_column', $column);
     }
 
 
@@ -110,7 +137,14 @@ class ConsultationController extends Controller
 
 
     public function show($id) {
-        //
+        $users = User::where('role', 2)->get();
+        $formatted_users = [];
+        foreach ($users as $user) {
+            $formatted_users[$user->id] = $user->name;
+        }
+
+        $consultation = Consultation::find($id);
+        return view('consultations.single')->with('consultation', $consultation)->with('users', $formatted_users);
     }
 
 
@@ -188,9 +222,7 @@ class ConsultationController extends Controller
         $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
 
         //Tikrinama ar konsultacija jau praejus
-        $now = Carbon::now('Europe/Vilnius');
-        $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
-        if ($con_date->greaterThan($now) && $consultation->is_sent == 1 && $request->input('action') == 'update') {
+        if ($consultation->is_con_over() == false && $consultation->is_sent == 1 && $request->input('action') == 'update') {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
 
             //Sutvarkoma struktura pries pateikiant rasymui i Excel
@@ -209,9 +241,10 @@ class ConsultationController extends Controller
         }
 
         if ($request->input('action') == 'update') {
-            $this->destroy_meta($consultation->consultation_meta->first()->id);
+            if ($consultation->consultation_meta->first() !== null){
+                $this->destroy_meta($consultation->consultation_meta->first()->id);
+            }
         }
-
         $consultation->save();
 
         return redirect('/konsultacijos')->with('success', 'Konsultacija sėkmingai atnaujinta!');
@@ -227,7 +260,7 @@ class ConsultationController extends Controller
             'nr' => 1,
             'company_id' => $consultation->client->name,
             'contacts' => $consultation->contacts,
-            'theme' => $consultation->theme->name,
+            'theme' => $consultation->theme->name  . "\n(" . $consultation->user->name . ")",
             'address' => $consultation->address . "\n" . $county_list[$consultation->county],
             'consultation_date' => str_replace("-", ".", $consultation->consultation_date),
             'consultation_start' => " ", //siunciam tuscia, kad konsultacija neivyks
@@ -236,9 +269,7 @@ class ConsultationController extends Controller
         ];
 
         //Tikrinama ar konsultacija jau praejus
-        $now = Carbon::now('Europe/Vilnius');
-        $con_date = Carbon::createFromFormat('Y-m-d H:i:s', $consultation->consultation_date . ' ' . $consultation->consultation_time);
-        if ($con_date->greaterThan($now) && $consultation->is_sent == 1) {
+        if ($consultation->is_con_over() == false && $consultation->is_sent == 1) {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
             Mail::to($emails_arr)->send(new ConsultationDeleteMail($data, $con_main_theme));
         }
@@ -285,6 +316,22 @@ class ConsultationController extends Controller
         } else {
             return '';
         }
+    }
+
+    public function display_table_search_results(Request $request){
+        $searchTableColumns = new SearchTableColumns();
+        $consultations = $searchTableColumns->tableSearchColumn($request->model, $request->column, $request->search);
+
+        $created_by = auth()->user()->id;
+        $unsent = Consultation::where('created_by', $created_by)->where('is_sent', 0)->count();
+
+        return view('consultations.index')
+            ->with('consultations', $consultations)
+            ->with('unsent', $unsent)
+            ->with('column_sort', 'desc')
+            ->with('table_search_model', $request->model)
+            ->with('table_search_column', $request->column)
+            ->with('table_search', $request->search);
     }
 
 }

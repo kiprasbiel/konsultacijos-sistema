@@ -92,22 +92,22 @@ class SearchController extends Controller
     }
 
     //Konsultaciju paieska
-    public function consultation_search(Request $request){
-        $user_id = auth()->user()->id;
-        $unsent = Consultation::where('user_id', $user_id)->where('is_sent', 0)->count();
-
-        $consultations = Consultation::whereHas('client', function ($query) use ($request){
-            $query->where('name', 'like', "%{$request->paieska}%");
-        })->where('user_id', $user_id)->orderBy('id', 'desc')->paginate(50);
-
-        return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
-    }
-
-    //Klientu paieska
-    public function client_search(Request $request){
-        $clients =  Client::orderBy('created_at', 'desc')->where('name', 'like', "%{$request->paieska}%")->paginate(50);
-        return view('clients.index')->with('clients', $clients);
-    }
+//    public function consultation_search(Request $request){
+//        $user_id = auth()->user()->id;
+//        $unsent = Consultation::where('user_id', $user_id)->where('is_sent', 0)->count();
+//
+//        $consultations = Consultation::whereHas('client', function ($query) use ($request){
+//            $query->where('name', 'like', "%{$request->paieska}%");
+//        })->where('user_id', $user_id)->orderBy('id', 'desc')->paginate(50);
+//
+//        return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
+//    }
+//
+//    //Klientu paieska
+//    public function client_search(Request $request){
+//        $clients =  Client::orderBy('created_at', 'desc')->where('name', 'like', "%{$request->paieska}%")->paginate(50);
+//        return view('clients.index')->with('clients', $clients);
+//    }
 
     public function themeListSearch(Request $request){
         $id = $request->company_id;
@@ -124,4 +124,25 @@ class SearchController extends Controller
         }
         return $themes;
     }
+
+//    public function tableSearchColumn(Request $request){
+//        dd($request->input());
+//        $className = 'App\\'.$request->model;
+//
+//        if (strpos($request->column, '.') !== false){
+//            $column_explode = explode('.', $request->column);
+//            $model_realtion = $column_explode[0];
+//            $model_realtion_column = $column_explode[1];
+//
+//            $model_list = $className::whereHas($model_realtion, function ($query) use ($request, $model_realtion_column){
+//                $query->where($model_realtion_column, 'like', "%{$request->paieska}%");
+//            })->orderBy('id', 'desc')->paginate(50);
+//        }
+//        else{
+//            $model_list = $className::where($request->column, $request->paieska)->orderBy('id', 'desc')->paginate(50);
+//        }
+//
+//        return view('consultations.index')->with('consultations', $model_list)->with('unsent', $unsent);
+//
+//    }
 }

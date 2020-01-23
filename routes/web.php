@@ -16,8 +16,6 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 
-//Route::get('/konsultacijos', 'ConsultationController');
-
 Route::resource('konsultacijos', 'ConsultationController');
 
 Route::resource('klientai', 'ClientController');
@@ -28,20 +26,18 @@ Route::post('/themesearch','SearchController@themeSearch');
 Route::post('/theme-list-update','SearchController@themeListSearch');
 
 //Paprasta paieska
-Route::get('/con-search', 'SearchController@consultation_search');
-Route::get('/cl-search', 'SearchController@client_search');
+Route::get('/table-search', 'ConsultationController@display_table_search_results');
+Route::get('/table-search-client', 'ClientController@display_table_search_results');
+//Route::get('/con-search', 'SearchController@consultation_search');
+//Route::get('/cl-search', 'SearchController@client_search');
 
 //Excel generavimas
 //Anksciau budavo kreipimasis tiesiai is konsultaciju index view
 Route::post('/store', 'ExcelExportController@store');
 
-//Laisku siuntimas
-//Route::resource('mail', 'MailController');
-
 //Menesio ataskaitos generavimas
 Route::get('/conf-month-gen', 'ExcelExportController@index');
 Route::post('/configure', 'ExcelExportController@configure');
-//Route::get('/generate-month', 'ExcelExportController@month');
 
 //Updatina konsultacija i Paid
 Route::get('/paid/{id}', 'ConsultationController@paid');
@@ -55,11 +51,11 @@ Route::get('/vartotojai', 'UserController@index');
 Route::get('/create-user', 'UserController@create');
 Route::get('/vartotojai/{id}/edit', 'UserController@edit');
 Route::put('/vartotojai/{id}/', 'UserController@update');
-//Route::match(['put', 'patch'],'/vartotojai/{id}/', 'UserController@update');
+Route::delete('/vartotojai/{id}/', 'UserController@destroy');
 
 //Nauju ir redaguotu konsultaciju siuntimo logika
 Route::get('/review', 'ConsultationController@review');
 Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
 
 Route::get('/settings', 'SettingsController@index');
-Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@email');
+Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@set_options');

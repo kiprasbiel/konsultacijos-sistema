@@ -74,7 +74,7 @@
             </div>
         </nav>
 
-        <main class="container container-aw">
+        <main class="container-fluid container-aw px-5">
             @include('inc.messages')
             @yield('content')
         </main>

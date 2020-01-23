@@ -17,10 +17,12 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
 {
     protected $data;
     protected $updated_data;
+    protected $header;
 
-    public function __construct($data, $updated_data) {
+    public function __construct($data, $updated_data, $excel_header) {
         $this->data = $data;
         $this->updated_data = $updated_data;
+        $this->header = $excel_header;
     }
 
     public function bindValue(Cell $cell, $value) {
@@ -84,7 +86,7 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
             ],
             [
                 ' ',
-                'Ataskaita apie būsimas konsultacijas',
+                $this->header,
             ],
             [
                 ' ',
@@ -99,19 +101,6 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
             [
                 ' ',
             ],
-//            [
-//                ' ',
-//                'Eksporto konsultacijos',
-//            ],
-//            ["Eil.\nNr.",
-//                "Paslaugos gavėjas\n(Pavadinimas/ Vardas pavardė)",
-//                "Paslaugų gavėjo kontaktinė\ninformacija (el. paštas/\ntelefonas)",
-//                "Konsultacijos tema",
-//                "Paslaugų teikimo\nsavivaldybė (tikslus\nadresas)",
-//                "Numatoma\nkonsultacijos\ndata",
-//                "Numatomas\nkonsultacijos\npradžios laikas\n(val.:min.)",
-//                "Numatoma\nkonsultacijos\ntrukmė\n(val.:min.)",
-//                "Numatomas\nkonsultacijos būdas\n(Susitikimas, telefonu,\nSkype)",]
         ];
     }
 

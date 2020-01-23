@@ -37,14 +37,16 @@ class ConsultationMail extends Mailable
         if (empty($this->updated_data)){
             $view = 'emails.consultations.email';
             $subject = 'Naujos konsultacijos';
+            $excel_header = 'Ataskaita apie būsimas konsultacijas';
         }
         else {
             $view = 'emails.consultations.email-change';
             $subject = 'Redaguotos konsultacijos';
+            $excel_header = 'Ataskaita apie redaguotas konsultacijas';
         }
 
         return $this->markdown($view)
-            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data),'konsultacijos.xlsx')
+            ->attach(Excel::download(new ConsultationExport($this->data, $this->updated_data, $excel_header),'konsultacijos.xlsx')
                 ->getFile(), ['as' => 'konsultacijos.xlsx'])
             ->subject($subject);
     }

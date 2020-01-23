@@ -17,7 +17,7 @@ class SettingsController extends Controller
         return view('settings.index');
     }
 
-    public function email(Request $request){
+    public function set_options(Request $request){
         foreach ($request->input() as $key=>$value) {
             if ($key == '_token'){
                 continue;

@@ -20,11 +20,21 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">@sortablelink('id', '#')</th>
-                <th scope="col">@sortablelink('name', 'Vardas')</th>
-                <th scope="col">@sortablelink('username', 'Prisijungimo vardas')</th>
-                <th scope="col">@sortablelink('created_at', 'Reg. data')</th>
-                <th scope="col">@sortablelink('role', 'Rolė')</th>
+                <th scope="col">@sortingLink(['column' => 'id', 'column_name' => '#', 'sort' => $column_sort])
+                    @endsortingLink
+                </th>
+                <th scope="col">@sortingLink(['column' => 'name', 'column_name' => 'Vardas', 'sort' => $column_sort])
+                    @endsortingLink
+                </th>
+                <th scope="col">@sortingLink(['column' => 'username', 'column_name' => 'Prisijungimo vardas', 'sort' =>
+                    $column_sort]) @endsortingLink
+                </th>
+                <th scope="col">@sortingLink(['column' => 'created_at', 'column_name' => 'Reg. data', 'sort' =>
+                    $column_sort]) @endsortingLink
+                </th>
+                <th scope="col">@sortingLink(['column' => 'role', 'column_name' => 'Rolė', 'sort' => $column_sort])
+                    @endsortingLink
+                </th>
                 <th scope="col"></th>
             </tr>
             </thead>
@@ -50,15 +60,66 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                                     <i class="far fa-edit"></i>
                                 </span>
                             </a>
+
+                            <button class="btn aw-trash-button" data-toggle="modal" data-target='#user_destroy_form'
+                                    data-id="{{$user->id}}" data-name="{{$user->name}}"
+                                    onclick="return confirm('Ar tikrai norite ištrinti vartotoją?')">
+                                <i class="fa fa-trash"></i>
+                            </button>
+
+                            {{--                            {{Form::open(['action' => ['UserController@destroy', $user->id], 'method' => 'POST'])}}--}}
+                            {{--                            {{Form::hidden('_method', 'DELETE')}}--}}
+                            {{--                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'modal', 'data-target'=>'#user_destroy_form', 'onclick' => "return confirm('Ištrinant klientą bus ištrintos ir visos jo konsultacijos. Ar tikrai norite ištrinti klientą?')"])}}--}}
+                            {{--                            {{Form::close()}}--}}
                         </div>
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-        {!! $users->appends(\Request::except('page'))->render() !!}
+        {{ $users->appends(['column' => $pagination_column, 'sort'=>$pagination_sort])->links() }}
+
+        {{--        Modal--}}
+        <div class="modal fade" id="user_destroy_form" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    {{Form::open([ 'method' => 'POST', 'id'=>'user_delete_form'])}}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Pašalinti ...</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modal_description">Pasirinkite, kam priskirti ... konsultacijas:</div>
+
+                        {{Form::select('substitute_id', $consultant_arr, null, ['class' => 'form-control user_id', 'id' => 'substitute_select', 'placeholder' => "Pasirinkite konsultantą"])}}
+
+{{--                        <select name="substitute_id" id="substitute_select">--}}
+{{--                            @foreach($consultant_arr as $key=>$consultant)--}}
+{{--                                <option value="{{$key}}">{{$consultant}}</option>--}}
+{{--                            @endforeach--}}
+
+{{--                            lalalaa--}}
+{{--                        </select>--}}
+                    </div>
+                    <div class="modal-footer">
+
+                        {{Form::hidden('_method', 'DELETE')}}
+                        {{Form::button('Pašalinti vartotoją', ['type' => 'submit', 'class' => 'btn btn-danger'])}}
+
+                    </div>
+                    {{Form::close()}}
+                </div>
+            </div>
+        </div>
+
     @else
         <p>Vartotojų nerasta</p>
     @endif
 
+@endsection
+
+@section('foot-content')
 @endsection

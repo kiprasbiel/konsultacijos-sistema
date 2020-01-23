@@ -2,14 +2,18 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ConsultationDeleteExport implements WithHeadings, FromArray, WithEvents, ShouldAutoSize
+class ConsultationDeleteExport extends DefaultValueBinder implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder
 {
     protected $data;
     public function __construct($data, $main_theme)
@@ -19,6 +23,17 @@ class ConsultationDeleteExport implements WithHeadings, FromArray, WithEvents, S
         if ($main_theme == 'VKT'){
             $this->main_theme = 'Verslo';
         }
+    }
+
+    public function bindValue(Cell $cell, $value) {
+        if (is_numeric($value)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        // else return default behavior
+        return parent::bindValue($cell, $value);
     }
 
     public function array(): array {
