@@ -14,8 +14,7 @@ class ClientController extends Controller
 
     private $pagination_int;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
         $this->pagination_int = Option::where('name', 'pagination_per_page')->value('value');
 
@@ -27,32 +26,16 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Request $request)
-    {
+    public function index(Request $request) {
         //Default sorting
         $column = 'id';
         $column_sort = 'desc';
 
         //Checking if there is additional sorting passed
-        if ($request->column !== null && $request->sort !== null) {
-            $sorting = new TableSort;
-            $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
-            $pagination_sort = $request->input('sort');
-            $column =  $request->input('column');
-            $column_sort = $sorting->sort_toggle($request->input('sort'));
-        }
-        else{
-            $clients =  Client::orderBy($column, $column_sort)->paginate($this->pagination_int);
-            return view('clients.index')
-                ->with('clients', $clients)
-                ->with('column_sort', $column_sort);
-        }
-
+        $clients = Client::orderBy($column, $column_sort)->paginate($this->pagination_int);
         return view('clients.index')
             ->with('clients', $clients)
-            ->with('column_sort', $column_sort)
-            ->with('pagination_sort', $pagination_sort)
-            ->with('pagination_column', $column);
+            ->with('column_sort', $column_sort);
     }
 
     /**
@@ -60,23 +43,21 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create()
-    {
+    public function create() {
         return view('clients.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *
      * Tikrinama, ar gerai ir ar visi laukeliai
      * uzpildyti kliento registracijos formoj
      *
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $this->validate($request, [
             'name' => 'required|unique:clients',
             'code' => ['required', 'unique:clients', new ValidateCompanyCode],
@@ -86,7 +67,7 @@ class ClientController extends Controller
         ]);
         $now = date_create(date("Y-m-d"));
         $registered_at = date_create($request->input('company_reg_date'));
-        $how_old = date_diff($now,$registered_at)->y;
+        $how_old = date_diff($now, $registered_at)->y;
 
 
         $client = new Client;
@@ -113,7 +94,6 @@ class ClientController extends Controller
         }
 
 
-
         $client->name = $request->input('name');
         $client->code = $request->input('code');
         $client->company_reg_date = $request->input('company_reg_date');
@@ -128,22 +108,20 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $client = Client::find($id);
         return view('clients.edit')->with('client', $client);
     }
@@ -151,12 +129,11 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         $this->validate($request, [
             'name' => 'required',
             'code' => 'required',
@@ -167,7 +144,7 @@ class ClientController extends Controller
 
         $now = date_create(date("Y-m-d"));
         $registered_at = date_create($request->input('company_reg_date'));
-        $how_old = date_diff($now,$registered_at)->y;
+        $how_old = date_diff($now, $registered_at)->y;
 
         $client = Client::find($id);
 
@@ -177,8 +154,7 @@ class ClientController extends Controller
             } elseif ($how_old >= 1 && $how_old < 5) {
                 $client->vkt = 'PL';
             }
-        }
-        else{
+        } else {
             $client->vkt = null;
         }
 
@@ -188,15 +164,13 @@ class ClientController extends Controller
             } elseif ($how_old >= 3) {
                 $client->expo = 'PO3';
             }
-        }
-        else{
+        } else {
             $client->expo = null;
         }
 
         if (in_array('ECO', $request->input('con_type'))) {
             $client->eco = 1;
-        }
-        else{
+        } else {
             $client->eco = null;
         }
 
@@ -214,11 +188,10 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
 
         $client = Client::find($id);
         $client->consultations()->delete();
@@ -227,7 +200,7 @@ class ClientController extends Controller
         return redirect('/klientai')->with('success', 'Klientas sėkmingai ištrintas!');
     }
 
-    public function display_table_search_results(Request $request){
+    public function display_table_search_results(Request $request) {
         $searchTableColumns = new SearchTableColumns();
         $clients = $searchTableColumns->tableSearchColumn($request->model, $request->column, $request->search);
 
@@ -239,7 +212,18 @@ class ClientController extends Controller
             ->with('table_search', $request->search);
     }
 
-    public function list_sort(Request $request){
-        dd($request->input());
+    public function list_sort(Request $request) {
+        //Checking if there is additional sorting passed
+        $sorting = new TableSort;
+        $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
+        $pagination_sort = $request->input('sort');
+        $column = $request->input('column');
+        $column_sort = $sorting->sort_toggle($request->input('sort'));
+
+        return view('clients.index')
+            ->with('clients', $clients)
+            ->with('column_sort', $column_sort)
+            ->with('pagination_sort', $pagination_sort)
+            ->with('pagination_column', $column);
     }
 }
