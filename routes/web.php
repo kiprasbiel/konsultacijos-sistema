@@ -59,4 +59,4 @@ Route::get('/settings', 'SettingsController@index');
 Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@set_options');
 
 //Table sorting
-Route::post('/sort-table', 'ClientController@list_sort');
+Route::match(['post', 'get'], '/sort-table', 'ClientController@list_sort');
