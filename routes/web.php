@@ -26,8 +26,10 @@ Route::post('/themesearch','SearchController@themeSearch');
 Route::post('/theme-list-update','SearchController@themeListSearch');
 
 //Paprasta paieska
-Route::post('/table-search', 'ConsultationController@display_table_search_results');
-Route::post('/table-search-client', 'ClientController@display_table_search_results');
+Route::get('/table-search', 'ConsultationController@display_table_search_results');
+Route::get('/table-search-client', 'ClientController@display_table_search_results');
+//Route::get('/con-search', 'SearchController@consultation_search');
+//Route::get('/cl-search', 'SearchController@client_search');
 
 //Excel generavimas
 //Anksciau budavo kreipimasis tiesiai is konsultaciju index view
@@ -57,6 +59,3 @@ Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
 
 Route::get('/settings', 'SettingsController@index');
 Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@set_options');
-
-//Table sorting
-Route::match(['post', 'get'], '/sort-table', 'ClientController@list_sort');

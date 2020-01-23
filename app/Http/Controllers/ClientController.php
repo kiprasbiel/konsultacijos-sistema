@@ -32,10 +32,25 @@ class ClientController extends Controller
         $column_sort = 'desc';
 
         //Checking if there is additional sorting passed
-        $clients = Client::orderBy($column, $column_sort)->paginate($this->pagination_int);
+        if ($request->column !== null && $request->sort !== null) {
+            $sorting = new TableSort;
+            $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
+            $pagination_sort = $request->input('sort');
+            $column =  $request->input('column');
+            $column_sort = $sorting->sort_toggle($request->input('sort'));
+        }
+        else{
+            $clients =  Client::orderBy($column, $column_sort)->paginate($this->pagination_int);
+            return view('clients.index')
+                ->with('clients', $clients)
+                ->with('column_sort', $column_sort);
+        }
+
         return view('clients.index')
             ->with('clients', $clients)
-            ->with('column_sort', $column_sort);
+            ->with('column_sort', $column_sort)
+            ->with('pagination_sort', $pagination_sort)
+            ->with('pagination_column', $column);
     }
 
     /**
