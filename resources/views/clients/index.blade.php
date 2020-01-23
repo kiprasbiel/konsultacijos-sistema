@@ -19,19 +19,19 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">@sortingLink(['model' => 'Client', 'column' => 'id', 'column_name' => '#', 'sort' => $column_sort])
+                <th scope="col">@sortingLink(['column' => 'id', 'column_name' => '#', 'sort' => $column_sort])
                     @endsortingLink
                 </th>
-                <th scope="col">@sortingLink(['model' => 'Client', 'column' => 'name', 'column_name' => 'Pavadinimas', 'sort' =>
+                <th scope="col">@sortingLink(['column' => 'name', 'column_name' => 'Pavadinimas', 'sort' =>
                     $column_sort]) @endsortingLink
                 </th>
                 <th scope="col">Įm. kodas</th>
-                <th scope="col">@sortingLink(['model' => 'Client', 'column' => 'company_reg_date', 'column_name' => 'Reg. data', 'sort' =>
+                <th scope="col">@sortingLink(['column' => 'company_reg_date', 'column_name' => 'Reg. data', 'sort' =>
                     $column_sort]) @endsortingLink
                 </th>
                 <th scope="col">Reg. apskritis</th>
                 <th scope="col">Konsultacijų tipas</th>
-                <th scope="col">@sortingLink(['model' => 'Client', 'column' => 'user.name', 'column_name' => 'Sukūrė', 'sort' =>
+                <th scope="col">@sortingLink(['column' => 'user.name', 'column_name' => 'Konsultantas', 'sort' =>
                     $column_sort]) @endsortingLink
                 </th>
                 <th scope="col">Kontaktai</th>

@@ -216,6 +216,7 @@ class ClientController extends Controller
     }
 
     public function display_table_search_results(Request $request) {
+        dd($request->input());
         $searchTableColumns = new SearchTableColumns();
         $clients = $searchTableColumns->tableSearchColumn($request->model, $request->column, $request->search);
 
@@ -227,18 +228,18 @@ class ClientController extends Controller
             ->with('table_search', $request->search);
     }
 
-    public function list_sort(Request $request) {
-        //Checking if there is additional sorting passed
-        $sorting = new TableSort;
-        $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
-        $pagination_sort = $request->input('sort');
-        $column = $request->input('column');
-        $column_sort = $sorting->sort_toggle($request->input('sort'));
-
-        return view('clients.index')
-            ->with('clients', $clients)
-            ->with('column_sort', $column_sort)
-            ->with('pagination_sort', $pagination_sort)
-            ->with('pagination_column', $column);
-    }
+//    public function list_sort(Request $request) {
+//        //Checking if there is additional sorting passed
+//        $sorting = new TableSort;
+//        $clients = $sorting->sort_model('Client', $request->input('column'), $request->input('sort'), []);
+//        $pagination_sort = $request->input('sort');
+//        $column = $request->input('column');
+//        $column_sort = $sorting->sort_toggle($request->input('sort'));
+//
+//        return view('clients.index')
+//            ->with('clients', $clients)
+//            ->with('column_sort', $column_sort)
+//            ->with('pagination_sort', $pagination_sort)
+//            ->with('pagination_column', $column);
+//    }
 }
