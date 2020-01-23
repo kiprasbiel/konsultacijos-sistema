@@ -26,10 +26,8 @@ Route::post('/themesearch','SearchController@themeSearch');
 Route::post('/theme-list-update','SearchController@themeListSearch');
 
 //Paprasta paieska
-Route::get('/table-search', 'ConsultationController@display_table_search_results');
+Route::post('/table-search', 'ConsultationController@display_table_search_results');
 Route::post('/table-search-client', 'ClientController@display_table_search_results');
-//Route::get('/con-search', 'SearchController@consultation_search');
-//Route::get('/cl-search', 'SearchController@client_search');
 
 //Excel generavimas
 //Anksciau budavo kreipimasis tiesiai is konsultaciju index view
