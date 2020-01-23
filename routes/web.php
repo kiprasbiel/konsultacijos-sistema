@@ -59,3 +59,6 @@ Route::post('/send-reviewed', 'ExcelExportController@send_reviewed');
 
 Route::get('/settings', 'SettingsController@index');
 Route::match(['put', 'post', 'patch'],'/settings/email', 'SettingsController@set_options');
+
+//Table sorting
+Route::post('/sort-table', 'ClientController@list_sort');
