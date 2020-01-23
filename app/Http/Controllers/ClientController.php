@@ -238,4 +238,8 @@ class ClientController extends Controller
             ->with('table_search_column', $request->column)
             ->with('table_search', $request->search);
     }
+
+    public function list_sort(Request $request){
+        dd($request->input());
+    }
 }
