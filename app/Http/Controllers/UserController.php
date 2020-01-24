@@ -92,6 +92,6 @@ class UserController extends Controller
         $user = User::find($id);
         $user->delete();
 
-        return redirect('/vartotojai')->with('success', 'Vartotojas sėkmingai ištrintas ir susijusios konsultacijos ir klientas perregistruoti kitam vartotojui.');
+        return redirect('/vartotojai')->with('success', 'Vartotojas sėkmingai ištrintas ir susijusios konsultacijos ir klientai perregistruoti kitam vartotojui.');
     }
 }

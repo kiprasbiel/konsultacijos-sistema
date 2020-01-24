@@ -66,11 +66,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                                     onclick="return confirm('Ar tikrai norite ištrinti vartotoją?')">
                                 <i class="fa fa-trash"></i>
                             </button>
-
-                            {{--                            {{Form::open(['action' => ['UserController@destroy', $user->id], 'method' => 'POST'])}}--}}
-                            {{--                            {{Form::hidden('_method', 'DELETE')}}--}}
-                            {{--                            {{Form::button('<i class="fa fa-trash"></i>', ['type' => 'submit', 'class' => 'btn aw-trash-button', 'data-toggle' => 'modal', 'data-target'=>'#user_destroy_form', 'onclick' => "return confirm('Ištrinant klientą bus ištrintos ir visos jo konsultacijos. Ar tikrai norite ištrinti klientą?')"])}}--}}
-                            {{--                            {{Form::close()}}--}}
                         </div>
                     </td>
                 </tr>
@@ -96,13 +91,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
                         {{Form::select('substitute_id', $consultant_arr, null, ['class' => 'form-control user_id', 'id' => 'substitute_select', 'placeholder' => "Pasirinkite konsultantą"])}}
 
-{{--                        <select name="substitute_id" id="substitute_select">--}}
-{{--                            @foreach($consultant_arr as $key=>$consultant)--}}
-{{--                                <option value="{{$key}}">{{$consultant}}</option>--}}
-{{--                            @endforeach--}}
-
-{{--                            lalalaa--}}
-{{--                        </select>--}}
                     </div>
                     <div class="modal-footer">
 

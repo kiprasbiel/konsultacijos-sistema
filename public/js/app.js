@@ -36992,9 +36992,10 @@ jQuery(document).ready(function ($) {
     var id = button.data('id');
     var name = button.data('name');
     var modal = $(this);
+    var host = window.location.origin;
     modal.find('.modal-title').text('Pašalinti vartotoją ' + name);
     modal.find('#modal_description').html('Pasirinkite kam priskirti <strong>' + name + '</strong> konsultacijas ir klientus:');
-    modal.find('#user_delete_form').attr('action', 'http://konsultacijos.test/vartotojai/' + id);
+    modal.find('#user_delete_form').attr('action', host + '/vartotojai/' + id);
   });
 });
 

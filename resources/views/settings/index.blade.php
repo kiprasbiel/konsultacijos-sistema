@@ -6,11 +6,8 @@
             <h1>Nustatymai</h1>
         </div>
     </div>
-
+    <h3 class="pt-4">El. laiškai</h3>
     <div class="row pt-3">
-
-        <h3>El. laiškai</h3>
-
         {!! Form::open(['action' => 'SettingsController@set_options', 'method' => 'POST']) !!}
         <div class="row">
             <div class="col-md-6 aw-options">
