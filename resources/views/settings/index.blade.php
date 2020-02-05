@@ -47,5 +47,6 @@
                 {{Form::submit('Atnaujinti', ['class'=> 'btn btn-primary float-right'])}}
             </div>
         </div>
+        {!! Form::close() !!}
     </div>
 @endsection

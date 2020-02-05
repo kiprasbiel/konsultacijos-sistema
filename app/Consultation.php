@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Consultation extends Model
 {
 
+//    protected $fillable = [
+//        'client_id',
+//    ];
+
     /**
      * Return Consultations break length in minutes
      * @return \DateInterval|false

@@ -16,4 +16,9 @@ jQuery(document).ready(function($){
         modal.find('#user_delete_form').attr('action', host + '/vartotojai/' + id);
 
     })
+
+    if ($(".aw-error")[0]){
+        console.log('YRA ERROR');
+        $('#import-submit').attr('disabled', true);
+    }
 });

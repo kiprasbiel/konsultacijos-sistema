@@ -57,6 +57,9 @@
                                     <a href="/settings" class="dropdown-item">
                                         Nustatymai
                                     </a>
+                                    <a href="/import" class="dropdown-item">
+                                        Importavimas
+                                    </a>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
