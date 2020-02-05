@@ -14,11 +14,19 @@ class ImportClass
         $perv_arr = [];
         foreach (file($path) as $key => $con){
             try {
-
-
                 $con_arr = explode(';', $con);
-//            dd($con_arr);
-                $con_formatted_arr['client_id'] = Client::where('name', $con_arr[1])->value('id');
+                if (strpos($con_arr[1], '"') !== false){
+                    if ($con_arr[1][0] == '"'){
+                        $con_arr[1] = preg_replace('/^"/', '', $con_arr[1]);
+                        $con_arr[1] = preg_replace('/""/', '"', $con_arr[1]);
+                        $con_arr[1] = preg_replace('/""/', '"', $con_arr[1]);
+                    }
+                    $con_formatted_arr['client_id'] = Client::where('name', $con_arr[1])->value('id');
+                }
+                else{
+                    $con_formatted_arr['client_id'] = Client::where('name', $con_arr[1])->value('id');
+                }
+
                 $con_formatted_arr['created_by'] = auth()->user()->id;
                 $con_formatted_arr['contacts'] = $con_arr[2];
 
