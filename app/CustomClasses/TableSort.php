@@ -14,7 +14,7 @@ class TableSort
         $this->pagination_int = Option::where('name', 'pagination_per_page')->value('value');
     }
 
-    public function sort_model($model_main, $column, $column_sort, $additional_where){
+    public function sort_model($model_main, $column, $column_sort, $additional_where = []){
 
 
         $className = 'App\\'.$model_main;

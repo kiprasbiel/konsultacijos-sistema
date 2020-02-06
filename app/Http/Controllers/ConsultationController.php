@@ -37,13 +37,15 @@ class ConsultationController extends Controller
 
         if ($request->column !== null && $request->sort !== null) {
             $sorting = new TableSort;
-            $consultations = $sorting->sort_model('Consultation', $request->input('column'), $request->input('sort'), ['created_by' => $created_by]);
+            $consultations = $sorting->sort_model('Consultation', $request->input('column'), $request->input('sort'));
+//            $consultations = $sorting->sort_model('Consultation', $request->input('column'), $request->input('sort'), ['created_by' => $created_by]);
             $pagination_sort = $request->input('sort');
             $column =  $request->input('column');
             $column_sort = $sorting->sort_toggle($request->input('sort'));
         }
         else{
-            $consultations = Consultation::where('created_by', $created_by)->orderBy('id', 'desc')->paginate($this->pagination_int);
+            $consultations = Consultation::orderBy('id', 'desc')->paginate($this->pagination_int);
+//            $consultations = Consultation::where('created_by', $created_by)->orderBy('id', 'desc')->paginate($this->pagination_int);
             return view('consultations.index')
                 ->with('consultations', $consultations)
                 ->with('unsent', $unsent)
