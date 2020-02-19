@@ -39,7 +39,10 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //Allow register if there are no other users
+        if(User::count()){
+            $this->middleware('auth');
+        }
     }
 
     /**
