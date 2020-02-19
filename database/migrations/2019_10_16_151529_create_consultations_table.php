@@ -18,7 +18,7 @@ class CreateConsultationsTable extends Migration
             $table->integer('client_id');
             $table->integer('consultant_id');
             $table->text('contacts');
-            $table->string('theme');
+            $table->integer('theme');
             $table->string('address');
             $table->date('consultation_date');
             $table->time('consultation_length');

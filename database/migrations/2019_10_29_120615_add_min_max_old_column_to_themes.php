@@ -14,8 +14,8 @@ class AddMinMaxOldColumnToThemes extends Migration
     public function up()
     {
         Schema::table('themes', function (Blueprint $table) {
-            $table->string('min_old');
-            $table->string('max_old');
+            $table->integer('min_old')->nullable();
+            $table->integer('max_old')->nullable();
         });
     }
 
