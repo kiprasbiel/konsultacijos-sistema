@@ -6,9 +6,9 @@
         <div class="col-md-6">
             <h1>Būsimos konsultacijos</h1>
         </div>
-        <div class="col-md-6 text-right">
-            <a href="/conf-month-gen" class="btn btn-primary">Konfigūruoti mėnesio ataskaitą</a>
-        </div>
+{{--        <div class="col-md-6 text-right">--}}
+{{--            <a href="/conf-month-gen" class="btn btn-primary">Konfigūruoti mėnesio ataskaitą</a>--}}
+{{--        </div>--}}
     </div>
         @if(count($consultations)>0)
             <table class="table">
