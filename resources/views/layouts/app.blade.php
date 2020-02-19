@@ -57,6 +57,9 @@
                                     <a href="/settings" class="dropdown-item">
                                         Nustatymai
                                     </a>
+                                    <a href="/conf-month-gen" class="dropdown-item">
+                                        Eksportavimas
+                                    </a>
                                     <a href="/import" class="dropdown-item">
                                         Importavimas
                                     </a>

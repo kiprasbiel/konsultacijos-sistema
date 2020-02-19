@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="b494fc04-8704-4aff-ab47-2279f51abdb2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/RegisterController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/home.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/home.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +195,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -371,7 +372,8 @@
       <workItem from="1580987418648" duration="3812000" />
       <workItem from="1581078076649" duration="48000" />
       <workItem from="1581871516053" duration="2100000" />
-      <workItem from="1582105156582" duration="1853000" />
+      <workItem from="1582105156582" duration="2549000" />
+      <workItem from="1582107721912" duration="99000" />
     </task>
     <task id="LOCAL-00001" summary="Perziurai paruosta svetaine. Visi ecel yra atsiunciami i pc">
       <created>1574016038277</created>
@@ -753,12 +755,12 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579193144719" />
-    <state x="548" y="166" key="FileChooserDialogImpl" timestamp="1582105736583">
+    <state x="548" y="166" key="FileChooserDialogImpl" timestamp="1582107818402">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="548" y="166" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1580397846974" />
     <state x="2605" y="210" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1579164603795" />
-    <state x="548" y="166" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1582105736583" />
+    <state x="548" y="166" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1582107818402" />
     <state width="189" height="457" key="HiddenNamespacesPopup" timestamp="1579175853266">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -779,12 +781,12 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="362" y="87" width="794" height="556" key="RollbackChangesDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579797582695" />
-    <state x="2266" y="68" key="SettingsEditor" timestamp="1580837487013">
-      <screen x="1920" y="0" width="1920" height="1040" />
+    <state x="277" y="54" key="SettingsEditor" timestamp="1582107820454">
+      <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="277" y="54" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579774724991" />
     <state x="2266" y="68" key="SettingsEditor/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1580837487013" />
-    <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1577968875043" />
+    <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1582107820454" />
     <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1580990323567">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -801,12 +803,12 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="93" y="93" width="1350" height="638" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1579261739836" />
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1581871516048">
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog" timestamp="1582107729216">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1581871516048" />
     <state x="2495" y="298" key="com.intellij.ide.util.TipDialog/0.0.1536.824/1920.0.1920.1040@1920.0.1920.1040" timestamp="1579202132687" />
-    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1580297074163" />
+    <state x="460" y="236" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1582107729216" />
     <state x="1920" y="0" width="1102" height="809" maximized="true" key="dock-window-1" timestamp="1580384454773">
       <screen x="1920" y="0" width="1920" height="1040" />
     </state>
