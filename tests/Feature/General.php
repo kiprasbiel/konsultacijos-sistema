@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Consultation;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -68,6 +69,9 @@ class General extends TestCase
     }
 
     private function data(){
+        $today = Carbon::now();
+        $next_week = $today->addWeek(1)->format('Y-m-d');
+
         return [
             "company_id" => "1",
             "contacts" => "+370, el@pastas.lt",
@@ -75,7 +79,7 @@ class General extends TestCase
             "reg_county" => "akmenes-r",
             "address" => "Nemuno Krantinė 26-6",
             "user_id" => "3",
-            "consultation_date" => "2020-02-23",
+            "consultation_date" => $next_week,
             "consultation_start" => "8:00",
             "consultation_length" => "2:00",
             "break_start" => "12:00",
