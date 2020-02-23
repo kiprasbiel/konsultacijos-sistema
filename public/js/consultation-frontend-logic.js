@@ -97,9 +97,6 @@ jQuery(document).ready(function ($) {
   $('#reg_county').select2();
 
   if ($("#company_id").val()) {
-    console.log("Bandymas uzpildyti data kintamaji");
-    console.log($("#company_id").val());
-    console.log("This: " + this);
     $.ajax({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -223,21 +220,6 @@ jQuery(document).ready(function ($) {
   $('#company_id').change(function () {
     themeListUpdate(this);
   });
-  $('#ex-date').change(function () {
-    getConsultations();
-  });
-  $('#con_type').change(function () {
-    getConsultations();
-  });
-
-  function getConsultations() {
-    if ($('#con_type').val() && $('#ex-date').val()) {
-      console.log("Abu laukeliai uzpildyti");
-      console.log($('#con_type').val());
-      console.log($('#ex-date').val());
-      $.ajax({});
-    }
-  }
 });
 
 /***/ }),

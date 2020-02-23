@@ -18,7 +18,16 @@ jQuery(document).ready(function($){
     })
 
     if ($(".aw-error")[0]){
-        console.log('YRA ERROR');
         $('#import-submit').attr('disabled', true);
     }
+
+    $('#con_payment').change(function () {
+        if ($(this).val() == 2){
+            $('#send_month').css('display', 'none');
+        }
+        else {
+            $('#send_month').css('display', 'block');
+        }
+
+    });
 });

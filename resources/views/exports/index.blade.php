@@ -22,6 +22,12 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
+                {{Form::label('con_payment', 'Pasirinkite konsultaicjų apmokėjimo būseną')}}
+                {{Form::select('con_payment', ['1' => 'Apmokėtos', '2' => 'Neapmokėtos'], null,   ['class' => 'form-control', 'placeholder' => "Pasirinkite būseną"])}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
                 {{Form::label('con_type', 'Pasirinkite ataskaitos tipą')}}
                 {{Form::select('con_type', ['VKT' => 'VKT', 'EXPO' => 'EXPO', 'ECO' => 'ECO'], null,   ['class' => 'form-control', 'placeholder' => "Pasirinkite tipą"])}}
             </div>
@@ -30,7 +36,7 @@
 
     <div class="row">
         <div class="col-md">
-            <button class="btn btn-primary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action"
+            <button class="btn btn-primary float-right mx-1 aw-a-button" id="send_month" type="submit" name="action"
                     value="send" onclick="return confirm('Ar tikrai norite išsiųsti mėnesio atsakaitą?')">Generuoti ir
                 išsiųsti
             </button>
