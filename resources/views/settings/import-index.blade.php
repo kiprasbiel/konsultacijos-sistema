@@ -28,6 +28,7 @@
 
 
     @if(!empty($con_arr))
+        @dump($con_arr)
         <div class="row pt-4">
             <table class="table">
                 <thead>
