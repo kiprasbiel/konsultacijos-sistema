@@ -84,9 +84,9 @@
                         <td>{{$con['address']}}</td>
                         <td>{{$con['consultation_date']}}</td>
                         <td>{{$con['consultation_time']}}</td>
+                        <td>{{$con['consultation_length']}}</td>
                         <td>{{$con['break_start']}}</td>
                         <td>{{$con['break_end']}}</td>
-                        <td>{{$con['consultation_length']}}</td>
                         <td>{{$con['method']}}</td>
                         <td>{{$con['county']}}</td>
                     </tr>
