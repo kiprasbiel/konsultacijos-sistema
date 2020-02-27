@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomClasses\ThemeClass;
 use App\Exports\ConsultationExport;
 use App\Exports\ConsultationMonthExport;
 use App\Mail\ConsultationMonth;
@@ -104,22 +105,19 @@ class ExcelExportController extends Controller
     }
 
     public function month($ex_date, $con_type, $action, $payment) {
+        $themes_ids = Theme::get_theme_ids_by_main_theme($con_type);
         $con_type_lower = strtolower($con_type);
         $month = date_format(date_create($ex_date), 'm');
         $year = date_format(date_create($ex_date), 'Y');
         if ($payment == 2) {
             $consultations = Consultation::where('consultation_date', 'like', $ex_date . '%')
                 ->where('is_paid', 0)
-                ->whereHas('client', function ($query) use ($con_type) {
-                    $query->whereNotNull($con_type);
-                })
+                ->whereIn('theme_id', $themes_ids)
                 ->get();
         } else {
             $consultations = Consultation::where('paid_date', 'like', $ex_date . '%')
                 ->where('is_paid', 1)
-                ->whereHas('client', function ($query) use ($con_type) {
-                    $query->whereNotNull($con_type);
-                })
+                ->whereIn('theme_id', $themes_ids)
                 ->get();
         }
         if (count($consultations) == 0) {
