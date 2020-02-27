@@ -162,7 +162,7 @@ class ExcelExportController extends Controller
 
             if ($con_type == 'ECO') {
                 $data = [
-                    'konsultanto_pavadinimas' => "Viešoji įstsaiga\n Promas",
+                    'konsultanto_pavadinimas' => "VšĮ \"Promas LT\"",
                     'konsultanto_kodas' => '304690879',
                     'paslaugos_gavejas' => $client->name,
                     'imones_kodas' => $client->code,
@@ -184,7 +184,7 @@ class ExcelExportController extends Controller
                 ];
             } else {
                 $data = [
-                    'konsultanto_pavadinimas' => "Viešoji įstsaiga\n Promas",
+                    'konsultanto_pavadinimas' => "VšĮ \"Promas LT\"",
                     'konsultanto_kodas' => '304690879',
                     'paslaugos_gavejas' => $client->name,
                     'imones_kodas' => $client->code,
