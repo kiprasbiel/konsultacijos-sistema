@@ -104,22 +104,32 @@ class ExcelExportController extends Controller
         }
     }
 
-    public function month($ex_date, $con_type, $action, $payment) {
+    public function month($ex_date, $con_type, $action, $payment, $is_sent, $con_date_type) {
         $themes_ids = Theme::get_theme_ids_by_main_theme($con_type);
         $con_type_lower = strtolower($con_type);
         $month = date_format(date_create($ex_date), 'm');
         $year = date_format(date_create($ex_date), 'Y');
-        if ($payment == 2) {
-            $consultations = Consultation::where('consultation_date', 'like', $ex_date . '%')
-                ->where('is_paid', 0)
+
+        if ($is_sent == 'all'){
+            $consultations = Consultation::where($con_date_type, 'like', $ex_date . '%')
+                ->where('is_paid', $payment)
                 ->whereIn('theme_id', $themes_ids)
-                ->get();
-        } else {
-            $consultations = Consultation::where('paid_date', 'like', $ex_date . '%')
-                ->where('is_paid', 1)
-                ->whereIn('theme_id', $themes_ids)
+                ->whereDoesntHave('consultation_meta', function ($query){
+                    $query->where('type', 'draft_changes');
+                })
                 ->get();
         }
+        else{
+            $consultations = Consultation::where($con_date_type, 'like', $ex_date . '%')
+                ->where('is_paid', $payment)
+                ->where('is_sent', $is_sent)
+                ->whereIn('theme_id', $themes_ids)
+                ->whereDoesntHave('consultation_meta', function ($query){
+                    $query->where('type', 'draft_changes');
+                })
+                ->get();
+        }
+
         if (count($consultations) == 0) {
             return redirect('/conf-month-gen')->with('error', 'Nei viena šio mėnesio konsultacija neatitinka paieškos kriterijų!');
         }
@@ -228,12 +238,21 @@ class ExcelExportController extends Controller
     }
 
     public function configure(Request $request) {
-        $this->validate($request, [
+        $data = $this->validate($request, [
             'ex-date' => 'required',
             'con_payment' => 'required',
             'con_type' => 'required',
+            'is-sent' => 'required',
+            'con-date' => 'required',
         ]);
-        return $this->month($request->input('ex-date'), $request->input('con_type'), $request->input('action'), $request->input('con_payment'));
+        return $this->month(
+            $request->input('ex-date'),
+            $request->input('con_type'),
+            $request->input('action'),
+            $request->input('con_payment'),
+            $request->input('is-sent'),
+            $request->input('con-date')
+        );
     }
 
 }
