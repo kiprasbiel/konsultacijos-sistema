@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Exports\ConsultationExport;
 //use http\Env\Request;
+use App\Option;
 use Illuminate\Http\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -37,12 +38,12 @@ class ConsultationMail extends Mailable
         if (empty($this->updated_data)){
             $view = 'emails.consultations.email';
             $subject = 'Naujos konsultacijos';
-            $excel_header = 'Ataskaita apie būsimas konsultacijas';
+            $excel_header = Option::where('name', 'new_excel_header')->value('value');
         }
         else {
             $view = 'emails.consultations.email-change';
             $subject = 'Redaguotos konsultacijos';
-            $excel_header = 'Ataskaita apie redaguotas konsultacijas';
+            $excel_header = Option::where('name', 'edited_excel_header')->value('value');
         }
 
         return $this->markdown($view)

@@ -42,8 +42,21 @@
             </div>
         </div>
 
+        <hr>
+        <h3 class="pt-4">Excel failai</h3>
+        <div class="row pt-2">
+            <div class="col-md-4 aw-options pt-2">
+                {{Form::label('new_excel_header', 'Naujų konsultacijų Excel antraštė')}}
+                {{Form::text('new_excel_header', \App\Option::where('name', 'new_excel_header')->value('value'), ['class' => 'form-control'])}}
+            </div>
+            <div class="col-md-4 aw-options pt-2">
+                {{Form::label('edited_excel_header', 'Redaguotų konsultacijų Excel antraštė')}}
+                {{Form::text('edited_excel_header', \App\Option::where('name', 'edited_excel_header')->value('value'), ['class' => 'form-control'])}}
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-md pt-4">
+            <div class="col-md py-4">
                 {{Form::submit('Atnaujinti', ['class'=> 'btn btn-primary float-right'])}}
             </div>
         </div>
