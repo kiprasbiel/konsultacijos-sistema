@@ -282,7 +282,8 @@ class ConsultationController extends Controller
     }
 
     public function review() {
-        $not_sent = Consultation::where('is_sent', 0)->paginate(50);
+        $created_by = auth()->user()->id;
+        $not_sent = Consultation::where('is_sent', 0)->where('created_by', $created_by)->paginate(50);
         return view('exports.new_edited_consultation_review')->with('consultations', $not_sent);
     }
 
