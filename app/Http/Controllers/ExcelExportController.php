@@ -94,7 +94,8 @@ class ExcelExportController extends Controller
 
 
         if ($request->input('action') == 'export') {
-            return Excel::download(new ConsultationExport($all_con_arr, $changes), 'konsultacijos.xlsx');
+            $excel_header = 'Ataskaita apie būsimas konsultacijas';
+            return Excel::download(new ConsultationExport($all_con_arr, $changes, $excel_header), 'konsultacijos.xlsx');
         } elseif ($request->input('action') == 'send') {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
             Mail::to($emails_arr)->send(new ConsultationMail($all_con_arr, $changes));
