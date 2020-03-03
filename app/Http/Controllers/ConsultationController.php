@@ -265,8 +265,8 @@ class ConsultationController extends Controller
             'theme' => $consultation->theme->name  . "\n(" . $consultation->user->name . ")",
             'address' => $consultation->address . "\n" . $county_list[$consultation->county],
             'consultation_date' => str_replace("-", ".", $consultation->consultation_date),
-            'consultation_start' => " ", //siunciam tuscia, kad konsultacija neivyks
-            'consultation_length' => $consultation->consultation_length,
+            'consultation_start' => $consultation->consultation_time, //siunciam tuscia, kad konsultacija neivyks
+            'consultation_length' => " ",
             'method' => $consultation->method,
         ];
 

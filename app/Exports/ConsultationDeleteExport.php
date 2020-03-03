@@ -145,7 +145,7 @@ class ConsultationDeleteExport extends DefaultValueBinder implements WithHeading
                 $event->sheet->getStyle('A7:I'.$highestRow)->getAlignment()->setWrapText(true);
                 $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray4);
                 $event->sheet->getStyle('A7:I'.$highestRow)->applyFromArray($styleArray3);
-                $event->sheet->getStyle('G8')->applyFromArray($color_array_deleted);
+                $event->sheet->getStyle('H8')->applyFromArray($color_array_deleted);
             },
         ];
     }
