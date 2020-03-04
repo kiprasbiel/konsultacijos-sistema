@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -12,8 +13,9 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Cell\DefaultValueBinder;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class ConsultationExport extends DefaultValueBinder implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder
+class ConsultationExport extends DefaultValueBinder implements WithHeadings, FromArray, WithEvents, ShouldAutoSize, WithCustomValueBinder, WithColumnFormatting
 {
     protected $data;
     protected $updated_data;
@@ -34,6 +36,13 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
 
         // else return default behavior
         return parent::bindValue($cell, $value);
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'H' => NumberFormat::FORMAT_DATE_TIME4,
+        ];
     }
 
     public function array(): array {
