@@ -10,10 +10,11 @@
         <div class="col-md-5">
             <div class="card">
                 <div class="card-header">
-                    <h2>Mėnesio ataskaitos konfigūravimas</h2>
+                    <h2 class="float-left">Mėnesio ataskaitos konfigūravimas</h2>
+                    <button id="prefill-button" type="button" class="btn btn-success float-right" data-toggle="tooltip" data-placement="right" title="Užpildyti formą siuntimui"><i class="fas fa-check-square"></i></button>
                 </div>
                 <div class="card-body">
-                    {!! Form::open(['action' => 'ExcelExportController@configure', 'method' => 'POST']) !!}
+                    {!! Form::open(['action' => 'ExcelExportController@configure', 'method' => 'POST', 'id' => 'con-month-exp-form']) !!}
 
                     <div class="row mb-3">
                         <div class="col-md">
@@ -135,12 +136,6 @@
             </div>
         </div>
     </div>
-
-    {{--    <div class="row">--}}
-    {{--        <div class="col-md-6">--}}
-    {{--            <h1>Mėnesio ataskaitos konfigūravimas</h1>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
 
 
 @endsection

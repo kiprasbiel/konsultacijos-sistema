@@ -21,13 +21,39 @@ jQuery(document).ready(function($){
         $('#import-submit').attr('disabled', true);
     }
 
-    $('#con_payment').change(function () {
-        if ($(this).val() == 2){
-            $('#send_month').css('display', 'none');
+    //Exports JS checking
+    $("input[name='con-date']").change(function () {
+        if ($("#con-date1").is(":checked")){
+            $("#con_payment2").attr("disabled", true);
         }
         else {
-            $('#send_month').css('display', 'block');
+            $("#con_payment2").attr("disabled", false);
         }
-
     });
+
+    $("input[name='con_payment']").change(function () {
+        //If selecting Neapmoketos kons
+        if ($("#con_payment2").is(":checked")){
+            $("#con-date1").attr("disabled", true);
+        }
+        else {
+            $("#con-date1").attr("disabled", false);
+        }
+    });
+
+    $("#con-month-exp-form").change(function () {
+        if ($("#is-sent1").is(":checked") && $("#con_payment1").is(":checked") && $("#con-date1").is(":checked")){
+            $("#send_month").attr("disabled", false);
+        }
+        else {
+            $("#send_month").attr("disabled", true);
+        }
+    });
+
+    $("#prefill-button").click(function () {
+        $("#is-sent1").attr("checked", true);
+        $("#con_payment1").attr("checked", true);
+        $("#con-date1").attr("checked", true);
+    })
+
 });
