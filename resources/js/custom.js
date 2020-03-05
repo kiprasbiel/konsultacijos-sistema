@@ -54,6 +54,6 @@ jQuery(document).ready(function($){
         $("#is-sent1").attr("checked", true);
         $("#con_payment1").attr("checked", true);
         $("#con-date1").attr("checked", true);
-    })
-
+        $("#send_month").attr("disabled", false);
+    });
 });
