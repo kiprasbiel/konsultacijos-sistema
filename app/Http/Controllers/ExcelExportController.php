@@ -118,6 +118,7 @@ class ExcelExportController extends Controller
                 ->whereDoesntHave('consultation_meta', function ($query){
                     $query->where('type', 'draft_changes');
                 })
+                ->orderBy('client_id', 'desc')
                 ->get();
         }
         else{
@@ -128,6 +129,7 @@ class ExcelExportController extends Controller
                 ->whereDoesntHave('consultation_meta', function ($query){
                     $query->where('type', 'draft_changes');
                 })
+                ->orderBy('client_id', 'desc')
                 ->get();
         }
 
