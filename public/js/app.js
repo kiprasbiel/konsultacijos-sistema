@@ -37017,21 +37017,6 @@ jQuery(document).ready(function ($) {
     } else {
       $("#con-date1").attr("disabled", false);
     }
-  }); //Exports JS checking
-
-  $("input[name='con-date']").change(function () {
-    if ($("#con-date1").is(":checked")) {
-      $("#con_payment2").attr("disabled", true);
-    } else {
-      $("#con_payment2").attr("disabled", false);
-    }
-  });
-  $("input[name='con_payment']").change(function () {
-    if ($("#con_payment2").is(":checked")) {
-      $("#con-date1").attr("disabled", true);
-    } else {
-      $("#con-date1").attr("disabled", false);
-    }
   });
   $("#con-month-exp-form").change(function () {
     if ($("#is-sent1").is(":checked") && $("#con_payment1").is(":checked") && $("#con-date1").is(":checked")) {
@@ -37041,9 +37026,11 @@ jQuery(document).ready(function ($) {
     }
   });
   $("#prefill-button").click(function () {
-    $("#is-sent1").attr("checked", true);
-    $("#con_payment1").attr("checked", true);
-    $("#con-date1").attr("checked", true);
+    $("#send_month").attr("disabled", false);
+    $("#con-date1").attr("disabled", false);
+    document.getElementById("is-sent1").checked = true;
+    document.getElementById("con_payment1").checked = true;
+    document.getElementById("con-date1").checked = true;
   });
 });
 
