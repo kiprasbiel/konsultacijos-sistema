@@ -119,6 +119,7 @@ class ExcelExportController extends Controller
                     $query->where('type', 'draft_changes');
                 })
                 ->orderBy('client_id', 'desc')
+                ->orderBy('consultation_date')
                 ->get();
         }
         else{
@@ -130,6 +131,7 @@ class ExcelExportController extends Controller
                     $query->where('type', 'draft_changes');
                 })
                 ->orderBy('client_id', 'desc')
+                ->orderBy('consultation_date')
                 ->get();
         }
 
@@ -241,7 +243,6 @@ class ExcelExportController extends Controller
     }
 
     public function configure(Request $request) {
-        dd($request->input());
         $data = $this->validate($request, [
             'ex-date' => 'required',
             'con_payment' => 'required',
