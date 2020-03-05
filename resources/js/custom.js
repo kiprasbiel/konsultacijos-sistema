@@ -30,4 +30,23 @@ jQuery(document).ready(function($){
         }
 
     });
+
+    //Exports JS checking
+    $("input[name='con-date']").change(function () {
+        if ($("#con-date1").is(":checked")){
+            $("#con_payment2").attr("disabled", true);
+        }
+        else {
+            $("#con_payment2").attr("disabled", false);
+        }
+    });
+
+    $("input[name='con_payment']").change(function () {
+        if ($("#con_payment2").is(":checked")){
+            $("#con-date1").attr("disabled", true);
+        }
+        else {
+            $("#con-date1").attr("disabled", false);
+        }
+    });
 });

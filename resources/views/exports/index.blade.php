@@ -136,12 +136,6 @@
         </div>
     </div>
 
-    {{--    <div class="row">--}}
-    {{--        <div class="col-md-6">--}}
-    {{--            <h1>Mėnesio ataskaitos konfigūravimas</h1>--}}
-    {{--        </div>--}}
-    {{--    </div>--}}
-
 
 @endsection
 
