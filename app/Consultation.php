@@ -32,7 +32,7 @@ class Consultation extends Model
     }
 
     /**
-     * Returns consultation end time
+     * Returns consultation end datetime
      * including breaks
      * @return \Carbon\Carbon
      */
