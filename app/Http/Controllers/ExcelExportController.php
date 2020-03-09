@@ -38,7 +38,10 @@ class ExcelExportController extends Controller
             $selection = Consultation::wherein('id', $request->input('send'))
                 ->whereHas('theme', function ($query) use ($theme) {
                     $query->where('main_theme', $theme);
-                })->get();
+                })
+                ->orderBy('consultation_date', 'asc')
+                ->orderBy('consultation_time', 'asc')
+                ->get();
             if ($selection->count() > 0) {
                 $total += $selection->count();
                 $big_arr[$theme] = $selection->toArray();
