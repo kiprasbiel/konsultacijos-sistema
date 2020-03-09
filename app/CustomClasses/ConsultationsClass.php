@@ -22,7 +22,12 @@ class ConsultationsClass
     }
 
     public function con_end_datetime($con_start_time, $con_start_date, $con_len){
-        $con_start_date = Carbon::createFromFormat('Y-m-d H:i:s', $con_start_date . ' ' . $con_start_time);
+        if (substr_count($con_start_time, ':') == 1){
+            $con_start_date = Carbon::createFromFormat('Y-m-d H:i', $con_start_date . ' ' . $con_start_time);
+        }
+        else{
+            $con_start_date = Carbon::createFromFormat('Y-m-d H:i:s', $con_start_date . ' ' . $con_start_time);
+        }
         $con_len_time = CarbonInterval::createFromFormat('H:i', $con_len);
         return $con_start_date->add($con_len_time);
     }
