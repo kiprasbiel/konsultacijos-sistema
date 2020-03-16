@@ -2,7 +2,7 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header')
-            VŠĮ Promas
+            VŠĮ "Promas LT"
         @endcomponent
     @endslot
 
@@ -20,7 +20,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            {{ date('Y') }} VŠĮ Promas
+            {{ date('Y') }} VŠĮ "Promas LT"
         @endcomponent
     @endslot
 @endcomponent
