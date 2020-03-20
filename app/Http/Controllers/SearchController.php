@@ -47,7 +47,8 @@ class SearchController extends Controller
         $full_array = [];
 
         if (!is_null($request->vkt)){
-            $themes_vkt = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->vkt .'"');
+//            $themes_vkt = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->vkt .'"');
+            $themes_vkt = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "VKT"');
             $tarpinis_vkt = [];
             foreach ($themes_vkt as $theme_vkt){
                 $vidus = [
@@ -61,7 +62,8 @@ class SearchController extends Controller
         }
 
         if (!is_null($request->expo)){
-            $themes_expo = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->expo .'"');
+//            $themes_expo = DB::select('SELECT * FROM `themes` WHERE `type` = "' . $request->expo .'"');
+            $themes_expo = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "EXPO"');
             $tarpinis_expo = [];
             foreach ($themes_expo as $theme_expo){
                 $vidus = [
