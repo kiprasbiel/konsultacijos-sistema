@@ -9,6 +9,7 @@ use App\Mail\ConsultationMonth;
 use App\Option;
 use App\Theme;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 Use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Mail;
@@ -16,6 +17,7 @@ use App\Mail\ConsultationMail;
 use App\Consultation;
 use App\User;
 use App\Client;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 
 class ExcelExportController extends Controller
@@ -72,6 +74,15 @@ class ExcelExportController extends Controller
                     $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
                 }
 
+                // Laiko apskaiciavimas
+                try {
+                    $timestamp = new DateTime($data['consultation_length']);
+                } catch (\Exception $e) {
+                    dd($e);
+                }
+                $excelTimestamp = Date::PHPToExcel($timestamp);
+                $excelDate = floor($excelTimestamp);
+                $time = $excelTimestamp - $excelDate;
 
                 $new_data = [
                     'company_id' => Client::find($data['client_id'])->name,
@@ -80,7 +91,7 @@ class ExcelExportController extends Controller
                     'address' => $data['address'] . "\n" . $county_list[$data['county']],
                     'consultation_date' => str_replace("-", ".", $data['consultation_date']),
                     'consultation_start' => $consultation_start_str,
-                    'consultation_length' => $data['consultation_length'],
+                    'consultation_length' => $time,
                     'method' => $data['method'],
                 ];
 
@@ -94,7 +105,6 @@ class ExcelExportController extends Controller
 
         //Nera jokiu pokyciu
         $changes = [];
-
 
         if ($request->input('action') == 'export') {
             $excel_header = Option::where('name', 'new_excel_header')->value('value');

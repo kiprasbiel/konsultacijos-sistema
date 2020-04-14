@@ -27,21 +27,10 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
         $this->header = $excel_header;
     }
 
-    public function bindValue(Cell $cell, $value) {
-        if (is_numeric($value)) {
-            $cell->setValueExplicit($value, DataType::TYPE_STRING);
-
-            return true;
-        }
-
-        // else return default behavior
-        return parent::bindValue($cell, $value);
-    }
-
     public function columnFormats(): array
     {
         return [
-            'H' => NumberFormat::FORMAT_DATE_TIME4,
+            'H' => NumberFormat::FORMAT_DATE_TIME6,
         ];
     }
 
