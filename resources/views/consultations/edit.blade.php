@@ -20,7 +20,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('company_id', 'Įmonės pavadinimas')}}
-                {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id_not_editable', 'readonly'])}}
+                {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id_not_editable'])}}
+{{--                {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id_not_editable', 'readonly'])}}--}}
             </div>
         </div>
         <div class="col-md-4">
@@ -32,7 +33,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('theme', 'Tema')}}
-                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable', 'readonly'])}}
+                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable'])}}
+{{--                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable', 'readonly'])}}--}}
             </div>
         </div>
     </div>
