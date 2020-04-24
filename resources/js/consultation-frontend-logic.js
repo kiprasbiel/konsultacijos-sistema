@@ -1,27 +1,11 @@
 jQuery(document).ready(function ($) {
     $('#reg_county').select2();
 
-    if(($("#company_id").val())){
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: 'post',
-            url: '/theme-list-update',
-            data: {'company_id': $("#company_id").val()},
-            success: function (data) {
-                return data;
-            }
-        });
-    }
-
-
-
     $('#company_id').select2({
         placeholder: "Veskite pavadinimą...",
         minimumInputLength: 3,
         ajax: {
-            type: 'post',
+            type: 'get',
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
@@ -34,9 +18,7 @@ jQuery(document).ready(function ($) {
                 };
             },
             processResults: function (data) {
-
                 return {
-
                     results: data
                 };
             },
@@ -56,7 +38,7 @@ jQuery(document).ready(function ($) {
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                type: 'post',
+                type: 'get',
                 url: '/themesearch',
                 data: {
                     'theme': klientas[0].con_type,

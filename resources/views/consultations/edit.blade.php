@@ -6,7 +6,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
 @section('head-content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <link href="{{ asset('css/select2.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js" defer></script>
 @endsection
 
 @section('content')
@@ -20,8 +21,9 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('company_id', 'Įmonės pavadinimas')}}
-                {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id_not_editable'])}}
-{{--                {{Form::select('company_id', [$consultation->client->id => $consultation->client->name], $consultation->client->name, ['class' => 'form-control', 'id' => 'company_id_not_editable', 'readonly'])}}--}}
+                <select name="company_id" id="company_id" class="form-control">
+                    <option selected value="{{$consultation->client->id}}">{{$consultation->client->name}}</option>
+                </select>
             </div>
         </div>
         <div class="col-md-4">
@@ -33,7 +35,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('theme', 'Tema')}}
-                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable'])}}
+{{--                {{Form::select('theme', [], null, ['class' => 'form-control select2 theme', 'id' => 'theme'])}}--}}
+                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme'])}}
 {{--                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable', 'readonly'])}}--}}
             </div>
         </div>
@@ -111,6 +114,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
-    <script src="{{ asset('js/select2.js') }}" defer></script>
-    <script src="{{ asset('js/formValidation.js') }}" defer></script>
+{{--    <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>--}}
+    <script src="{{ asset('js/consultation-edit.js') }}" defer></script>
 @endsection

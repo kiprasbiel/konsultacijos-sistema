@@ -21,8 +21,9 @@ Route::resource('konsultacijos', 'ConsultationController');
 Route::resource('klientai', 'ClientController');
 
 //Ajax paieska
-Route::post('/search','SearchController@search')->name('search');
-Route::post('/themesearch','SearchController@themeSearch');
+Route::get('/search','SearchController@search')->name('search');
+Route::get('/search/{id}','SearchController@searchid');
+Route::get('/themesearch','SearchController@themeSearch');
 Route::post('/theme-list-update','SearchController@themeListSearch');
 
 //Paprasta paieska

@@ -19,7 +19,6 @@ class SearchController extends Controller
 
     //Ajax gauti imones slect laukeliui konsultacijos pasirinkime
     public function search(Request $request){
-
         $term = trim($request->q);
         if (empty($term)) {
             return Response::json([]);
@@ -32,13 +31,28 @@ class SearchController extends Controller
                 'text' => $client->name,
                 'code' => $client->code,
                 'company_reg_date' => $client->company_reg_date,
-                'con_type' => $client->con_type,
                 'contacts' => $client->contacts,
                 'vkt' => $client->vkt,
                 'expo' => $client->expo,
                 'eco' => $client->eco,
             ];
         }
+        return Response::json($formatted_clients);
+    }
+
+    public function searchid($id){
+        $client = Client::find($id);
+//        $formatted_clients = [];
+        $formatted_clients = [
+            'id' => $client->id,
+            'text' => $client->name,
+            'code' => $client->code,
+            'company_reg_date' => $client->company_reg_date,
+            'contacts' => $client->contacts,
+            'vkt' => $client->vkt,
+            'expo' => $client->expo,
+            'eco' => $client->eco,
+        ];
         return Response::json($formatted_clients);
     }
 
@@ -92,59 +106,4 @@ class SearchController extends Controller
         return $full_array;
 
     }
-
-    //Konsultaciju paieska
-//    public function consultation_search(Request $request){
-//        $user_id = auth()->user()->id;
-//        $unsent = Consultation::where('user_id', $user_id)->where('is_sent', 0)->count();
-//
-//        $consultations = Consultation::whereHas('client', function ($query) use ($request){
-//            $query->where('name', 'like', "%{$request->paieska}%");
-//        })->where('user_id', $user_id)->orderBy('id', 'desc')->paginate(50);
-//
-//        return view('consultations.index')->with('consultations', $consultations)->with('unsent', $unsent);
-//    }
-//
-//    //Klientu paieska
-//    public function client_search(Request $request){
-//        $clients =  Client::orderBy('created_at', 'desc')->where('name', 'like', "%{$request->paieska}%")->paginate(50);
-//        return view('clients.index')->with('clients', $clients);
-//    }
-
-    public function themeListSearch(Request $request){
-        $id = $request->company_id;
-        $clients = Client::select('company_reg_date', 'con_type')->where('id', $id)->get();
-        foreach ($clients as $client){
-            $main_theme = $client->con_type;
-
-            $ivestaData = date_create($client->company_reg_date);
-            $esamaData = date("Y-m-d");
-//            $how_old = ($esamaData - $ivestaData) / 1000 / 60 / 60 / 24 / 365;
-            $how_old = date_diff($ivestaData, $esamaData);
-            return date_format($how_old, 'Y');
-            $themes = DB::select('SELECT * FROM `themes` WHERE `main_theme` = "' . $main_theme .'" AND ((`min_old` < '. $how_old . ' AND `max_old`> '. $how_old . ') OR (ISNULL(`min_old`) AND `max_old`> '. $how_old . ') OR (`min_old` < '. $how_old . ' AND ISNULL(`max_old`)) OR (ISNULL(`min_old`) AND ISNULL(`max_old`)))');
-        }
-        return $themes;
-    }
-
-//    public function tableSearchColumn(Request $request){
-//        dd($request->input());
-//        $className = 'App\\'.$request->model;
-//
-//        if (strpos($request->column, '.') !== false){
-//            $column_explode = explode('.', $request->column);
-//            $model_realtion = $column_explode[0];
-//            $model_realtion_column = $column_explode[1];
-//
-//            $model_list = $className::whereHas($model_realtion, function ($query) use ($request, $model_realtion_column){
-//                $query->where($model_realtion_column, 'like', "%{$request->paieska}%");
-//            })->orderBy('id', 'desc')->paginate(50);
-//        }
-//        else{
-//            $model_list = $className::where($request->column, $request->paieska)->orderBy('id', 'desc')->paginate(50);
-//        }
-//
-//        return view('consultations.index')->with('consultations', $model_list)->with('unsent', $unsent);
-//
-//    }
 }
