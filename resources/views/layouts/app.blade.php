@@ -29,7 +29,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a id="consultations" class="nav-link" href="/klientai" role="button">
+                            <a id="clients" class="nav-link" href="/klientai" role="button">
                                 Klientai
                             </a>
                         </li>
