@@ -73,6 +73,19 @@ class Consultation extends Model
         }
     }
 
+    /**
+     * @return bool
+     */
+    public function has_breaks(){
+        $break_raw = Consultation_meta::where('consultation_id', $this->id)->where('type', 'consultation_break')->get()->toArray();
+        if (!empty($break_raw)){
+            return json_decode($break_raw[0]['value']);
+        }
+        else{
+            return false;
+        }
+    }
+
     public function client(){
         return $this->belongsTo(Client::class);
     }

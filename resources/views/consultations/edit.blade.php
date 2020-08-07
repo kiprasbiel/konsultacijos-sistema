@@ -6,7 +6,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 
 @section('head-content')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js" defer></script>
 @endsection
 
@@ -35,9 +35,7 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('theme', 'Tema')}}
-{{--                {{Form::select('theme', [], null, ['class' => 'form-control select2 theme', 'id' => 'theme'])}}--}}
                 {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme'])}}
-{{--                {{Form::select('theme', [$consultation->theme->id => $consultation->theme->name], $consultation->theme->name, ['class' => 'form-control ', 'id' => 'theme_not_editable', 'readonly'])}}--}}
             </div>
         </div>
     </div>
@@ -81,18 +79,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
-            <div class="row">
-                <div class="col-8 col-sm-5 form-group">
-                    {{Form::label('break_start', 'Pertraukos pradžia')}}
-                    {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                </div>
-                <div class="col-4 col-sm-5 form-group">
-                    {{Form::label('break_end', 'Pertraukos pabaiga')}}
-                    {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                </div>
-            </div>
-        </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('method', 'Metodas')}}
@@ -100,11 +86,45 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             </div>
         </div>
     </div>
+
+    @if($breaks = $consultation->has_breaks())
+        @foreach($breaks as $break)
+            <div class="row" id="break-{{$loop->index}}">
+                <div class="col-sm-4">
+                    <div class="row">
+                        <div class="col-8 col-sm-5 form-group">
+                            <label>
+                                Pertraukos pradžia
+                                <input class="form-control" name="break[{{$loop->index}}][]" type="text" value="{{$break->break_start}}" placeholder="00:00">
+                            </label>
+                        </div>
+                        <div class="col-4 col-sm-5 form-group">
+                            <label>
+                                Pertraukos pabaiga
+                                <input class="form-control" name="break[{{$loop->index}}][]" type="text" value="{{$break->break_end}}" placeholder="00:00">
+                            </label>
+                        </div>
+                        <div class="col-2 col-sm-2 form-group pt-4 pl-0">
+                            <button type="submit" class="btn aw-trash-button"><i class="fas fa-minus-circle aw-minus-circle-red"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    @endif
+
+    <button type="button" class="btn btn-primary">Pridėti pertrauką</button>
+
     {{Form::hidden('_method', 'PUT')}}
     <div class="row">
         <div class="col-md">
-            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="update" onclick="return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')">Atnaujinti ir paskelbti</button>
-            <button class="btn btn-secondary float-right mx-1 aw-a-button" type="submit" name="action" value="draft">Išsaugoti kaip juodraštį</button>
+            <button class="btn btn-primary float-right mx-1" type="submit" name="action" value="update"
+                    onclick="return confirm('Ar tikrai norite išsiųsti atnaujintą konsultaciją?')">Atnaujinti ir
+                paskelbti
+            </button>
+            <button class="btn btn-secondary float-right mx-1 aw-a-button" type="submit" name="action" value="draft">
+                Išsaugoti kaip juodraštį
+            </button>
         </div>
     </div>
 
@@ -114,6 +134,5 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
-{{--    <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>--}}
     <script src="{{ asset('js/consultation-edit.js') }}" defer></script>
 @endsection
