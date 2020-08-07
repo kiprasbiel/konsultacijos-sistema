@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\CustomClasses\ConsultationsClass;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use DateTime;
@@ -65,9 +64,6 @@ class Consultation extends Model
      * @throws Exception
      */
     public function is_con_over(){
-//        $con_class = new ConsultationsClass();
-//        return $con_class->is_con_over($this->con_end_datetime());
-
         $now = Carbon::now('Europe/Vilnius');
         if ($this->con_end_datetime()->greaterThan($now)){
             return false;
