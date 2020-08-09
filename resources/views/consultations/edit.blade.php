@@ -95,17 +95,17 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                         <div class="col-8 col-sm-5 form-group">
                             <label>
                                 Pertraukos pradžia
-                                <input class="form-control" name="break[{{$loop->index}}][]" type="text" value="{{$break->break_start}}" placeholder="00:00">
+                                <input class="form-control" name="break[{{$loop->index}}][break_start]" type="text" value="{{$break->break_start}}" placeholder="00:00">
                             </label>
                         </div>
                         <div class="col-4 col-sm-5 form-group">
                             <label>
                                 Pertraukos pabaiga
-                                <input class="form-control" name="break[{{$loop->index}}][]" type="text" value="{{$break->break_end}}" placeholder="00:00">
+                                <input class="form-control" name="break[{{$loop->index}}][break_end]" type="text" value="{{$break->break_end}}" placeholder="00:00">
                             </label>
                         </div>
                         <div class="col-2 col-sm-2 form-group pt-4 pl-0">
-                            <button type="submit" class="btn aw-trash-button"><i class="fas fa-minus-circle aw-minus-circle-red"></i></button>
+                            <button type="button" id="remove-break-{{$loop->index}}" class="btn aw-trash-button"><i class="fas fa-minus-circle aw-minus-circle-red"></i></button>
                         </div>
                     </div>
                 </div>

@@ -174,16 +174,18 @@ class ConsultationController extends Controller
             'consultation_start' => 'required',
             'method' => 'required',
             'user_id' => 'required',
-            'break_start' => 'required_with:break_end',
-            'break_end' => 'required_with:break_start',
+            'break' => ['nullable', 'array'],
         ]);
-//        dd($request->input());
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
 
         $consultation_start = explode(":", $data['consultation_start']);
-        if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
-            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
+        //TODO: Reikia kad i excel rasytu tinkamai pertraukas
+        if (true) {
+//        if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
+            //TODO: Laikina eilute. Neraso i excel pertrauku
+            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+//            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
         } else {
             $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
         }
@@ -210,8 +212,30 @@ class ConsultationController extends Controller
         $consultation->consultation_time = $request->input('consultation_start');
         $consultation->consultation_length = $request->input('consultation_length');
         $consultation->method = $request->input('method');
-        $consultation->break_start = $request->input('break_start');
-        $consultation->break_end = $request->input('break_end');
+
+        // Get consultation breaks
+        if ($request->input('break')){
+            $breaks = $request->input('break');
+            foreach ($breaks as $key=>$break){
+                foreach ($break as $single_time){
+                    if(!$single_time){
+                        unset($breaks[$key]);
+                        break;
+                    }
+                }
+            }
+            if (!empty($breaks)){
+                $consultation->consultation_meta()->where('type', 'consultation_break')->delete();
+                $json = json_encode($request->input('break'));
+                $consultation->consultation_meta()->updateOrCreate([
+                    'type' => 'consultation_break',
+                    'value' => $json,
+                ]);
+            }
+
+        }
+//        $consultation->break_start = $request->input('break_start');
+//        $consultation->break_end = $request->input('break_end');
 
         //Gaunami laukai, kurie pasikeite
         $changes = array_keys($consultation->getDirty());
