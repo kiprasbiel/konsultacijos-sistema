@@ -179,15 +179,26 @@ class ConsultationController extends Controller
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
 
+        // Break validation
+        if ($request->input('break')){
+            $breaks = $request->input('break');
+            foreach ($breaks as $key=>$break){
+                foreach ($break as $single_time){
+                    if(!$single_time){
+                        unset($breaks[$key]);
+                        break;
+                    }
+                }
+            }
+
+        }
         $consultation_start = explode(":", $data['consultation_start']);
         //TODO: Reikia kad i excel rasytu tinkamai pertraukas
-        if (true) {
-//        if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
-            //TODO: Laikina eilute. Neraso i excel pertrauku
-            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
-//            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
-        } else {
-            $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+        $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+        if (!empty($breaks)) {
+            foreach($breaks as $single_break){
+                $consultation_start_str = $consultation_start_str . "\nPertrauka " . date("H:i", strtotime($single_break['break_start'])) . "-" . date("H:i", strtotime($single_break['break_end']));
+            }
         }
 
         $new_data = [
@@ -213,38 +224,29 @@ class ConsultationController extends Controller
         $consultation->consultation_length = $request->input('consultation_length');
         $consultation->method = $request->input('method');
 
-        // Get consultation breaks
-        if ($request->input('break')){
-            $breaks = $request->input('break');
-            foreach ($breaks as $key=>$break){
-                foreach ($break as $single_time){
-                    if(!$single_time){
-                        unset($breaks[$key]);
-                        break;
-                    }
-                }
-            }
-            if (!empty($breaks)){
-                $consultation->consultation_meta()->where('type', 'consultation_break')->delete();
-                $json = json_encode($request->input('break'));
-                $consultation->consultation_meta()->updateOrCreate([
-                    'type' => 'consultation_break',
-                    'value' => $json,
-                ]);
-            }
-
-        }
-//        $consultation->break_start = $request->input('break_start');
-//        $consultation->break_end = $request->input('break_end');
-
         //Gaunami laukai, kurie pasikeite
         $changes = array_keys($consultation->getDirty());
+
+        // Get consultation breaks
+
+        if (!empty($breaks)){
+            $consultation->consultation_meta()->where('type', 'consultation_break')->delete();
+            $json = json_encode($request->input('break'));
+            $meta_cahnges = $consultation->consultation_meta()->create([
+                'type' => 'consultation_break',
+                'value' => $json,
+            ]);
+            array_push($changes, 'break');
+        }
+
+
         if (empty($changes) && $consultation->consultation_meta->where('type', 'draft_changes')->first() == null) {
             return redirect('/konsultacijos')->with('notice', 'Konsultacija neišsiųsta/neatnaujinta, nes niekas nebuvo pakeista.');
         } elseif (empty($changes) && $consultation->consultation_meta->where('type', 'draft_changes')->first() != null) {
             $values = $consultation->consultation_meta->where('type', 'draft_changes')->first()->value;
             $changes = explode(', ', $values);
         }
+
 
         $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
 
@@ -268,9 +270,11 @@ class ConsultationController extends Controller
         }
 
         if ($request->input('action') == 'update') {
-            if ($consultation->consultation_meta->first() !== null){
-                $this->destroy_meta($consultation->consultation_meta->first()->id);
-            }
+            $consultation->consultation_meta()->where('type', 'draft_changes')->delete();
+//            if ($consultation->consultation_meta->where('type', 'draft_changes')->first() !== null){
+//
+////                $this->destroy_meta($consultation->consultation_meta->first()->id);
+//            }
         }
         $consultation->save();
 
@@ -301,6 +305,8 @@ class ConsultationController extends Controller
             Mail::to($emails_arr)->send(new ConsultationDeleteMail($data, $con_main_theme));
         }
 
+        //TODO: patikrinti ar veikia
+        $consultation->consultation_meta()->delete();
         $consultation->delete();
 
         return redirect('/konsultacijos')->with('success', 'Konsultacija ištrinta.');
@@ -330,10 +336,10 @@ class ConsultationController extends Controller
         $consultation_meta->save();
     }
 
-    public function destroy_meta($id) {
-        $consultation_meta = Consultation_meta::find($id);
-        $consultation_meta->delete();
-    }
+//    public function destroy_meta($id) {
+//        $consultation_meta = Consultation_meta::find($id);
+//        $consultation_meta->delete();
+//    }
 
     public static function color_index_table($id, $column) {
         $consultation_meta = Consultation_meta::where('consultation_id', $id)

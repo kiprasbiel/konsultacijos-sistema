@@ -119,8 +119,7 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
             'consultation_length' => 'H',
             'method' => 'I',
             'county' => 'E',
-            'break_start' => 'G',
-            'break_end' => 'G',
+            'break' => 'G',
             'user_id' => 'D'
         ];
 
