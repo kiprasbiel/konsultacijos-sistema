@@ -86,18 +86,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-8 col-sm-5 form-group">
-                            {{Form::label('break_start', 'Pertraukos pradžia')}}
-                            {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                        </div>
-                        <div class="col-4 col-sm-5 form-group">
-                            {{Form::label('break_end', 'Pertraukos pabaiga')}}
-                            {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                        </div>
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}
@@ -107,6 +95,42 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             </div>
         </div>
     </div>
+
+    <div id="break_container">
+        @if($breaks = $consultation->has_breaks())
+            @foreach($breaks as $break)
+                <div class="row aw_break_row" id="break-{{$loop->index}}">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-8 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pradžia
+                                    <input class="form-control break-start-field"
+                                           name="break[{{$loop->index}}][break_start]" type="text"
+                                           value="{{$break->break_start}}" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-4 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pabaiga
+                                    <input class="form-control break-end-field"
+                                           name="break[{{$loop->index}}][break_end]" type="text"
+                                           value="{{$break->break_end}}" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-2 col-sm-2 form-group pt-4 pl-0">
+                                <button type="button" value="{{$loop->index}}" id="remove-break-{{$loop->index}}"
+                                        class="btn aw-trash-button aw_remove_break"><i
+                                        class="fas fa-minus-circle aw-minus-circle-red"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+    <button id="aw_add_additional_break" type="button" class="btn btn-primary">Pridėti pertrauką</button>
+
     <div class="row">
         <div class="col-md">
             <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action"
@@ -127,6 +151,61 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
     <script>
         jQuery(document).ready(function ($) {
             $(".alert-info.alert").first().hide().fadeIn(500).delay(2000).fadeOut(1000);
+        });
+    </script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            // Removing rows
+            $("#break_container").on('click', '.aw_remove_break', function () {
+                const value = $(this).val();
+                $("#break-" + value).remove();
+            });
+            let template_row = $('.aw_break_row');
+            let currant_index = template_row.size();
+            // Adding rows
+            $('#aw_add_additional_break').click(function () {
+
+                if (template_row.size() === 0) {
+                    let new_template_row = `
+                    <div class="row aw_break_row" id="break-0">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-8 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pradžia
+                                    <input class="form-control break-start-field" name="break[0][break_start]" type="text"
+                                           value="" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-4 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pabaiga
+                                    <input class="form-control break-end-field" name="break[0][break_end]" type="text"
+                                           value="" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-2 col-sm-2 form-group pt-4 pl-0">
+                                <button type="button" value="0" id="remove-break-0"
+                                        class="btn aw-trash-button aw_remove_break"><i
+                                        class="fas fa-minus-circle aw-minus-circle-red"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+                    $('#break_container').html(new_template_row);
+                }
+                else {
+                    let new_row = template_row.last().clone();
+                    new_row.attr('id', 'break-' + currant_index);
+                    new_row.find('.aw_remove_break').attr('id', 'remove-break-' + currant_index).val(currant_index);
+                    new_row.find('.break-start-field').val('').attr('name', 'break[' + currant_index + '][break_start]');
+                    new_row.find('.break-end-field').val('').attr('name', 'break[' + currant_index + '][break_end]');
+                    new_row.appendTo('#break_container');
+                }
+                currant_index++;
+            });
         });
     </script>
 @endsection

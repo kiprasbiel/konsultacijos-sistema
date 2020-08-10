@@ -132,6 +132,14 @@ class ConsultationController extends Controller
             $success_message = 'Nauja konsultacija sėkmingai sukurta ir laukia išsiuntimo!';
             $consultation->save();
 
+            if (!empty($breaks)){
+                $json = json_encode(array_values($request->input('break')));
+                $consultation->consultation_meta()->create([
+                    'type' => 'consultation_break',
+                    'value' => $json,
+                ]);
+            }
+
             $consultation_id = $consultation->id;
 
             return redirect('/konsultacijos/create')
