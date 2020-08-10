@@ -14,7 +14,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
         <div class="col-md-6">
             <a class="float-right" href="/konsultacijos/{{$consultation->id}}/edit" data-toggle="tooltip"
-               data-placement="top" title="Redaguoti konsultaciją"><span class="icons"><i class="far fa-edit"></i></span>
+               data-placement="top" title="Redaguoti konsultaciją"><span class="icons"><i
+                        class="far fa-edit"></i></span>
             </a>
             {{Form::open(['action' => ['ConsultationController@destroy', $consultation->id], 'method' => 'POST'])}}
             {{Form::hidden('_method', 'DELETE')}}
@@ -82,18 +83,6 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
-            <div class="row">
-                <div class="col-8 col-sm-5 form-group">
-                    {{Form::label('break_start', 'Pertraukos pradžia')}}
-                    {{Form::text('break_start', $consultation->break_start,   ['class' => 'form-control', 'placeholder' => '00:00', 'readonly'])}}
-                </div>
-                <div class="col-4 col-sm-5 form-group">
-                    {{Form::label('break_end', 'Pertraukos pabaiga')}}
-                    {{Form::text('break_end', $consultation->break_end,   ['class' => 'form-control', 'placeholder' => '00:00', 'readonly'])}}
-                </div>
-            </div>
-        </div>
         <div class="col-md-4">
             <div class="form-group">
                 {{Form::label('method', 'Metodas')}}
@@ -101,6 +90,36 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             </div>
         </div>
     </div>
+
+    <div id="break_container">
+        @if($breaks = $consultation->has_breaks())
+            @foreach($breaks as $break)
+                <div class="row aw_break_row" id="break-{{$loop->index}}">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-8 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pradžia
+                                    <input readonly class="form-control break-start-field"
+                                           name="break[{{$loop->index}}][break_start]" type="text"
+                                           value="{{$break->break_start}}" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-4 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pabaiga
+                                    <input readonly class="form-control break-end-field"
+                                           name="break[{{$loop->index}}][break_end]" type="text"
+                                           value="{{$break->break_end}}" placeholder="00:00">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
 
 @endsection
 
