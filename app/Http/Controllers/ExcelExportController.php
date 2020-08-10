@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Consultation_meta;
 use App\CustomClasses\ThemeClass;
 use App\Exports\ConsultationExport;
 use App\Exports\ConsultationMonthExport;
@@ -59,6 +60,7 @@ class ExcelExportController extends Controller
             $index = 1;
             $single_theme_cons_arr = [];
             foreach ($all_data as $data) {
+                $meta_value = Consultation_meta::where('consultation_id', $data['id'])->where('type', 'consultation_break')->pluck('value')->first();
                 unset(
                     $data['id'],
                     $data['created_at'],
@@ -68,10 +70,12 @@ class ExcelExportController extends Controller
 
                 $consultation_start = explode(":", $data['consultation_time']);
 
-                if (!is_null($data['break_start']) && !is_null($data['break_end'])) {
-                    $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min." . "\nPertrauka " . date("H:i", strtotime($data['break_start'])) . "-" . date("H:i", strtotime($data['break_end']));
-                } else {
-                    $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+                $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
+                if (!is_null($meta_value)) {
+                    $decoded_json = json_decode($meta_value);
+                    foreach($decoded_json as $single_break){
+                        $consultation_start_str = $consultation_start_str . "\nPertrauka " . date("H:i", strtotime($single_break->break_start)) . "-" . date("H:i", strtotime($single_break->break_end));
+                    }
                 }
 
                 // Laiko apskaiciavimas
