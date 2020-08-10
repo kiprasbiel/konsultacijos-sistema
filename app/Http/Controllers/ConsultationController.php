@@ -87,8 +87,7 @@ class ConsultationController extends Controller
             'consultation_start' => 'required',
             'method' => 'required',
             'user_id' => 'required',
-            'break_start' => 'required_with:break_end',
-            'break_end' => 'required_with:break_start',
+            'break' => ['nullable', 'array'],
         ]);
 
         $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alytaus-r" => "Alytaus r.", "anyksciu-r" => "Anykščių r.", "birstono" => "Birštono", "birzu-r" => "Biržų r.", "druskininku" => "Druskininkų", "elektrenu" => "Elektrėnų", "ignalinos-r" => "Ignalinos r.", "jonavos-r" => "Jonavos r.", "joniskio-r" => "Joniškio r.", "jurbarko-r" => "Jurbarko r.", "kaisiadoriu-r" => "Kaišiadorių r.", "kalvarijos" => "Kalvarijos", "kauno-m" => "Kauno m.", "kauno-r" => "Kauno r.", "kazlu-rudos" => "Kazlų Rūdos", "kelmes-r" => "Kelmės r.", "kedainiu-r" => "Kėdainių r.", "klaipedos-m" => "Klaipėdos m.", "klaipedos-r" => "Klaipėdos r.", "kretingos-r" => "Kretingos r.", "kupiskio-r" => "Kupiškio r.", "lazdiju-r" => "Lazdijų r.", "marijampoles" => "Marijampolės", "mazeikiu-r" => "Mažeikių r.", "moletu-r" => "Molėtų r.", "neringos" => "Neringos", "pagegiu" => "Pagėgių", "pakruojo-r" => "Pakruojo r.", "palangos-m" => "Palangos m.", "panevezio-m" => "Panevėžio m.", "panevezio-r" => "Panevėžio r.", "pasvalio-r" => "Pasvalio r.", "plunges-r" => "Plungės r.", "prienu-r" => "Prienų r.", "radviliskio-r" => "Radviliškio r.", "raseiniu-r" => "Raseinių r.", "rietavo" => "Rietavo", "rokiskio-r" => "Rokiškio r.", "skuodo-r" => "Skuodo r.", "sakiu-r" => "Šakių r.", "salcininku-r" => "Šalčininkų r.", "siauliu-m" => "Šiaulių m.", "siauliu-r" => "Šiaulių r.", "silales-r" => "Šilalės r.", "silutes-r" => "Šilutės r.", "sirvintu-r" => "Širvintų r.", "svencioniu-r" => "Švenčionių r.", "taurages-r" => "Tauragės r.", "telsiu-r" => "Telšių r.", "traku-r" => "Trakų r.", "ukmerges-r" => "Ukmergės r.", "utenos-r" => "Utenos r.", "varenos-r" => "Varėnos r.", "vilkaviskio-r" => "Vilkaviškio r.", "vilniaus-m" => "Vilniaus m.", "vilniaus-r" => "Vilniaus r.", "visagino-m" => "Visagino m.", "zarasu-r" => "Zarasų r."];
@@ -108,8 +107,19 @@ class ConsultationController extends Controller
         $consultation->method = $request->input('method');
         $consultation->is_paid = 0;
         $consultation->created_by = auth()->user()->id;
-        $consultation->break_start = $request->input('break_start');
-        $consultation->break_end = $request->input('break_end');
+
+        // Break validation
+        if ($request->input('break')){
+            $breaks = $request->input('break');
+            foreach ($breaks as $key=>$break){
+                foreach ($break as $single_time){
+                    if(!$single_time){
+                        unset($breaks[$key]);
+                        break;
+                    }
+                }
+            }
+        }
 
         if ($request->input('old') == 'on') {
             $consultation->is_sent = 1;
@@ -133,6 +143,14 @@ class ConsultationController extends Controller
 
         }
         $consultation->save();
+
+        if (!empty($breaks)){
+            $json = json_encode(array_values($request->input('break')));
+            $consultation->consultation_meta()->create([
+                'type' => 'consultation_break',
+                'value' => $json,
+            ]);
+        }
 
         return redirect('/konsultacijos')->with('success', $success_message);
     }
@@ -191,7 +209,6 @@ class ConsultationController extends Controller
                 }
             }
         }
-
 
         $consultation_start = explode(":", $data['consultation_start']);
         $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";

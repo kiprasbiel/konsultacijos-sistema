@@ -81,28 +81,19 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-4">
-                    <div class="row">
-                        <div class="col-8 col-sm-5 form-group">
-                            {{Form::label('break_start', 'Pertraukos pradžia')}}
-                            {{Form::text('break_start', '',   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                        </div>
-                        <div class="col-4 col-sm-5 form-group">
-                            {{Form::label('break_end', 'Pertraukos pabaiga')}}
-                            {{Form::text('break_end', '',   ['class' => 'form-control', 'placeholder' => '00:00'])}}
-                        </div>
-                    </div>
-                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {{Form::label('method', 'Metodas')}}
                         {{Form::select('method', ['Telefonu' => 'Telefonu', 'Skype' => 'Skype', 'Susitikimas' => 'Susitikimas'], null, ['class' => 'form-control method'])}}
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+
+    <div id="break_container"></div>
+    <button id="aw_add_additional_break" type="button" class="btn btn-primary">Pridėti pertrauką</button>
+
     <div class="row">
         <div class="col-md">
             <button class="btn btn-secondary float-right mx-1 aw-a-button" id="duplicate" type="submit" name="action" value="duplicate">Išsaugoti ir duplikuoti</button>
@@ -114,6 +105,64 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
 @endsection
 
 @section('foot-content')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.min.js" defer></script>
     <script src="{{ asset('js/consultation-frontend-logic.js') }}" defer></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function ($) {
+            // Removing rows
+            $("#break_container").on('click', '.aw_remove_break', function () {
+                const value = $(this).val();
+                $("#break-" + value).remove();
+            });
+
+            let template_row =  `
+                    <div class="row aw_break_row" id="break-0">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-8 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pradžia
+                                    <input class="form-control break-start-field" name="break[0][break_start]" type="text"
+                                           value="" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-4 col-sm-5 form-group">
+                                <label>
+                                    Pertraukos pabaiga
+                                    <input class="form-control break-end-field" name="break[0][break_end]" type="text"
+                                           value="" placeholder="00:00">
+                                </label>
+                            </div>
+                            <div class="col-2 col-sm-2 form-group pt-4 pl-0">
+                                <button type="button" value="0" id="remove-break-0"
+                                        class="btn aw-trash-button aw_remove_break"><i
+                                        class="fas fa-minus-circle aw-minus-circle-red"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            let currant_index = 0;
+
+            // Adding rows
+            $('#aw_add_additional_break').click(function () {
+
+                if (currant_index === 0) {
+                    $('#break_container').html(template_row);
+                }
+                else {
+                    // let new_row = template_row.last().clone();
+                    let new_row = $('.aw_break_row').last().clone();
+                    new_row.attr('id', 'break-' + currant_index);
+                    new_row.find('.aw_remove_break').attr('id', 'remove-break-' + currant_index).val(currant_index);
+                    new_row.find('.break-start-field').val('').attr('name', 'break[' + currant_index + '][break_start]');
+                    new_row.find('.break-end-field').val('').attr('name', 'break[' + currant_index + '][break_end]');
+                    new_row.appendTo('#break_container');
+                }
+                currant_index++;
+            });
+        });
+    </script>
 @endsection
