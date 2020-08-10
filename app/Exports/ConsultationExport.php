@@ -120,7 +120,8 @@ class ConsultationExport extends DefaultValueBinder implements WithHeadings, Fro
             'method' => 'I',
             'county' => 'E',
             'break' => 'G',
-            'user_id' => 'D'
+            'user_id' => 'D',
+            'theme_id' => 'D'
         ];
 
         $changes_column_array = array_intersect_key($change_collumns_names, array_flip($this->updated_data));

@@ -190,10 +190,10 @@ class ConsultationController extends Controller
                     }
                 }
             }
-
         }
+
+
         $consultation_start = explode(":", $data['consultation_start']);
-        //TODO: Reikia kad i excel rasytu tinkamai pertraukas
         $consultation_start_str = $consultation_start[0] . " val. " . $consultation_start[1] . " min.";
         if (!empty($breaks)) {
             foreach($breaks as $single_break){
@@ -228,15 +228,16 @@ class ConsultationController extends Controller
         $changes = array_keys($consultation->getDirty());
 
         // Get consultation breaks
-
         if (!empty($breaks)){
-            $consultation->consultation_meta()->where('type', 'consultation_break')->delete();
-            $json = json_encode($request->input('break'));
-            $meta_cahnges = $consultation->consultation_meta()->create([
-                'type' => 'consultation_break',
-                'value' => $json,
-            ]);
-            array_push($changes, 'break');
+            $json = json_encode(array_values($request->input('break')));
+            $con_meta = $consultation->consultation_meta()->updateOrCreate(
+                ['type' => 'consultation_break', 'consultation_id' => $consultation->id],
+                ['value' => $json]
+            );
+//            dd($con_meta->getChanges());
+            if (!empty($con_meta->getChanges())){
+                array_push($changes, 'break');
+            }
         }
 
 
@@ -248,7 +249,7 @@ class ConsultationController extends Controller
         }
 
 
-        $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
+//        $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
 
         //Tikrinama ar konsultacija jau praejus
         if ($consultation->is_con_over() == false && $consultation->is_sent == 1 && $request->input('action') == 'update') {

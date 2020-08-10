@@ -152,8 +152,8 @@ jQuery(document).ready(function ($) {
 
     var ivestaData = new Date($this.company_reg_date);
     var esamaData = new Date();
-    var skirtumas = (esamaData - ivestaData) / 1000 / 60 / 60 / 24 / 365;
-    $('#contacts').val($this.contacts);
+    var skirtumas = (esamaData - ivestaData) / 1000 / 60 / 60 / 24 / 365; // $('#contacts').val($this.contacts);
+
     $.ajax({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

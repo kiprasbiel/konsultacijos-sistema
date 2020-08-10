@@ -90,7 +90,7 @@ Route::get('/migrate', function () {
 //        $meta->save();
 //    }
 
-    $meta = \App\Consultation_meta::find(1754);
+    $meta = \App\Consultation_meta::find(1753);
 
     $json = json_encode([
         [
