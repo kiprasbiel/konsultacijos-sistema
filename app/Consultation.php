@@ -16,15 +16,18 @@ class Consultation extends Model
      */
     public function break_len(){
         $break_raw = Consultation_meta::where('consultation_id', $this->id)->where('type', 'consultation_break')->pluck('value');
-        $break_json = json_decode($break_raw[0]);
         $diff_date = new DateTime('00:00');
         $ref_date = clone $diff_date;
-        foreach ($break_json as $single_break){
-            $start_time = new DateTime($single_break->break_start);
-            $end_time = new DateTime($single_break->break_end);
-            $diff_date->add($start_time->diff($end_time));
+        if (!$break_raw->isEmpty()){
+            $break_json = json_decode($break_raw[0]);
+            foreach ($break_json as $single_break){
+                $start_time = new DateTime($single_break->break_start);
+                $end_time = new DateTime($single_break->break_end);
+                $diff_date->add($start_time->diff($end_time));
+            }
         }
         return $ref_date->diff($diff_date);
+
     }
 
     /**
