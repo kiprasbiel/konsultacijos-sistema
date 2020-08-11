@@ -280,9 +280,6 @@ class ConsultationController extends Controller
             $changes = explode(', ', $values);
         }
 
-
-//        $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
-
         //Tikrinama ar konsultacija jau praejus
         if ($consultation->is_con_over() == false && $consultation->is_sent == 1 && $request->input('action') == 'update') {
             $emails_arr = preg_split('/\n|\r\n?/', Option::where('name', 'emails')->value('value'));
@@ -304,10 +301,6 @@ class ConsultationController extends Controller
 
         if ($request->input('action') == 'update') {
             $consultation->consultation_meta()->where('type', 'draft_changes')->delete();
-//            if ($consultation->consultation_meta->where('type', 'draft_changes')->first() !== null){
-//
-////                $this->destroy_meta($consultation->consultation_meta->first()->id);
-//            }
         }
         $consultation->save();
 
@@ -338,7 +331,6 @@ class ConsultationController extends Controller
             Mail::to($emails_arr)->send(new ConsultationDeleteMail($data, $con_main_theme));
         }
 
-        //TODO: patikrinti ar veikia
         $consultation->consultation_meta()->delete();
         $consultation->delete();
 
@@ -368,11 +360,6 @@ class ConsultationController extends Controller
         }
         $consultation_meta->save();
     }
-
-//    public function destroy_meta($id) {
-//        $consultation_meta = Consultation_meta::find($id);
-//        $consultation_meta->delete();
-//    }
 
     public static function color_index_table($id, $column) {
         $consultation_meta = Consultation_meta::where('consultation_id', $id)
