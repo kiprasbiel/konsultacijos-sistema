@@ -259,8 +259,15 @@ class ConsultationController extends Controller
                 ['type' => 'consultation_break', 'consultation_id' => $consultation->id],
                 ['value' => $json]
             );
-//            dd($con_meta->getChanges());
-            if (!empty($con_meta->getChanges())){
+
+            if (!empty($con_meta->getChanges()) || $con_meta->wasRecentlyCreated){
+                array_push($changes, 'break');
+            }
+        }
+        else{
+            // Jei jei nera pertrauku, tada istrinama
+            $con_meta = $consultation->consultation_meta()->where('type', 'consultation_break')->delete();
+            if ($con_meta == 1){
                 array_push($changes, 'break');
             }
         }

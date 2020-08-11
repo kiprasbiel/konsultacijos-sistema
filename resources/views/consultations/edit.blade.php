@@ -155,7 +155,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
             // Adding rows
             $('#aw_add_additional_break').click(function () {
 
-                if (template_row.size() === 0) {
+                if (currant_index === 0) {
+                    console.log('Laba ryta')
                     let new_template_row = `
                     <div class="row aw_break_row" id="break-0">
                     <div class="col-sm-4">
@@ -186,7 +187,8 @@ $county_list = ["akmenes-r" => "Akmenės r.", "alytaus-m" => "Alytaus m.", "alyt
                     $('#break_container').html(new_template_row);
                 }
                 else {
-                    let new_row = template_row.last().clone();
+                    let new_row = $('.aw_break_row').last().clone();
+                    console.log(new_row);
                     new_row.attr('id', 'break-' + currant_index);
                     new_row.find('.aw_remove_break').attr('id', 'remove-break-' + currant_index).val(currant_index);
                     new_row.find('.break-start-field').val('').attr('name', 'break[' + currant_index + '][break_start]');
